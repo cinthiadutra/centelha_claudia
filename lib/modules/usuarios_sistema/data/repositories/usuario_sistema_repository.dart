@@ -4,12 +4,12 @@ import '../models/usuario_sistema_model.dart';
 
 /// Interface do repositório
 abstract class UsuarioSistemaRepository {
-  Future<List<UsuarioSistema>> getTodos();
-  Future<UsuarioSistema?> getPorId(String id);
-  Future<UsuarioSistema?> getPorEmail(String email);
   Future<UsuarioSistema?> getPorCadastro(String numeroCadastro);
-  Future<void> salvar(UsuarioSistema usuario);
+  Future<UsuarioSistema?> getPorEmail(String email);
+  Future<UsuarioSistema?> getPorId(String id);
+  Future<List<UsuarioSistema>> getTodos();
   Future<void> remover(String id);
+  Future<void> salvar(UsuarioSistema usuario);
 }
 
 /// Implementação do repositório
@@ -19,13 +19,8 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
   UsuarioSistemaRepositoryImpl(this.datasource);
 
   @override
-  Future<List<UsuarioSistema>> getTodos() async {
-    return await datasource.getTodos();
-  }
-
-  @override
-  Future<UsuarioSistema?> getPorId(String id) async {
-    return await datasource.getPorId(id);
+  Future<UsuarioSistema?> getPorCadastro(String numeroCadastro) async {
+    return await datasource.getPorCadastro(numeroCadastro);
   }
 
   @override
@@ -34,8 +29,18 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
   }
 
   @override
-  Future<UsuarioSistema?> getPorCadastro(String numeroCadastro) async {
-    return await datasource.getPorCadastro(numeroCadastro);
+  Future<UsuarioSistema?> getPorId(String id) async {
+    return await datasource.getPorId(id);
+  }
+
+  @override
+  Future<List<UsuarioSistema>> getTodos() async {
+    return await datasource.getTodos();
+  }
+
+  @override
+  Future<void> remover(String id) async {
+    await datasource.remover(id);
   }
 
   @override
@@ -52,10 +57,5 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
         await datasource.adicionar(model);
       }
     }
-  }
-
-  @override
-  Future<void> remover(String id) async {
-    await datasource.remover(id);
   }
 }

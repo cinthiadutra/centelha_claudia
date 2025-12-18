@@ -15,6 +15,21 @@ class UsuarioSistemaModel extends UsuarioSistema {
     super.observacoes,
   });
 
+  factory UsuarioSistemaModel.fromEntity(UsuarioSistema entity) {
+    return UsuarioSistemaModel(
+      id: entity.id,
+      numeroCadastro: entity.numeroCadastro,
+      nome: entity.nome,
+      email: entity.email,
+      senha: entity.senha,
+      nivelPermissao: entity.nivelPermissao,
+      ativo: entity.ativo,
+      dataCriacao: entity.dataCriacao,
+      dataUltimaAlteracao: entity.dataUltimaAlteracao,
+      observacoes: entity.observacoes,
+    );
+  }
+
   factory UsuarioSistemaModel.fromJson(Map<String, dynamic> json) {
     return UsuarioSistemaModel(
       id: json['id'] as String,
@@ -45,20 +60,5 @@ class UsuarioSistemaModel extends UsuarioSistema {
       'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
       'observacoes': observacoes,
     };
-  }
-
-  factory UsuarioSistemaModel.fromEntity(UsuarioSistema entity) {
-    return UsuarioSistemaModel(
-      id: entity.id,
-      numeroCadastro: entity.numeroCadastro,
-      nome: entity.nome,
-      email: entity.email,
-      senha: entity.senha,
-      nivelPermissao: entity.nivelPermissao,
-      ativo: entity.ativo,
-      dataCriacao: entity.dataCriacao,
-      dataUltimaAlteracao: entity.dataUltimaAlteracao,
-      observacoes: entity.observacoes,
-    );
   }
 }

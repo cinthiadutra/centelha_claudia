@@ -1,20 +1,47 @@
 import 'package:get/get.dart';
-import '../../domain/entities/usuario_sistema.dart';
+
 import '../../data/repositories/usuario_sistema_repository.dart';
+import '../../domain/entities/usuario_sistema.dart';
 
 /// Controller para gerenciar usuários do sistema
 class UsuarioSistemaController extends GetxController {
   final UsuarioSistemaRepository repository;
 
+  final RxList<UsuarioSistema> usuarios = <UsuarioSistema>[].obs;
+
+  final RxBool isLoading = false.obs;
   UsuarioSistemaController(this.repository);
 
-  final RxList<UsuarioSistema> usuarios = <UsuarioSistema>[].obs;
-  final RxBool isLoading = false.obs;
+  Future<void> alterarStatus(String id, bool novoStatus) async {
+    try {
+      final usuario = await buscarPorId(id);
+      if (usuario == null) return;
 
-  @override
-  void onInit() {
-    super.onInit();
-    carregarTodos();
+      final usuarioAtualizado = usuario.copyWith(
+        ativo: novoStatus,
+        dataUltimaAlteracao: DateTime.now(),
+      );
+
+      await salvar(usuarioAtualizado);
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Erro ao alterar status: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<UsuarioSistema?> buscarPorCadastro(String numeroCadastro) async {
+    return await repository.getPorCadastro(numeroCadastro);
+  }
+
+  Future<UsuarioSistema?> buscarPorEmail(String email) async {
+    return await repository.getPorEmail(email);
+  }
+
+  Future<UsuarioSistema?> buscarPorId(String id) async {
+    return await repository.getPorId(id);
   }
 
   Future<void> carregarTodos() async {
@@ -24,18 +51,6 @@ class UsuarioSistemaController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  Future<UsuarioSistema?> buscarPorId(String id) async {
-    return await repository.getPorId(id);
-  }
-
-  Future<UsuarioSistema?> buscarPorEmail(String email) async {
-    return await repository.getPorEmail(email);
-  }
-
-  Future<UsuarioSistema?> buscarPorCadastro(String numeroCadastro) async {
-    return await repository.getPorCadastro(numeroCadastro);
   }
 
   List<UsuarioSistema> filtrarPorNivel(int? nivelPermissao) {
@@ -52,18 +67,31 @@ class UsuarioSistemaController extends GetxController {
     return usuarios.where((u) => u.ativo == ativo).toList();
   }
 
-  Future<bool> validarEmailUnico(String email, {String? idExcluir}) async {
-    final usuarioExistente = await buscarPorEmail(email);
-    if (usuarioExistente == null) return true;
-    if (idExcluir != null && usuarioExistente.id == idExcluir) return true;
-    return false;
+  @override
+  void onInit() {
+    super.onInit();
+    carregarTodos();
   }
 
-  Future<bool> validarCadastroUnico(String numeroCadastro, {String? idExcluir}) async {
-    final usuarioExistente = await buscarPorCadastro(numeroCadastro);
-    if (usuarioExistente == null) return true;
-    if (idExcluir != null && usuarioExistente.id == idExcluir) return true;
-    return false;
+  Future<void> remover(String id) async {
+    try {
+      isLoading.value = true;
+      await repository.remover(id);
+      await carregarTodos();
+      Get.snackbar(
+        'Sucesso',
+        'Usuário do sistema removido com sucesso!',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Erro ao remover usuário: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> salvar(UsuarioSistema usuario) async {
@@ -113,44 +141,17 @@ class UsuarioSistemaController extends GetxController {
     }
   }
 
-  Future<void> remover(String id) async {
-    try {
-      isLoading.value = true;
-      await repository.remover(id);
-      await carregarTodos();
-      Get.snackbar(
-        'Sucesso',
-        'Usuário do sistema removido com sucesso!',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Erro',
-        'Erro ao remover usuário: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } finally {
-      isLoading.value = false;
-    }
+  Future<bool> validarCadastroUnico(String numeroCadastro, {String? idExcluir}) async {
+    final usuarioExistente = await buscarPorCadastro(numeroCadastro);
+    if (usuarioExistente == null) return true;
+    if (idExcluir != null && usuarioExistente.id == idExcluir) return true;
+    return false;
   }
 
-  Future<void> alterarStatus(String id, bool novoStatus) async {
-    try {
-      final usuario = await buscarPorId(id);
-      if (usuario == null) return;
-
-      final usuarioAtualizado = usuario.copyWith(
-        ativo: novoStatus,
-        dataUltimaAlteracao: DateTime.now(),
-      );
-
-      await salvar(usuarioAtualizado);
-    } catch (e) {
-      Get.snackbar(
-        'Erro',
-        'Erro ao alterar status: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+  Future<bool> validarEmailUnico(String email, {String? idExcluir}) async {
+    final usuarioExistente = await buscarPorEmail(email);
+    if (usuarioExistente == null) return true;
+    if (idExcluir != null && usuarioExistente.id == idExcluir) return true;
+    return false;
   }
 }

@@ -4,8 +4,8 @@ import '../models/organizacao_centelha_model.dart';
 
 /// Interface do repositório
 abstract class OrganizacaoCentelhaRepository {
-  Future<OrganizacaoCentelha> getOrganizacao();
   Future<void> atualizar(OrganizacaoCentelha organizacao);
+  Future<OrganizacaoCentelha> getOrganizacao();
 }
 
 /// Implementação do repositório
@@ -15,13 +15,13 @@ class OrganizacaoCentelhaRepositoryImpl implements OrganizacaoCentelhaRepository
   OrganizacaoCentelhaRepositoryImpl(this.datasource);
 
   @override
-  Future<OrganizacaoCentelha> getOrganizacao() async {
-    return await datasource.getOrganizacao();
-  }
-
-  @override
   Future<void> atualizar(OrganizacaoCentelha organizacao) async {
     final model = OrganizacaoCentelhaModel.fromEntity(organizacao);
     await datasource.atualizar(model);
+  }
+
+  @override
+  Future<OrganizacaoCentelha> getOrganizacao() async {
+    return await datasource.getOrganizacao();
   }
 }

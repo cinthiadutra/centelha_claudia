@@ -1,30 +1,16 @@
 import 'package:get/get.dart';
-import '../../domain/entities/organizacao_centelha.dart';
+
 import '../../data/repositories/organizacao_centelha_repository.dart';
+import '../../domain/entities/organizacao_centelha.dart';
 
 /// Controller para gerenciar dados da organização
 class OrganizacaoCentelhaController extends GetxController {
   final OrganizacaoCentelhaRepository repository;
 
-  OrganizacaoCentelhaController(this.repository);
-
   final Rx<OrganizacaoCentelha?> organizacao = Rx<OrganizacaoCentelha?>(null);
+
   final RxBool isLoading = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    carregarOrganizacao();
-  }
-
-  Future<void> carregarOrganizacao() async {
-    try {
-      isLoading.value = true;
-      organizacao.value = await repository.getOrganizacao();
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  OrganizacaoCentelhaController(this.repository);
 
   Future<void> atualizar(OrganizacaoCentelha novaOrganizacao) async {
     try {
@@ -53,13 +39,13 @@ class OrganizacaoCentelhaController extends GetxController {
     }
   }
 
-  String formatarCNPJ(String cnpj) {
-    // Remove tudo que não é dígito
-    final numeros = cnpj.replaceAll(RegExp(r'[^0-9]'), '');
-    
-    if (numeros.length != 14) return cnpj;
-    
-    return '${numeros.substring(0, 2)}.${numeros.substring(2, 5)}.${numeros.substring(5, 8)}/${numeros.substring(8, 12)}-${numeros.substring(12, 14)}';
+  Future<void> carregarOrganizacao() async {
+    try {
+      isLoading.value = true;
+      organizacao.value = await repository.getOrganizacao();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   String formatarCEP(String cep) {
@@ -68,6 +54,15 @@ class OrganizacaoCentelhaController extends GetxController {
     if (numeros.length != 8) return cep;
     
     return '${numeros.substring(0, 5)}-${numeros.substring(5, 8)}';
+  }
+
+  String formatarCNPJ(String cnpj) {
+    // Remove tudo que não é dígito
+    final numeros = cnpj.replaceAll(RegExp(r'[^0-9]'), '');
+    
+    if (numeros.length != 14) return cnpj;
+    
+    return '${numeros.substring(0, 2)}.${numeros.substring(2, 5)}.${numeros.substring(5, 8)}/${numeros.substring(8, 12)}-${numeros.substring(12, 14)}';
   }
 
   String formatarTelefone(String telefone) {
@@ -80,5 +75,11 @@ class OrganizacaoCentelhaController extends GetxController {
     }
     
     return telefone;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    carregarOrganizacao();
   }
 }

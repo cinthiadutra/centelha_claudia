@@ -2,8 +2,8 @@ import '../models/organizacao_centelha_model.dart';
 
 /// Interface do datasource de organização
 abstract class OrganizacaoCentelhaDatasource {
-  Future<OrganizacaoCentelhaModel> getOrganizacao();
   Future<void> atualizar(OrganizacaoCentelhaModel organizacao);
+  Future<OrganizacaoCentelhaModel> getOrganizacao();
 }
 
 /// Implementação mock do datasource
@@ -33,12 +33,12 @@ class OrganizacaoCentelhaDatasourceImpl implements OrganizacaoCentelhaDatasource
   );
 
   @override
-  Future<OrganizacaoCentelhaModel> getOrganizacao() async {
-    return _organizacao;
+  Future<void> atualizar(OrganizacaoCentelhaModel organizacao) async {
+    _organizacao = organizacao;
   }
 
   @override
-  Future<void> atualizar(OrganizacaoCentelhaModel organizacao) async {
-    _organizacao = organizacao;
+  Future<OrganizacaoCentelhaModel> getOrganizacao() async {
+    return _organizacao;
   }
 }

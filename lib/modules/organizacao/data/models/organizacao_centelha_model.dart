@@ -27,6 +27,33 @@ class OrganizacaoCentelhaModel extends OrganizacaoCentelha {
     super.observacoes,
   });
 
+  factory OrganizacaoCentelhaModel.fromEntity(OrganizacaoCentelha entity) {
+    return OrganizacaoCentelhaModel(
+      id: entity.id,
+      nome: entity.nome,
+      cnpj: entity.cnpj,
+      endereco: entity.endereco,
+      cidade: entity.cidade,
+      estado: entity.estado,
+      cep: entity.cep,
+      telefone: entity.telefone,
+      email: entity.email,
+      siteWeb: entity.siteWeb,
+      logoUrl: entity.logoUrl,
+      presidenteNome: entity.presidenteNome,
+      presidenteCadastro: entity.presidenteCadastro,
+      vicepresidenteNome: entity.vicepresidenteNome,
+      vicepresidenteCadastro: entity.vicepresidenteCadastro,
+      secretarioNome: entity.secretarioNome,
+      secretarioCadastro: entity.secretarioCadastro,
+      tesoureiroNome: entity.tesoureiroNome,
+      tesoureiroCadastro: entity.tesoureiroCadastro,
+      dataFundacao: entity.dataFundacao,
+      dataUltimaAlteracao: entity.dataUltimaAlteracao,
+      observacoes: entity.observacoes,
+    );
+  }
+
   factory OrganizacaoCentelhaModel.fromJson(Map<String, dynamic> json) {
     return OrganizacaoCentelhaModel(
       id: json['id'] as String,
@@ -81,32 +108,5 @@ class OrganizacaoCentelhaModel extends OrganizacaoCentelha {
       'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
       'observacoes': observacoes,
     };
-  }
-
-  factory OrganizacaoCentelhaModel.fromEntity(OrganizacaoCentelha entity) {
-    return OrganizacaoCentelhaModel(
-      id: entity.id,
-      nome: entity.nome,
-      cnpj: entity.cnpj,
-      endereco: entity.endereco,
-      cidade: entity.cidade,
-      estado: entity.estado,
-      cep: entity.cep,
-      telefone: entity.telefone,
-      email: entity.email,
-      siteWeb: entity.siteWeb,
-      logoUrl: entity.logoUrl,
-      presidenteNome: entity.presidenteNome,
-      presidenteCadastro: entity.presidenteCadastro,
-      vicepresidenteNome: entity.vicepresidenteNome,
-      vicepresidenteCadastro: entity.vicepresidenteCadastro,
-      secretarioNome: entity.secretarioNome,
-      secretarioCadastro: entity.secretarioCadastro,
-      tesoureiroNome: entity.tesoureiroNome,
-      tesoureiroCadastro: entity.tesoureiroCadastro,
-      dataFundacao: entity.dataFundacao,
-      dataUltimaAlteracao: entity.dataUltimaAlteracao,
-      observacoes: entity.observacoes,
-    );
   }
 }

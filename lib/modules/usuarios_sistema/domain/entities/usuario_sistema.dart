@@ -27,6 +27,21 @@ class UsuarioSistema extends Equatable {
     this.observacoes,
   });
 
+  String get nivelPermissaoTexto {
+    switch (nivelPermissao) {
+      case 1:
+        return 'Nível 1 - Acesso próprio';
+      case 2:
+        return 'Nível 2 - Secretaria';
+      case 3:
+        return 'Nível 3 - Líder espiritual';
+      case 4:
+        return 'Nível 4 - Administrador';
+      default:
+        return 'Nível desconhecido';
+    }
+  }
+
   @override
   List<Object?> get props => [
         id,
@@ -65,20 +80,5 @@ class UsuarioSistema extends Equatable {
       dataUltimaAlteracao: dataUltimaAlteracao ?? this.dataUltimaAlteracao,
       observacoes: observacoes ?? this.observacoes,
     );
-  }
-
-  String get nivelPermissaoTexto {
-    switch (nivelPermissao) {
-      case 1:
-        return 'Nível 1 - Acesso próprio';
-      case 2:
-        return 'Nível 2 - Secretaria';
-      case 3:
-        return 'Nível 3 - Líder espiritual';
-      case 4:
-        return 'Nível 4 - Administrador';
-      default:
-        return 'Nível desconhecido';
-    }
   }
 }

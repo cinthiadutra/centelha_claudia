@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../membros/presentation/controllers/membro_controller.dart';
 import '../../domain/entities/organizacao_centelha.dart';
 import '../controllers/organizacao_centelha_controller.dart';
-import '../../../membros/presentation/controllers/membro_controller.dart';
 
 /// Página para gerenciar dados da organização CENTELHA
 /// Disponível apenas para nível 4 (Administradores)
@@ -10,7 +11,8 @@ class GerenciarOrganizacaoPage extends StatefulWidget {
   const GerenciarOrganizacaoPage({super.key});
 
   @override
-  State<GerenciarOrganizacaoPage> createState() => _GerenciarOrganizacaoPageState();
+  State<GerenciarOrganizacaoPage> createState() =>
+      _GerenciarOrganizacaoPageState();
 }
 
 class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
@@ -18,7 +20,7 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
   final membroController = Get.find<MembroController>();
 
   final _formKey = GlobalKey<FormState>();
-  
+
   // Dados institucionais
   final _nomeController = TextEditingController();
   final _cnpjController = TextEditingController();
@@ -30,7 +32,7 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
   final _emailController = TextEditingController();
   final _siteWebController = TextEditingController();
   final _logoUrlController = TextEditingController();
-  
+
   // Diretoria
   final _presidenteCadastroController = TextEditingController();
   final _presidenteNomeController = TextEditingController();
@@ -40,137 +42,11 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
   final _secretarioNomeController = TextEditingController();
   final _tesoureiroCadastroController = TextEditingController();
   final _tesoureiroNomeController = TextEditingController();
-  
+
   final _observacoesController = TextEditingController();
-  
+
   DateTime? dataFundacao;
   OrganizacaoCentelha? organizacaoAtual;
-
-  @override
-  void initState() {
-    super.initState();
-    _carregarDados();
-  }
-
-  void _carregarDados() {
-    organizacaoController.organizacao.listen((org) {
-      if (org != null) {
-        setState(() {
-          organizacaoAtual = org;
-          _nomeController.text = org.nome;
-          _cnpjController.text = org.cnpj;
-          _enderecoController.text = org.endereco;
-          _cidadeController.text = org.cidade;
-          _estadoController.text = org.estado;
-          _cepController.text = org.cep;
-          _telefoneController.text = org.telefone;
-          _emailController.text = org.email;
-          _siteWebController.text = org.siteWeb;
-          _logoUrlController.text = org.logoUrl ?? '';
-          
-          _presidenteCadastroController.text = org.presidenteCadastro;
-          _presidenteNomeController.text = org.presidenteNome;
-          _vicepresidenteCadastroController.text = org.vicepresidenteCadastro;
-          _vicepresidenteNomeController.text = org.vicepresidenteNome;
-          _secretarioCadastroController.text = org.secretarioCadastro;
-          _secretarioNomeController.text = org.secretarioNome;
-          _tesoureiroCadastroController.text = org.tesoureiroCadastro;
-          _tesoureiroNomeController.text = org.tesoureiroNome;
-          
-          _observacoesController.text = org.observacoes ?? '';
-          dataFundacao = org.dataFundacao;
-        });
-      }
-    });
-  }
-
-  Future<void> _buscarMembro(
-    TextEditingController cadastroController,
-    TextEditingController nomeController,
-  ) async {
-    final numero = cadastroController.text.trim();
-    if (numero.isEmpty) return;
-
-    final membro = await membroController.buscarPorNumero(numero);
-    if (membro != null) {
-      setState(() {
-        nomeController.text = membro.nome;
-      });
-    } else {
-      Get.snackbar(
-        'Não encontrado',
-        'Membro com cadastro $numero não encontrado',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  Future<void> _selecionarDataFundacao() async {
-    final data = await showDatePicker(
-      context: context,
-      initialDate: dataFundacao ?? DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    
-    if (data != null) {
-      setState(() {
-        dataFundacao = data;
-      });
-    }
-  }
-
-  void _salvar() async {
-    if (!_formKey.currentState!.validate()) return;
-    
-    if (dataFundacao == null) {
-      Get.snackbar(
-        'Atenção',
-        'Selecione a data de fundação',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    final organizacao = OrganizacaoCentelha(
-      id: organizacaoAtual?.id ?? '1',
-      nome: _nomeController.text.trim(),
-      cnpj: _cnpjController.text.trim(),
-      endereco: _enderecoController.text.trim(),
-      cidade: _cidadeController.text.trim(),
-      estado: _estadoController.text.trim(),
-      cep: _cepController.text.trim(),
-      telefone: _telefoneController.text.trim(),
-      email: _emailController.text.trim(),
-      siteWeb: _siteWebController.text.trim(),
-      logoUrl: _logoUrlController.text.trim().isEmpty 
-          ? null 
-          : _logoUrlController.text.trim(),
-      presidenteNome: _presidenteNomeController.text.trim(),
-      presidenteCadastro: _presidenteCadastroController.text.trim(),
-      vicepresidenteNome: _vicepresidenteNomeController.text.trim(),
-      vicepresidenteCadastro: _vicepresidenteCadastroController.text.trim(),
-      secretarioNome: _secretarioNomeController.text.trim(),
-      secretarioCadastro: _secretarioCadastroController.text.trim(),
-      tesoureiroNome: _tesoureiroNomeController.text.trim(),
-      tesoureiroCadastro: _tesoureiroCadastroController.text.trim(),
-      dataFundacao: dataFundacao!,
-      observacoes: _observacoesController.text.trim().isEmpty
-          ? null
-          : _observacoesController.text.trim(),
-    );
-
-    await organizacaoController.atualizar(organizacao);
-  }
-
-  String _formatarData(DateTime? data) {
-    if (data == null) return '';
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,17 +101,18 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                         ],
                       ),
                       const Divider(height: 24),
-                      
+
                       TextFormField(
                         controller: _nomeController,
                         decoration: const InputDecoration(
                           labelText: 'Nome da Organização *',
                           border: OutlineInputBorder(),
                         ),
-                        validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v?.isEmpty == true ? 'Campo obrigatório' : null,
                       ),
                       const SizedBox(height: 16),
-                      
+
                       Row(
                         children: [
                           Expanded(
@@ -246,7 +123,9 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 border: OutlineInputBorder(),
                                 hintText: '00.000.000/0001-00',
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty == true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -264,7 +143,9 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                       ? _formatarData(dataFundacao)
                                       : 'Selecione a data',
                                   style: TextStyle(
-                                    color: dataFundacao != null ? Colors.black : Colors.grey,
+                                    color: dataFundacao != null
+                                        ? Colors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                               ),
@@ -273,17 +154,18 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       TextFormField(
                         controller: _enderecoController,
                         decoration: const InputDecoration(
                           labelText: 'Endereço *',
                           border: OutlineInputBorder(),
                         ),
-                        validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                        validator: (v) =>
+                            v?.isEmpty == true ? 'Campo obrigatório' : null,
                       ),
                       const SizedBox(height: 16),
-                      
+
                       Row(
                         children: [
                           Expanded(
@@ -294,7 +176,9 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Cidade *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty == true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -307,7 +191,9 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 hintText: 'SP',
                               ),
                               maxLength: 2,
-                              validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty == true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -319,13 +205,15 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 border: OutlineInputBorder(),
                                 hintText: '01234-567',
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty == true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       Row(
                         children: [
                           Expanded(
@@ -336,7 +224,9 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 border: OutlineInputBorder(),
                                 hintText: '(11) 1234-5678',
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Campo obrigatório' : null,
+                              validator: (v) => v?.isEmpty == true
+                                  ? 'Campo obrigatório'
+                                  : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -349,8 +239,10 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
-                                if (v?.isEmpty == true) return 'Campo obrigatório';
-                                if (!GetUtils.isEmail(v!)) return 'Email inválido';
+                                if (v?.isEmpty == true)
+                                  return 'Campo obrigatório';
+                                if (!GetUtils.isEmail(v!))
+                                  return 'Email inválido';
                                 return null;
                               },
                             ),
@@ -358,7 +250,7 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       Row(
                         children: [
                           Expanded(
@@ -412,9 +304,12 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                         ],
                       ),
                       const Divider(height: 24),
-                      
+
                       // Presidente
-                      const Text('Presidente', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Presidente',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -426,7 +321,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nº Cadastro *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                               onChanged: (_) => _buscarMembro(
                                 _presidenteCadastroController,
                                 _presidenteNomeController,
@@ -449,15 +345,19 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nome *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Vice-presidente
-                      const Text('Vice-presidente', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Vice-presidente',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -469,7 +369,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nº Cadastro *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                               onChanged: (_) => _buscarMembro(
                                 _vicepresidenteCadastroController,
                                 _vicepresidenteNomeController,
@@ -492,15 +393,19 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nome *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Secretário
-                      const Text('Secretário', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Secretário',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -512,7 +417,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nº Cadastro *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                               onChanged: (_) => _buscarMembro(
                                 _secretarioCadastroController,
                                 _secretarioNomeController,
@@ -535,15 +441,19 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nome *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Tesoureiro
-                      const Text('Tesoureiro', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Tesoureiro',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -555,7 +465,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nº Cadastro *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                               onChanged: (_) => _buscarMembro(
                                 _tesoureiroCadastroController,
                                 _tesoureiroNomeController,
@@ -578,7 +489,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                                 labelText: 'Nome *',
                                 border: OutlineInputBorder(),
                               ),
-                              validator: (v) => v?.isEmpty == true ? 'Obrigatório' : null,
+                              validator: (v) =>
+                                  v?.isEmpty == true ? 'Obrigatório' : null,
                             ),
                           ),
                         ],
@@ -610,7 +522,8 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
                         controller: _observacoesController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Informações adicionais sobre a organização...',
+                          hintText:
+                              'Informações adicionais sobre a organização...',
                         ),
                         maxLines: 5,
                       ),
@@ -664,5 +577,131 @@ class _GerenciarOrganizacaoPageState extends State<GerenciarOrganizacaoPage> {
     _tesoureiroNomeController.dispose();
     _observacoesController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarDados();
+  }
+
+  Future<void> _buscarMembro(
+    TextEditingController cadastroController,
+    TextEditingController nomeController,
+  ) async {
+    final numero = cadastroController.text.trim();
+    if (numero.isEmpty) return;
+
+    final membro = membroController.buscarPorNumero(numero);
+    if (membro != null) {
+      setState(() {
+        nomeController.text = membro.nome;
+      });
+    } else {
+      Get.snackbar(
+        'Não encontrado',
+        'Membro com cadastro $numero não encontrado',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void _carregarDados() {
+    organizacaoController.organizacao.listen((org) {
+      if (org != null) {
+        setState(() {
+          organizacaoAtual = org;
+          _nomeController.text = org.nome;
+          _cnpjController.text = org.cnpj;
+          _enderecoController.text = org.endereco;
+          _cidadeController.text = org.cidade;
+          _estadoController.text = org.estado;
+          _cepController.text = org.cep;
+          _telefoneController.text = org.telefone;
+          _emailController.text = org.email;
+          _siteWebController.text = org.siteWeb;
+          _logoUrlController.text = org.logoUrl ?? '';
+
+          _presidenteCadastroController.text = org.presidenteCadastro;
+          _presidenteNomeController.text = org.presidenteNome;
+          _vicepresidenteCadastroController.text = org.vicepresidenteCadastro;
+          _vicepresidenteNomeController.text = org.vicepresidenteNome;
+          _secretarioCadastroController.text = org.secretarioCadastro;
+          _secretarioNomeController.text = org.secretarioNome;
+          _tesoureiroCadastroController.text = org.tesoureiroCadastro;
+          _tesoureiroNomeController.text = org.tesoureiroNome;
+
+          _observacoesController.text = org.observacoes ?? '';
+          dataFundacao = org.dataFundacao;
+        });
+      }
+    });
+  }
+
+  String _formatarData(DateTime? data) {
+    if (data == null) return '';
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  void _salvar() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (dataFundacao == null) {
+      Get.snackbar(
+        'Atenção',
+        'Selecione a data de fundação',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final organizacao = OrganizacaoCentelha(
+      id: organizacaoAtual?.id ?? '1',
+      nome: _nomeController.text.trim(),
+      cnpj: _cnpjController.text.trim(),
+      endereco: _enderecoController.text.trim(),
+      cidade: _cidadeController.text.trim(),
+      estado: _estadoController.text.trim(),
+      cep: _cepController.text.trim(),
+      telefone: _telefoneController.text.trim(),
+      email: _emailController.text.trim(),
+      siteWeb: _siteWebController.text.trim(),
+      logoUrl: _logoUrlController.text.trim().isEmpty
+          ? null
+          : _logoUrlController.text.trim(),
+      presidenteNome: _presidenteNomeController.text.trim(),
+      presidenteCadastro: _presidenteCadastroController.text.trim(),
+      vicepresidenteNome: _vicepresidenteNomeController.text.trim(),
+      vicepresidenteCadastro: _vicepresidenteCadastroController.text.trim(),
+      secretarioNome: _secretarioNomeController.text.trim(),
+      secretarioCadastro: _secretarioCadastroController.text.trim(),
+      tesoureiroNome: _tesoureiroNomeController.text.trim(),
+      tesoureiroCadastro: _tesoureiroCadastroController.text.trim(),
+      dataFundacao: dataFundacao!,
+      observacoes: _observacoesController.text.trim().isEmpty
+          ? null
+          : _observacoesController.text.trim(),
+    );
+
+    await organizacaoController.atualizar(organizacao);
+  }
+
+  Future<void> _selecionarDataFundacao() async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: dataFundacao ?? DateTime(2000),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (data != null) {
+      setState(() {
+        dataFundacao = data;
+      });
+    }
   }
 }
