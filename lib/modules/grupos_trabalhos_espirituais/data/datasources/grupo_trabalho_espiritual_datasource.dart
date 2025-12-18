@@ -2,15 +2,15 @@ import '../models/grupo_trabalho_espiritual_membro_model.dart';
 
 /// Interface do datasource de grupos de trabalhos espirituais
 abstract class GrupoTrabalhoEspiritualDatasource {
-  Future<List<GrupoTrabalhoEspiritualMembroModel>> getTodos();
-  Future<GrupoTrabalhoEspiritualMembroModel?> getPorCadastro(String numeroCadastro);
+  Future<void> adicionar(GrupoTrabalhoEspiritualMembroModel membro);
+  Future<void> atualizar(GrupoTrabalhoEspiritualMembroModel membro);
   Future<List<GrupoTrabalhoEspiritualMembroModel>> filtrar({
     String? atividadeEspiritual,
     String? grupoTrabalho,
     String? funcao,
   });
-  Future<void> adicionar(GrupoTrabalhoEspiritualMembroModel membro);
-  Future<void> atualizar(GrupoTrabalhoEspiritualMembroModel membro);
+  Future<GrupoTrabalhoEspiritualMembroModel?> getPorCadastro(String numeroCadastro);
+  Future<List<GrupoTrabalhoEspiritualMembroModel>> getTodos();
   Future<void> remover(String numeroCadastro);
 }
 
@@ -38,16 +38,15 @@ class GrupoTrabalhoEspiritualDatasourceImpl implements GrupoTrabalhoEspiritualDa
   ];
 
   @override
-  Future<List<GrupoTrabalhoEspiritualMembroModel>> getTodos() async {
-    return List.from(_membros);
+  Future<void> adicionar(GrupoTrabalhoEspiritualMembroModel membro) async {
+    _membros.add(membro);
   }
 
   @override
-  Future<GrupoTrabalhoEspiritualMembroModel?> getPorCadastro(String numeroCadastro) async {
-    try {
-      return _membros.firstWhere((m) => m.numeroCadastro == numeroCadastro);
-    } catch (e) {
-      return null;
+  Future<void> atualizar(GrupoTrabalhoEspiritualMembroModel membro) async {
+    final index = _membros.indexWhere((m) => m.numeroCadastro == membro.numeroCadastro);
+    if (index != -1) {
+      _membros[index] = membro;
     }
   }
 
@@ -75,16 +74,17 @@ class GrupoTrabalhoEspiritualDatasourceImpl implements GrupoTrabalhoEspiritualDa
   }
 
   @override
-  Future<void> adicionar(GrupoTrabalhoEspiritualMembroModel membro) async {
-    _membros.add(membro);
+  Future<GrupoTrabalhoEspiritualMembroModel?> getPorCadastro(String numeroCadastro) async {
+    try {
+      return _membros.firstWhere((m) => m.numeroCadastro == numeroCadastro);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
-  Future<void> atualizar(GrupoTrabalhoEspiritualMembroModel membro) async {
-    final index = _membros.indexWhere((m) => m.numeroCadastro == membro.numeroCadastro);
-    if (index != -1) {
-      _membros[index] = membro;
-    }
+  Future<List<GrupoTrabalhoEspiritualMembroModel>> getTodos() async {
+    return List.from(_membros);
   }
 
   @override

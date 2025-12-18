@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../core/constants/grupo_trabalho_espiritual_constants.dart';
 import '../../domain/entities/grupo_trabalho_espiritual_membro.dart';
 import '../controllers/grupo_trabalho_espiritual_controller.dart';
-import '../../../../core/constants/grupo_trabalho_espiritual_constants.dart';
 
 /// Página para gerar relatórios de grupos de trabalhos espirituais
 /// Disponível para níveis 2 e 4
@@ -10,11 +11,14 @@ class RelatoriosGrupoTrabalhoEspiritualPage extends StatefulWidget {
   const RelatoriosGrupoTrabalhoEspiritualPage({super.key});
 
   @override
-  State<RelatoriosGrupoTrabalhoEspiritualPage> createState() => _RelatoriosGrupoTrabalhoEspiritualPageState();
+  State<RelatoriosGrupoTrabalhoEspiritualPage> createState() =>
+      _RelatoriosGrupoTrabalhoEspiritualPageState();
 }
 
-class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoTrabalhoEspiritualPage> {
-  final grupoTrabalhoEspiritualController = Get.find<GrupoTrabalhoEspiritualController>();
+class _RelatoriosGrupoTrabalhoEspiritualPageState
+    extends State<RelatoriosGrupoTrabalhoEspiritualPage> {
+  final grupoTrabalhoEspiritualController =
+      Get.find<GrupoTrabalhoEspiritualController>();
 
   String? atividadeEspiritualFiltro;
   String? grupoTrabalhoFiltro;
@@ -23,75 +27,6 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
   List<String> gruposDisponiveisFiltro = [];
   List<GrupoTrabalhoEspiritualMembro> resultados = [];
   bool relatorioGerado = false;
-
-  void _atualizarGruposDisponiveisFiltro() {
-    if (atividadeEspiritualFiltro != null) {
-      setState(() {
-        gruposDisponiveisFiltro = GrupoTrabalhoEspiritualConstants.getGruposPorAtividade(
-          atividadeEspiritualFiltro!,
-        );
-        
-        // Se o grupo atual não pertence à nova atividade, limpa a seleção
-        if (grupoTrabalhoFiltro != null && !gruposDisponiveisFiltro.contains(grupoTrabalhoFiltro)) {
-          grupoTrabalhoFiltro = null;
-        }
-      });
-    } else {
-      setState(() {
-        gruposDisponiveisFiltro = [];
-        grupoTrabalhoFiltro = null;
-      });
-    }
-  }
-
-  void _gerarRelatorio() {
-    setState(() {
-      resultados = grupoTrabalhoEspiritualController.filtrar(
-        atividadeEspiritual: atividadeEspiritualFiltro,
-        grupoTrabalho: grupoTrabalhoFiltro,
-        funcao: funcaoFiltro,
-      );
-      relatorioGerado = true;
-    });
-  }
-
-  void _limparFiltros() {
-    setState(() {
-      atividadeEspiritualFiltro = null;
-      grupoTrabalhoFiltro = null;
-      funcaoFiltro = null;
-      gruposDisponiveisFiltro = [];
-      resultados = [];
-      relatorioGerado = false;
-    });
-  }
-
-  void _exportarParaExcel() {
-    // TODO: Implementar exportação real para Excel
-    Get.snackbar(
-      'Exportação',
-      'Exportando ${resultados.length} registros para Excel...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.deepPurple,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
-
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.snackbar(
-        'Sucesso',
-        'Relatório exportado com sucesso!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    });
-  }
-
-  String _formatarData(DateTime? data) {
-    if (data == null) return '-';
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,24 +42,19 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
             width: 350,
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
-              border: Border(
-                right: BorderSide(color: Colors.grey.shade300),
-              ),
+              border: Border(right: BorderSide(color: Colors.grey.shade300)),
             ),
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 const Text(
                   'FILTROS',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Divider(),
 
                 DropdownButtonFormField<String>(
-                  value: atividadeEspiritualFiltro,
+                  initialValue: atividadeEspiritualFiltro,
                   decoration: const InputDecoration(
                     labelText: 'Atividade Espiritual',
                     border: OutlineInputBorder(),
@@ -136,7 +66,9 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                       value: null,
                       child: Text('(Todas)'),
                     ),
-                    ...GrupoTrabalhoEspiritualConstants.atividadesOpcoes.map((atividade) {
+                    ...GrupoTrabalhoEspiritualConstants.atividadesOpcoes.map((
+                      atividade,
+                    ) {
                       return DropdownMenuItem<String>(
                         value: atividade,
                         child: Text(atividade),
@@ -154,7 +86,7 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                 const SizedBox(height: 16),
 
                 DropdownButtonFormField<String>(
-                  value: grupoTrabalhoFiltro,
+                  initialValue: grupoTrabalhoFiltro,
                   decoration: InputDecoration(
                     labelText: 'Grupo de Trabalho',
                     border: const OutlineInputBorder(),
@@ -184,7 +116,7 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                 const SizedBox(height: 16),
 
                 DropdownButtonFormField<String>(
-                  value: funcaoFiltro,
+                  initialValue: funcaoFiltro,
                   decoration: const InputDecoration(
                     labelText: 'Função',
                     border: OutlineInputBorder(),
@@ -196,7 +128,9 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                       value: null,
                       child: Text('(Todas)'),
                     ),
-                    ...GrupoTrabalhoEspiritualConstants.funcoesOpcoes.map((funcao) {
+                    ...GrupoTrabalhoEspiritualConstants.funcoesOpcoes.map((
+                      funcao,
+                    ) {
                       return DropdownMenuItem<String>(
                         value: funcao,
                         child: Text(funcao),
@@ -248,7 +182,10 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.assessment, color: Colors.deepPurple.shade700),
+                        Icon(
+                          Icons.assessment,
+                          color: Colors.deepPurple.shade700,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           'Total de registros encontrados: ${resultados.length}',
@@ -276,99 +213,116 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
                 Expanded(
                   child: relatorioGerado
                       ? resultados.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.search_off,
-                                    size: 64,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Nenhum registro encontrado',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey.shade600,
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.search_off,
+                                      size: 64,
+                                      color: Colors.grey.shade400,
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Tente ajustar os filtros',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey.shade500,
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Nenhum registro encontrado',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey.shade600,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: SingleChildScrollView(
-                                child: DataTable(
-                                  columns: const [
-                                    DataColumn(label: Text('Nº Cadastro')),
-                                    DataColumn(label: Text('Nome')),
-                                    DataColumn(label: Text('Status')),
-                                    DataColumn(label: Text('Atividade')),
-                                    DataColumn(label: Text('Grupo de Trabalho')),
-                                    DataColumn(label: Text('Função')),
-                                    DataColumn(label: Text('Última Alteração')),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Tente ajustar os filtros',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
                                   ],
-                                  rows: resultados.map((membro) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(Text(membro.numeroCadastro)),
-                                        DataCell(Text(membro.nome)),
-                                        DataCell(
-                                          Chip(
-                                            label: Text(
-                                              membro.status,
-                                              style: const TextStyle(fontSize: 11),
-                                            ),
-                                            backgroundColor: membro.status == 'Membro ativo'
-                                                ? Colors.green.shade100
-                                                : Colors.grey.shade300,
-                                          ),
-                                        ),
-                                        DataCell(
-                                          SizedBox(
-                                            width: 150,
-                                            child: Text(
-                                              membro.atividadeEspiritual,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ),
-                                        DataCell(
-                                          SizedBox(
-                                            width: 180,
-                                            child: Text(
-                                              membro.grupoTrabalho,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Chip(
-                                            label: Text(
-                                              membro.funcao,
-                                              style: const TextStyle(fontSize: 11),
-                                            ),
-                                            backgroundColor: membro.funcao == 'Líder'
-                                                ? Colors.orange.shade100
-                                                : Colors.blue.shade100,
-                                          ),
-                                        ),
-                                        DataCell(Text(_formatarData(membro.dataUltimaAlteracao))),
-                                      ],
-                                    );
-                                  }).toList(),
                                 ),
-                              ),
-                            )
+                              )
+                            : SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: SingleChildScrollView(
+                                  child: DataTable(
+                                    columns: const [
+                                      DataColumn(label: Text('Nº Cadastro')),
+                                      DataColumn(label: Text('Nome')),
+                                      DataColumn(label: Text('Status')),
+                                      DataColumn(label: Text('Atividade')),
+                                      DataColumn(
+                                        label: Text('Grupo de Trabalho'),
+                                      ),
+                                      DataColumn(label: Text('Função')),
+                                      DataColumn(
+                                        label: Text('Última Alteração'),
+                                      ),
+                                    ],
+                                    rows: resultados.map((membro) {
+                                      return DataRow(
+                                        cells: [
+                                          DataCell(Text(membro.numeroCadastro)),
+                                          DataCell(Text(membro.nome)),
+                                          DataCell(
+                                            Chip(
+                                              label: Text(
+                                                membro.status,
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  membro.status ==
+                                                      'Membro ativo'
+                                                  ? Colors.green.shade100
+                                                  : Colors.grey.shade300,
+                                            ),
+                                          ),
+                                          DataCell(
+                                            SizedBox(
+                                              width: 150,
+                                              child: Text(
+                                                membro.atividadeEspiritual,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            SizedBox(
+                                              width: 180,
+                                              child: Text(
+                                                membro.grupoTrabalho,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Chip(
+                                              label: Text(
+                                                membro.funcao,
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  membro.funcao == 'Líder'
+                                                  ? Colors.orange.shade100
+                                                  : Colors.blue.shade100,
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              _formatarData(
+                                                membro.dataUltimaAlteracao,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              )
                       : Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -396,5 +350,76 @@ class _RelatoriosGrupoTrabalhoEspiritualPageState extends State<RelatoriosGrupoT
         ],
       ),
     );
+  }
+
+  void _atualizarGruposDisponiveisFiltro() {
+    if (atividadeEspiritualFiltro != null) {
+      setState(() {
+        gruposDisponiveisFiltro =
+            GrupoTrabalhoEspiritualConstants.getGruposPorAtividade(
+              atividadeEspiritualFiltro!,
+            );
+
+        // Se o grupo atual não pertence à nova atividade, limpa a seleção
+        if (grupoTrabalhoFiltro != null &&
+            !gruposDisponiveisFiltro.contains(grupoTrabalhoFiltro)) {
+          grupoTrabalhoFiltro = null;
+        }
+      });
+    } else {
+      setState(() {
+        gruposDisponiveisFiltro = [];
+        grupoTrabalhoFiltro = null;
+      });
+    }
+  }
+
+  void _exportarParaExcel() {
+    // TODO: Implementar exportação real para Excel
+    Get.snackbar(
+      'Exportação',
+      'Exportando ${resultados.length} registros para Excel...',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.deepPurple,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      Get.snackbar(
+        'Sucesso',
+        'Relatório exportado com sucesso!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    });
+  }
+
+  String _formatarData(DateTime? data) {
+    if (data == null) return '-';
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  void _gerarRelatorio() {
+    setState(() {
+      resultados = grupoTrabalhoEspiritualController.filtrar(
+        atividadeEspiritual: atividadeEspiritualFiltro,
+        grupoTrabalho: grupoTrabalhoFiltro,
+        funcao: funcaoFiltro,
+      );
+      relatorioGerado = true;
+    });
+  }
+
+  void _limparFiltros() {
+    setState(() {
+      atividadeEspiritualFiltro = null;
+      grupoTrabalhoFiltro = null;
+      funcaoFiltro = null;
+      gruposDisponiveisFiltro = [];
+      resultados = [];
+      relatorioGerado = false;
+    });
   }
 }

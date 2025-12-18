@@ -4,15 +4,15 @@ import '../models/grupo_trabalho_espiritual_membro_model.dart';
 
 /// Interface do repositório
 abstract class GrupoTrabalhoEspiritualRepository {
-  Future<List<GrupoTrabalhoEspiritualMembro>> getTodos();
-  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(String numeroCadastro);
   Future<List<GrupoTrabalhoEspiritualMembro>> filtrar({
     String? atividadeEspiritual,
     String? grupoTrabalho,
     String? funcao,
   });
-  Future<void> salvar(GrupoTrabalhoEspiritualMembro membro);
+  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(String numeroCadastro);
+  Future<List<GrupoTrabalhoEspiritualMembro>> getTodos();
   Future<void> remover(String numeroCadastro);
+  Future<void> salvar(GrupoTrabalhoEspiritualMembro membro);
 }
 
 /// Implementação do repositório
@@ -20,16 +20,6 @@ class GrupoTrabalhoEspiritualRepositoryImpl implements GrupoTrabalhoEspiritualRe
   final GrupoTrabalhoEspiritualDatasource datasource;
 
   GrupoTrabalhoEspiritualRepositoryImpl(this.datasource);
-
-  @override
-  Future<List<GrupoTrabalhoEspiritualMembro>> getTodos() async {
-    return await datasource.getTodos();
-  }
-
-  @override
-  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(String numeroCadastro) async {
-    return await datasource.getPorCadastro(numeroCadastro);
-  }
 
   @override
   Future<List<GrupoTrabalhoEspiritualMembro>> filtrar({
@@ -45,6 +35,21 @@ class GrupoTrabalhoEspiritualRepositoryImpl implements GrupoTrabalhoEspiritualRe
   }
 
   @override
+  Future<GrupoTrabalhoEspiritualMembro?> getPorCadastro(String numeroCadastro) async {
+    return await datasource.getPorCadastro(numeroCadastro);
+  }
+
+  @override
+  Future<List<GrupoTrabalhoEspiritualMembro>> getTodos() async {
+    return await datasource.getTodos();
+  }
+
+  @override
+  Future<void> remover(String numeroCadastro) async {
+    await datasource.remover(numeroCadastro);
+  }
+
+  @override
   Future<void> salvar(GrupoTrabalhoEspiritualMembro membro) async {
     final model = GrupoTrabalhoEspiritualMembroModel.fromEntity(membro);
     final existe = await datasource.getPorCadastro(membro.numeroCadastro);
@@ -54,10 +59,5 @@ class GrupoTrabalhoEspiritualRepositoryImpl implements GrupoTrabalhoEspiritualRe
     } else {
       await datasource.adicionar(model);
     }
-  }
-
-  @override
-  Future<void> remover(String numeroCadastro) async {
-    await datasource.remover(numeroCadastro);
   }
 }

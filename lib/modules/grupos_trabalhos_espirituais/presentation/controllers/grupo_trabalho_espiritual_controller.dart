@@ -1,21 +1,20 @@
 import 'package:get/get.dart';
-import '../../domain/entities/grupo_trabalho_espiritual_membro.dart';
-import '../../data/repositories/grupo_trabalho_espiritual_repository.dart';
+
 import '../../../../core/constants/grupo_trabalho_espiritual_constants.dart';
+import '../../data/repositories/grupo_trabalho_espiritual_repository.dart';
+import '../../domain/entities/grupo_trabalho_espiritual_membro.dart';
 
 /// Controller para gerenciar grupos de trabalhos espirituais
 class GrupoTrabalhoEspiritualController extends GetxController {
   final GrupoTrabalhoEspiritualRepository repository;
 
+  final RxList<GrupoTrabalhoEspiritualMembro> membros = <GrupoTrabalhoEspiritualMembro>[].obs;
+
+  final RxBool isLoading = false.obs;
   GrupoTrabalhoEspiritualController(this.repository);
 
-  final RxList<GrupoTrabalhoEspiritualMembro> membros = <GrupoTrabalhoEspiritualMembro>[].obs;
-  final RxBool isLoading = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    carregarTodos();
+  Future<GrupoTrabalhoEspiritualMembro?> buscarPorCadastro(String numeroCadastro) async {
+    return await repository.getPorCadastro(numeroCadastro);
   }
 
   Future<void> carregarTodos() async {
@@ -25,10 +24,6 @@ class GrupoTrabalhoEspiritualController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  Future<GrupoTrabalhoEspiritualMembro?> buscarPorCadastro(String numeroCadastro) async {
-    return await repository.getPorCadastro(numeroCadastro);
   }
 
   List<GrupoTrabalhoEspiritualMembro> filtrar({
@@ -53,12 +48,31 @@ class GrupoTrabalhoEspiritualController extends GetxController {
     return resultado;
   }
 
-  /// Valida se o grupo pertence à atividade selecionada
-  bool validarGrupoAtividade(String atividadeEspiritual, String grupoTrabalho) {
-    return GrupoTrabalhoEspiritualConstants.validarGrupoAtividade(
-      atividadeEspiritual,
-      grupoTrabalho,
-    );
+  @override
+  void onInit() {
+    super.onInit();
+    carregarTodos();
+  }
+
+  Future<void> remover(String numeroCadastro) async {
+    try {
+      isLoading.value = true;
+      await repository.remover(numeroCadastro);
+      await carregarTodos();
+      Get.snackbar(
+        'Sucesso',
+        'Membro removido do grupo de trabalho espiritual com sucesso!',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Erro ao remover membro: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> salvar(GrupoTrabalhoEspiritualMembro membro) async {
@@ -95,24 +109,11 @@ class GrupoTrabalhoEspiritualController extends GetxController {
     }
   }
 
-  Future<void> remover(String numeroCadastro) async {
-    try {
-      isLoading.value = true;
-      await repository.remover(numeroCadastro);
-      await carregarTodos();
-      Get.snackbar(
-        'Sucesso',
-        'Membro removido do grupo de trabalho espiritual com sucesso!',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Erro',
-        'Erro ao remover membro: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } finally {
-      isLoading.value = false;
-    }
+  /// Valida se o grupo pertence à atividade selecionada
+  bool validarGrupoAtividade(String atividadeEspiritual, String grupoTrabalho) {
+    return GrupoTrabalhoEspiritualConstants.validarGrupoAtividade(
+      atividadeEspiritual,
+      grupoTrabalho,
+    );
   }
 }

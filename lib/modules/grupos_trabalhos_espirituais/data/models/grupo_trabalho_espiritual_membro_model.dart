@@ -12,6 +12,18 @@ class GrupoTrabalhoEspiritualMembroModel extends GrupoTrabalhoEspiritualMembro {
     super.dataUltimaAlteracao,
   });
 
+  factory GrupoTrabalhoEspiritualMembroModel.fromEntity(GrupoTrabalhoEspiritualMembro entity) {
+    return GrupoTrabalhoEspiritualMembroModel(
+      numeroCadastro: entity.numeroCadastro,
+      nome: entity.nome,
+      status: entity.status,
+      atividadeEspiritual: entity.atividadeEspiritual,
+      grupoTrabalho: entity.grupoTrabalho,
+      funcao: entity.funcao,
+      dataUltimaAlteracao: entity.dataUltimaAlteracao,
+    );
+  }
+
   factory GrupoTrabalhoEspiritualMembroModel.fromJson(Map<String, dynamic> json) {
     return GrupoTrabalhoEspiritualMembroModel(
       numeroCadastro: json['numeroCadastro'] as String,
@@ -36,17 +48,5 @@ class GrupoTrabalhoEspiritualMembroModel extends GrupoTrabalhoEspiritualMembro {
       'funcao': funcao,
       'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
     };
-  }
-
-  factory GrupoTrabalhoEspiritualMembroModel.fromEntity(GrupoTrabalhoEspiritualMembro entity) {
-    return GrupoTrabalhoEspiritualMembroModel(
-      numeroCadastro: entity.numeroCadastro,
-      nome: entity.nome,
-      status: entity.status,
-      atividadeEspiritual: entity.atividadeEspiritual,
-      grupoTrabalho: entity.grupoTrabalho,
-      funcao: entity.funcao,
-      dataUltimaAlteracao: entity.dataUltimaAlteracao,
-    );
   }
 }
