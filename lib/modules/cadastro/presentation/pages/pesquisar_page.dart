@@ -323,6 +323,8 @@ class _PesquisarPageState extends State<PesquisarPage> {
                   return Card(
                     child: ListTile(
                       leading: CircleAvatar(
+                        backgroundColor: Colors.teal,
+                        foregroundColor: Colors.white,
                         child: Text(usuario.nome[0].toUpperCase()),
                       ),
                       title: Text(usuario.nome),

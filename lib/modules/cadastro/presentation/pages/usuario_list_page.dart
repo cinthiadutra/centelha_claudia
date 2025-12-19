@@ -61,6 +61,8 @@ class UsuarioListPage extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
                     leading: CircleAvatar(
+                      backgroundColor: Colors.teal,
+                      foregroundColor: Colors.white,
                       child: Text(usuario.nome[0].toUpperCase()),
                     ),
                     title: Text(usuario.nome),

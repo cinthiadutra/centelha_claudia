@@ -1,0 +1,238 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/services/supabase_service.dart';
+import '../../../../core/error/exceptions.dart';
+import 'usuario_datasource.dart';
+import '../models/usuario_model.dart';
+
+/// Datasource para operações de usuários conectado ao Supabase
+class UsuarioSupabaseDatasource implements UsuarioDatasource {
+  final SupabaseService _supabaseService;
+
+  UsuarioSupabaseDatasource(this._supabaseService);
+
+  @override
+  Future<List<UsuarioModel>> getUsuarios() async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .order('nome', ascending: true);
+
+      return (response as List)
+          .map((json) => UsuarioModel.fromJson(json))
+          .toList();
+    } on PostgrestException catch (error) {
+      throw Exception('Erro ao buscar usuários: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao buscar usuários: $error');
+    }
+  }
+
+  @override
+  Future<UsuarioModel> getUsuarioById(String id) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .eq('id', id)
+          .single();
+
+      return UsuarioModel.fromJson(response);
+    } on PostgrestException catch (error) {
+      if (error.code == 'PGRST116') {
+        throw Exception('Usuário não encontrado');
+      }
+      throw Exception('Erro ao buscar usuário: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao buscar usuário: $error');
+    }
+  }
+
+  @override
+  Future<UsuarioModel> createUsuario(UsuarioModel usuario) async {
+    try {
+      final data = usuario.toJson();
+      
+      // Remove campos auto-gerados
+      data.remove('id');
+      data.remove('created_at');
+      data.remove('updated_at');
+
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .insert(data)
+          .select()
+          .single();
+
+      return UsuarioModel.fromJson(response);
+    } on PostgrestException catch (error) {
+      if (error.code == '23505') {
+        throw Exception('CPF ou email já cadastrado');
+      }
+      throw Exception('Erro ao criar usuário: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao criar usuário: $error');
+    }
+  }
+
+  @override
+  Future<UsuarioModel> updateUsuario(UsuarioModel usuario) async {
+    try {
+      if (usuario.id == null) {
+        throw Exception('ID é obrigatório para atualização');
+      }
+
+      final data = usuario.toJson();
+      
+      // Remove campos que não devem ser atualizados
+      data.remove('created_at');
+
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .update(data)
+          .eq('id', usuario.id!)
+          .select()
+          .single();
+
+      return UsuarioModel.fromJson(response);
+    } on PostgrestException catch (error) {
+      if (error.code == '23505') {
+        throw Exception('CPF ou email já cadastrado');
+      }
+      throw Exception('Erro ao atualizar usuário: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao atualizar usuário: $error');
+    }
+  }
+
+  @override
+  Future<void> deleteUsuario(String id) async {
+    try {
+      await _supabaseService.client
+          .from('usuarios')
+          .delete()
+          .eq('id', id);
+    } on PostgrestException catch (error) {
+      throw Exception('Erro ao deletar usuário: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao deletar usuário: $error');
+    }
+  }
+
+  // Métodos adicionais úteis (não fazem parte da interface base)
+  
+  /// Buscar usuário por CPF
+  Future<UsuarioModel?> getUsuarioByCpf(String cpf) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .eq('cpf', cpf)
+          .maybeSingle();
+
+      if (response == null) return null;
+      return UsuarioModel.fromJson(response);
+    } on PostgrestException catch (error) {
+      throw ServerException('Erro ao buscar usuário por CPF: ${error.message}');
+    } catch (error) {
+      throw ServerException('Erro inesperado: $error');
+    }
+  }
+
+  /// Buscar usuários por nome (busca parcial)
+  Future<List<UsuarioModel>> searchUsuariosByNome(String nome) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .ilike('nome', '%$nome%')
+          .order('nome', ascending: true);
+
+      return (response as List)
+          .map((json) => UsuarioModel.fromJson(json))
+          .toList();
+    } on PostgrestException catch (error) {
+      throw ServerException('Erro ao buscar usuários: ${error.message}');
+    } catch (error) {
+      throw ServerException('Erro inesperado: $error');
+    }
+  }
+
+  /// Buscar usuário por número de cadastro
+  Future<UsuarioModel> getUsuarioByNumeroCadastro(String numeroCadastro) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .eq('numero_cadastro', numeroCadastro)
+          .single();
+
+      return UsuarioModel.fromJson(response);
+    } on PostgrestException catch (error) {
+      if (error.code == 'PGRST116') {
+        throw Exception('Usuário não encontrado');
+      }
+      throw Exception('Erro ao buscar usuário: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado ao buscar usuário: $error');
+    }
+  }
+
+  /// Buscar usuários por status
+  Future<List<UsuarioModel>> getUsuariosByStatus(String status) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .eq('status_atual', status)
+          .order('nome', ascending: true);
+
+      return (response as List)
+          .map((json) => UsuarioModel.fromJson(json))
+          .toList();
+    } on PostgrestException catch (error) {
+      throw Exception('Erro ao buscar usuários por status: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado: $error');
+    }
+  }
+
+  /// Buscar usuários por núcleo
+  Future<List<UsuarioModel>> getUsuariosByNucleo(String nucleo) async {
+    try {
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select()
+          .eq('nucleo_pertence', nucleo)
+          .order('nome', ascending: true);
+
+      return (response as List)
+          .map((json) => UsuarioModel.fromJson(json))
+          .toList();
+    } on PostgrestException catch (error) {
+      throw Exception('Erro ao buscar usuários por núcleo: ${error.message}');
+    } catch (error) {
+      throw Exception('Erro inesperado: $error');
+    }
+  }
+
+  /// Contar total de usuários (com filtros opcionais)
+  Future<int> countUsuarios({
+    String? status,
+    String? classificacao,
+  }) async {
+    try {
+      // Usar count direto na query
+      final response = await _supabaseService.client
+          .from('usuarios')
+          .select('id')
+          .count(CountOption.exact);
+
+      return response.count;
+    } on PostgrestException catch (error) {
+      throw ServerException('Erro ao contar usuários: ${error.message}');
+    } catch (error) {
+      throw ServerException('Erro inesperado: $error');
+    }
+  }
+}

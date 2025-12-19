@@ -2,10 +2,12 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../modules/auth/data/datasources/auth_datasource.dart';
+import '../../modules/auth/data/datasources/auth_supabase_datasource.dart';
 import '../../modules/auth/data/repositories/auth_repository_impl.dart';
 import '../../modules/auth/domain/repositories/auth_repository.dart';
 import '../../modules/auth/presentation/bloc/auth_bloc.dart';
 import '../../modules/cadastro/data/datasources/usuario_datasource.dart';
+import '../../modules/cadastro/data/datasources/usuario_supabase_datasource.dart';
 import '../../modules/cadastro/data/repositories/usuario_repository_impl.dart';
 import '../../modules/cadastro/domain/repositories/usuario_repository.dart';
 import '../../modules/cadastro/presentation/bloc/usuario_bloc.dart';
@@ -36,8 +38,10 @@ Future<void> init() async {
     () => AuthRepositoryImpl(datasource: sl()),
   );
 
-  // Datasource
-  sl.registerLazySingleton<AuthDatasource>(() => AuthDatasourceMock());
+  // Datasource - SUPABASE (substituiu Mock)
+  sl.registerLazySingleton<AuthDatasource>(
+    () => AuthSupabaseDatasource(sl()),
+  );
 
   // ============ CADASTRO ============
 
@@ -49,8 +53,10 @@ Future<void> init() async {
     () => UsuarioRepositoryImpl(datasource: sl()),
   );
 
-  // Datasource
-  sl.registerLazySingleton<UsuarioDatasource>(() => UsuarioDatasourceMock());
+  // Datasource - SUPABASE (substituiu Mock)
+  sl.registerLazySingleton<UsuarioDatasource>(
+    () => UsuarioSupabaseDatasource(sl()),
+  );
 
   // ============ MEMBROS ============
 

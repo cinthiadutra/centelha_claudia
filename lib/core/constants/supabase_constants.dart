@@ -13,5 +13,5 @@ class SupabaseConstants {
   // 3. Esta chave é segura para uso no cliente (frontend)
   // 4. NUNCA use a "Secret key" no código do cliente!
   
-  private SupabaseConstants();
+  const SupabaseConstants();
 }
