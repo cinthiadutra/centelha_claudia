@@ -38,22 +38,22 @@ class Casamento extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastroNoivo,
-        nomeNoivo,
-        numeroCadastroNoiva,
-        nomeNoiva,
-        dataCasamento,
-        localCasamento,
-        sacerdoteNome,
-        sacerdoteCadastro,
-        testemunha1Nome,
-        testemunha1Cadastro,
-        testemunha2Nome,
-        testemunha2Cadastro,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastroNoivo,
+    nomeNoivo,
+    numeroCadastroNoiva,
+    nomeNoiva,
+    dataCasamento,
+    localCasamento,
+    sacerdoteNome,
+    sacerdoteCadastro,
+    testemunha1Nome,
+    testemunha1Cadastro,
+    testemunha2Nome,
+    testemunha2Cadastro,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   Casamento copyWith({
     String? id,

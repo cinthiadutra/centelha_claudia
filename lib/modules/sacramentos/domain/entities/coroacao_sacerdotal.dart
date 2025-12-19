@@ -30,18 +30,18 @@ class CoroacaoSacerdotal extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        nomeMembro,
-        dataCoroacao,
-        localCoroacao,
-        sacerdoteOrdenadorNome,
-        sacerdoteOrdenadorCadastro,
-        cargo,
-        orixaConsagrado,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastro,
+    nomeMembro,
+    dataCoroacao,
+    localCoroacao,
+    sacerdoteOrdenadorNome,
+    sacerdoteOrdenadorCadastro,
+    cargo,
+    orixaConsagrado,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   CoroacaoSacerdotal copyWith({
     String? id,
@@ -62,8 +62,10 @@ class CoroacaoSacerdotal extends Equatable {
       nomeMembro: nomeMembro ?? this.nomeMembro,
       dataCoroacao: dataCoroacao ?? this.dataCoroacao,
       localCoroacao: localCoroacao ?? this.localCoroacao,
-      sacerdoteOrdenadorNome: sacerdoteOrdenadorNome ?? this.sacerdoteOrdenadorNome,
-      sacerdoteOrdenadorCadastro: sacerdoteOrdenadorCadastro ?? this.sacerdoteOrdenadorCadastro,
+      sacerdoteOrdenadorNome:
+          sacerdoteOrdenadorNome ?? this.sacerdoteOrdenadorNome,
+      sacerdoteOrdenadorCadastro:
+          sacerdoteOrdenadorCadastro ?? this.sacerdoteOrdenadorCadastro,
       cargo: cargo ?? this.cargo,
       orixaConsagrado: orixaConsagrado ?? this.orixaConsagrado,
       dataUltimaAlteracao: dataUltimaAlteracao ?? this.dataUltimaAlteracao,

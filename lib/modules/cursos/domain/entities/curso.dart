@@ -38,26 +38,30 @@ class Curso extends Equatable {
     this.observacoes,
   });
 
+  int get duracaoDias => dataFim.difference(dataInicio).inDays + 1;
+
+  bool get lotado => vagasOcupadas >= vagasDisponiveis;
+
   @override
   List<Object?> get props => [
-        id,
-        titulo,
-        descricao,
-        instrutor,
-        instrutorCadastro,
-        dataInicio,
-        dataFim,
-        local,
-        cargaHoraria,
-        vagasDisponiveis,
-        vagasOcupadas,
-        ativo,
-        materiaisNecessarios,
-        prerequisitos,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
-
+    id,
+    titulo,
+    descricao,
+    instrutor,
+    instrutorCadastro,
+    dataInicio,
+    dataFim,
+    local,
+    cargaHoraria,
+    vagasDisponiveis,
+    vagasOcupadas,
+    ativo,
+    materiaisNecessarios,
+    prerequisitos,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
+  int get vagasRestantes => vagasDisponiveis - vagasOcupadas;
   Curso copyWith({
     String? id,
     String? titulo,
@@ -95,8 +99,4 @@ class Curso extends Equatable {
       observacoes: observacoes ?? this.observacoes,
     );
   }
-
-  int get vagasRestantes => vagasDisponiveis - vagasOcupadas;
-  bool get lotado => vagasOcupadas >= vagasDisponiveis;
-  int get duracaoDias => dataFim.difference(dataInicio).inDays + 1;
 }

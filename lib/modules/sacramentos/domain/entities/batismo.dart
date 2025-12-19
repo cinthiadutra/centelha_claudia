@@ -15,7 +15,8 @@ class Batismo extends Equatable {
   final String? madrinhaCadastro;
   final bool rebatismo; // Se for segundo batismo
   final String? motivoRebatismo; // Obrigatório se rebatismo = true
-  final DateTime? dataPrimeiroBatismo; // Data do primeiro batismo se for rebatismo
+  final DateTime?
+  dataPrimeiroBatismo; // Data do primeiro batismo se for rebatismo
   final DateTime? dataUltimaAlteracao;
   final String? observacoes;
 
@@ -40,23 +41,23 @@ class Batismo extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        nomeMembro,
-        dataBatismo,
-        localBatismo,
-        sacerdoteNome,
-        sacerdoteCadastro,
-        padrinhoNome,
-        padrinhoCadastro,
-        madrinhaNome,
-        madrinhaCadastro,
-        rebatismo,
-        motivoRebatismo,
-        dataPrimeiroBatismo,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastro,
+    nomeMembro,
+    dataBatismo,
+    localBatismo,
+    sacerdoteNome,
+    sacerdoteCadastro,
+    padrinhoNome,
+    padrinhoCadastro,
+    madrinhaNome,
+    madrinhaCadastro,
+    rebatismo,
+    motivoRebatismo,
+    dataPrimeiroBatismo,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   Batismo copyWith({
     String? id,

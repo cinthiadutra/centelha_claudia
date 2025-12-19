@@ -31,21 +31,23 @@ class Camarinha extends Equatable {
     this.observacoes,
   });
 
+  int get diasDuracao => dataFim.difference(dataInicio).inDays;
+
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        nomeMembro,
-        dataInicio,
-        dataFim,
-        localCamarinha,
-        sacerdoteNome,
-        sacerdoteCadastro,
-        tipoObrigacao,
-        orixaHomenageado,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastro,
+    nomeMembro,
+    dataInicio,
+    dataFim,
+    localCamarinha,
+    sacerdoteNome,
+    sacerdoteCadastro,
+    tipoObrigacao,
+    orixaHomenageado,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   Camarinha copyWith({
     String? id,
@@ -76,6 +78,4 @@ class Camarinha extends Equatable {
       observacoes: observacoes ?? this.observacoes,
     );
   }
-
-  int get diasDuracao => dataFim.difference(dataInicio).inDays;
 }

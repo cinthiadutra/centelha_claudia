@@ -32,22 +32,28 @@ class InscricaoCurso extends Equatable {
     this.observacoes,
   });
 
+  bool get aprovado {
+    if (frequencia != null && frequencia! < 75) return false;
+    if (notaFinal != null && notaFinal! < 7.0) return false;
+    return statusInscricao == 'Concluída';
+  }
+
   @override
   List<Object?> get props => [
-        id,
-        cursoId,
-        cursoTitulo,
-        numeroCadastro,
-        nomeMembro,
-        dataInscricao,
-        statusInscricao,
-        frequencia,
-        notaFinal,
-        certificadoEmitido,
-        dataConclusao,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    cursoId,
+    cursoTitulo,
+    numeroCadastro,
+    nomeMembro,
+    dataInscricao,
+    statusInscricao,
+    frequencia,
+    notaFinal,
+    certificadoEmitido,
+    dataConclusao,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   InscricaoCurso copyWith({
     String? id,
@@ -79,11 +85,5 @@ class InscricaoCurso extends Equatable {
       dataUltimaAlteracao: dataUltimaAlteracao ?? this.dataUltimaAlteracao,
       observacoes: observacoes ?? this.observacoes,
     );
-  }
-
-  bool get aprovado {
-    if (frequencia != null && frequencia! < 75) return false;
-    if (notaFinal != null && notaFinal! < 7.0) return false;
-    return statusInscricao == 'Concluída';
   }
 }

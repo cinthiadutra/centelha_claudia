@@ -34,20 +34,20 @@ class JogoOrixa extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        nomeMembro,
-        dataJogo,
-        localJogo,
-        sacerdoteNome,
-        sacerdoteCadastro,
-        orixaPrincipal,
-        orixaJunto,
-        qualidadeOrixa,
-        caminhoOrixa,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastro,
+    nomeMembro,
+    dataJogo,
+    localJogo,
+    sacerdoteNome,
+    sacerdoteCadastro,
+    orixaPrincipal,
+    orixaJunto,
+    qualidadeOrixa,
+    caminhoOrixa,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   JogoOrixa copyWith({
     String? id,
