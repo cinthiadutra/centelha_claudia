@@ -35,16 +35,16 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```sql
 -- 1. Usuário no cadastro
 INSERT INTO usuarios (
-  numero_cadastro, nome, cpf, email, 
+  numero_cadastro, nome, cpf, email,
   status_atual, classificacao
 ) VALUES (
-  '00001', 'Admin Sistema', '00000000000', 
+  '00001', 'Admin Sistema', '00000000000',
   'admin@centelha.org', 'Ativo', 'Sacerdote'
 );
 
 -- 2. Usuário do sistema (login)
 INSERT INTO usuarios_sistema (
-  numero_cadastro, nome, email, 
+  numero_cadastro, nome, email,
   senha_hash, nivel_permissao, ativo
 ) VALUES (
   '00001', 'Admin Sistema', 'admin@centelha.org',
@@ -97,7 +97,7 @@ import '../../modules/cadastro/data/datasources/usuario_supabase_datasource.dart
 
 Future<void> init() async {
   // ============ CORE SERVICES ============
-  
+
   // Supabase Service
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
 
@@ -114,7 +114,7 @@ Future<void> init() async {
   sl.registerLazySingleton<UsuarioDatasource>(
     () => UsuarioSupabaseDatasource(sl()),
   );
-  
+
   // ... resto do código
 }
 ```
@@ -381,10 +381,12 @@ Future<void> deletarUsuario(String numeroCadastro) async {
 ### 5.1 Tipos de Erros
 
 **PostgrestException** - Erros do banco de dados:
+
 - `23505`: Violação de constraint único (CPF/email duplicado)
 - `PGRST116`: Registro não encontrado
 
 **AuthException** - Erros de autenticação:
+
 - `400`: Credenciais inválidas
 - Email já registrado
 

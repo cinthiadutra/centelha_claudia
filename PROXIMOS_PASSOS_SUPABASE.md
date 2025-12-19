@@ -3,20 +3,24 @@
 ## ✅ Concluído
 
 1. **Dependências instaladas**
+
    - `supabase_flutter: ^2.8.0` adicionado ao `pubspec.yaml`
    - Todas as dependências atualizadas
 
 2. **Serviços configurados**
+
    - `SupabaseService` criado em `lib/core/services/supabase_service.dart`
    - `SupabaseConstants` configurado com URL e chave pública
    - Inicialização no `main.dart`
 
 3. **Datasources implementados**
+
    - `AuthSupabaseDatasource` - Autenticação com Supabase Auth
    - `UsuarioSupabaseDatasource` - CRUD de usuários
    - Todos os datasources registrados no `injection_container.dart`
 
 4. **Arquivos SQL criados**
+
    - `supabase_schema.sql` - Schema completo com 15 tabelas
    - `supabase_rls_policies.sql` - Políticas de segurança RLS
    - `supabase_rls_simple.sql` - Versão simplificada para desenvolvimento
@@ -109,12 +113,14 @@ flutter run
 ```
 
 **Credenciais**:
+
 - Email: `admin@centelha.org`
 - Senha: `admin123`
 
 ### 5. Verificar Logs
 
 Se houver erro, verifique:
+
 1. Console do app Flutter
 2. Logs do Supabase (Dashboard > Logs)
 3. Network tab do DevTools
@@ -139,6 +145,7 @@ O sistema usa 4 níveis de acesso:
 ### Segurança RLS
 
 Todas as tabelas têm Row Level Security (RLS) ativado:
+
 - Usuários só veem dados conforme seu nível de permissão
 - As políticas usam `auth.uid()` e `public.get_user_nivel_permissao()`
 
@@ -152,18 +159,22 @@ Todas as tabelas têm Row Level Security (RLS) ativado:
 ## 🔧 Troubleshooting
 
 ### Erro: "Invalid API key"
+
 - Verifique a chave em `supabase_constants.dart`
 - Confirme que está usando a chave `anon` correta
 
 ### Erro: "Permission denied"
+
 - Execute `supabase_rls_policies.sql`
 - Verifique se o usuário tem `nivel_permissao` na tabela `usuarios_sistema`
 
 ### Erro: "Table doesn't exist"
+
 - Execute `supabase_schema.sql` no SQL Editor
 - Verifique se todas as tabelas foram criadas
 
 ### App não conecta
+
 - Verifique internet
 - Teste o Supabase URL no navegador
 - Veja os logs do Supabase Dashboard

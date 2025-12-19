@@ -130,16 +130,18 @@ O app já está configurado para conectar ao Supabase!
 ## 🔧 Comandos Úteis do SQL
 
 ### Ver todas as tabelas criadas
+
 ```sql
-SELECT table_name 
-FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
 ORDER BY table_name;
 ```
 
 ### Ver estrutura de uma tabela
+
 ```sql
-SELECT 
+SELECT
   column_name,
   data_type,
   is_nullable
@@ -149,8 +151,9 @@ ORDER BY ordinal_position;
 ```
 
 ### Verificar políticas RLS
+
 ```sql
-SELECT 
+SELECT
   schemaname,
   tablename,
   policyname,
@@ -162,8 +165,9 @@ WHERE schemaname = 'public';
 ```
 
 ### Contar registros em todas as tabelas
+
 ```sql
-SELECT 
+SELECT
   schemaname,
   relname as table_name,
   n_live_tup as row_count
@@ -177,22 +181,29 @@ ORDER BY n_live_tup DESC;
 ## 🚨 Solução de Problemas
 
 ### Erro: "relation already exists"
+
 **Solução**: A tabela já foi criada. Você pode:
+
 1. Dropar a tabela: `DROP TABLE nome_tabela CASCADE;`
 2. Ou pular este erro e continuar
 
 ### Erro: "permission denied"
+
 **Solução**: Certifique-se de estar logado como proprietário do projeto
 
 ### Erro: "function does not exist"
+
 **Solução**: Execute antes:
+
 ```sql
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```
 
 ### Política RLS não funciona
+
 **Solução**: Verifique se o RLS está habilitado:
+
 ```sql
 ALTER TABLE nome_tabela ENABLE ROW LEVEL SECURITY;
 ```
@@ -201,12 +212,12 @@ ALTER TABLE nome_tabela ENABLE ROW LEVEL SECURITY;
 
 ## 📊 Estrutura de Permissões
 
-| Nível | Descrição | Permissões |
-|-------|-----------|------------|
-| **1** | Membro Regular | Ver próprios dados, cursos públicos, fazer inscrições |
-| **2** | Secretaria | CRUD usuários, consultas, grupos |
-| **3** | Líder Espiritual | Nível 2 + sacramentos, criar cursos |
-| **4** | Administrador | Acesso total, gerenciar sistema |
+| Nível | Descrição        | Permissões                                            |
+| ----- | ---------------- | ----------------------------------------------------- |
+| **1** | Membro Regular   | Ver próprios dados, cursos públicos, fazer inscrições |
+| **2** | Secretaria       | CRUD usuários, consultas, grupos                      |
+| **3** | Líder Espiritual | Nível 2 + sacramentos, criar cursos                   |
+| **4** | Administrador    | Acesso total, gerenciar sistema                       |
 
 ---
 
@@ -225,6 +236,7 @@ Após criar as tabelas:
 ## 📞 Suporte
 
 Se encontrar problemas:
+
 1. Verifique os logs no Supabase Dashboard
 2. Teste as queries individualmente
 3. Consulte a documentação: https://supabase.com/docs
