@@ -464,10 +464,10 @@ class _AppDrawer extends StatelessWidget {
   void _navigateToRoute(BuildContext context, String route) {
     // Rotas implementadas para cadastro
     final routeMap = {
-      '/cadastro/cadastrar': '/cadastrar',
-      '/cadastro/pesquisar': '/pesquisar',
-      '/cadastro/editar': '/editar',
-      '/cadastro/excluir': '/excluir',
+      '/cadastros/cadastrar': '/cadastrar',
+      '/cadastros/pesquisar': '/pesquisar',
+      '/cadastros/editar': '/editar',
+      '/cadastros/excluir': '/excluir',
       '/membros/incluir': '/membros/incluir',
       '/membros/pesquisar': '/membros/pesquisar',
       '/membros/editar': '/membros/editar',
