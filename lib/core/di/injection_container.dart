@@ -16,10 +16,16 @@ import '../../modules/consultas/presentation/controllers/consulta_controller.dar
 import '../../modules/membros/data/datasources/membro_datasource.dart';
 import '../../modules/membros/data/repositories/membro_repository.dart';
 import '../../modules/membros/presentation/controllers/membro_controller.dart';
+import '../services/supabase_service.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // ============ CORE SERVICES ============
+  
+  // Supabase Service
+  sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
+
   // ============ AUTH ============
 
   // Bloc

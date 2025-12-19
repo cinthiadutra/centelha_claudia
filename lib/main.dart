@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'core/di/auth_bloc_binding.dart';
 import 'core/di/injection_container.dart' as di;
+import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 import 'modules/auth/presentation/bloc/auth_bloc.dart';
 import 'modules/auth/presentation/bloc/auth_event.dart';
@@ -24,6 +25,10 @@ import 'modules/membros/presentation/pages/relatorios_membro_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar Supabase
+  await SupabaseService.initialize();
+  
   await di.init();
   AuthBlocBinding.init();
   runApp(const MyApp());
