@@ -13,6 +13,7 @@ import 'modules/auth/presentation/pages/login_page.dart';
 import 'modules/cadastro/presentation/pages/cadastrar_page.dart';
 import 'modules/cadastro/presentation/pages/editar_page.dart';
 import 'modules/cadastro/presentation/pages/excluir_page.dart';
+import 'modules/cadastro/presentation/pages/importar_excel_page.dart';
 import 'modules/cadastro/presentation/pages/pesquisar_page.dart';
 import 'modules/consultas/presentation/pages/ler_consulta_page.dart';
 import 'modules/consultas/presentation/pages/nova_consulta_page.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
           GetPage(name: '/pesquisar', page: () => const PesquisarPage()),
           GetPage(name: '/editar', page: () => const EditarPage()),
           GetPage(name: '/excluir', page: () => const ExcluirPage()),
+          GetPage(name: '/importar-excel', page: () => const ImportarExcelPage()),
           GetPage(
             name: '/membros/incluir',
             page: () => const IncluirMembroPage(),

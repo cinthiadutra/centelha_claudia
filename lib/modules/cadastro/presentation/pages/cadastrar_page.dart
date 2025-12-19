@@ -252,6 +252,15 @@ class _CadastrarPageState extends State<CadastrarPage> {
       appBar: AppBar(
         title: const Text('Novo Cadastro'),
         backgroundColor: Colors.blue,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.upload_file),
+            tooltip: 'Importar do Excel',
+            onPressed: () {
+              Get.toNamed('/importar-excel');
+            },
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
