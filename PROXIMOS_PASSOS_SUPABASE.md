@@ -88,15 +88,13 @@ RETURNING id;
 INSERT INTO public.usuarios_sistema (
   id,
   nome,
-  login,
   email,
   numero_cadastro,
   nivel_permissao,
   ativo
 ) VALUES (
-  '<COLE_O_ID_AQUI>',
+  'f2c35d5d-e5fc-451c-90b7-dda335a4c74e',
   'Administrador',
-  'admin',
   'admin@centelha.org',
   '000001',
   4,
