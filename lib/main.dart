@@ -26,10 +26,10 @@ import 'modules/membros/presentation/pages/relatorios_membro_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Inicializar Supabase
   await SupabaseService.initialize();
-  
+
   await di.init();
   AuthBlocBinding.init();
   runApp(const MyApp());
@@ -60,7 +60,10 @@ class MyApp extends StatelessWidget {
           GetPage(name: '/pesquisar', page: () => const PesquisarPage()),
           GetPage(name: '/editar', page: () => const EditarPage()),
           GetPage(name: '/excluir', page: () => const ExcluirPage()),
-          GetPage(name: '/importar-excel', page: () => const ImportarExcelPage()),
+          GetPage(
+            name: '/importar-excel',
+            page: () => const ImportarExcelPage(),
+          ),
           GetPage(
             name: '/membros/incluir',
             page: () => const IncluirMembroPage(),
