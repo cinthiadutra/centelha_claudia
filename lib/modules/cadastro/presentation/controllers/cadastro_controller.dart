@@ -18,7 +18,10 @@ class CadastroController extends GetxController {
   // Usuario em edição
   final Rx<Usuario?> usuarioEmEdicao = Rx<Usuario?>(null);
 
-  CadastroController(this._datasource);
+  CadastroController(this._datasource) {
+    // Carregar usuários na inicialização
+    carregarUsuarios();
+  }
 
   /// Busca usuários com nome similar (para alertar duplicação)
   List<Usuario> buscarNomesSimilares(String nome) {

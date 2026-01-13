@@ -16,6 +16,7 @@ import '../../modules/consultas/data/datasources/consulta_datasource.dart';
 import '../../modules/consultas/data/repositories/consulta_repository.dart';
 import '../../modules/consultas/presentation/controllers/consulta_controller.dart';
 import '../../modules/membros/data/datasources/membro_datasource.dart';
+import '../../modules/membros/data/datasources/membro_supabase_datasource.dart';
 import '../../modules/membros/data/repositories/membro_repository.dart';
 import '../../modules/membros/presentation/controllers/membro_controller.dart';
 import '../services/supabase_service.dart';
@@ -24,7 +25,7 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // ============ CORE SERVICES ============
-  
+
   // Supabase Service
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService.instance);
 
@@ -39,9 +40,7 @@ Future<void> init() async {
   );
 
   // Datasource - SUPABASE (substituiu Mock)
-  sl.registerLazySingleton<AuthDatasource>(
-    () => AuthSupabaseDatasource(sl()),
-  );
+  sl.registerLazySingleton<AuthDatasource>(() => AuthSupabaseDatasource(sl()));
 
   // ============ CADASTRO ============
 
@@ -63,8 +62,10 @@ Future<void> init() async {
   // Repository
   sl.registerLazySingleton<MembroRepository>(() => MembroRepositoryImpl(sl()));
 
-  // Datasource
-  sl.registerLazySingleton<MembroDatasource>(() => MembroDatasourceImpl());
+  // Datasource - SUPABASE (substituiu Mock)
+  sl.registerLazySingleton<MembroDatasource>(
+    () => MembroSupabaseDatasource(sl()),
+  );
 
   // ============ CONSULTAS ============
 
