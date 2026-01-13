@@ -22,160 +22,6 @@ class _ImportarPessoasAntigasPageState
   final List<String> _mensagensErro = [];
   bool _concluido = false;
 
-  Future<void> _importarPessoas() async {
-    if (!mounted) return;
-    
-    setState(() {
-      _isImporting = true;
-      _importados = 0;
-      _erros = 0;
-      _mensagensErro.clear();
-      _concluido = false;
-    });
-
-    try {
-      // Carregar JSON do assets ou root
-      final String jsonString = await rootBundle.loadString('pessoas_supabase.json');
-      final List<dynamic> pessoas = json.decode(jsonString);
-
-      if (!mounted) return;
-      
-      setState(() {
-        _totalRegistros = pessoas.length;
-      });
-
-      final supabase = SupabaseService.instance.client;
-
-      // Processar em lotes de 50
-      const batchSize = 50;
-      for (var i = 0; i < pessoas.length; i += batchSize) {
-        final end = (i + batchSize < pessoas.length) ? i + batchSize : pessoas.length;
-        final batch = pessoas.sublist(i, end);
-
-        for (var pessoa in batch) {
-          // Verificar se ainda está montado antes de processar
-          if (!mounted) return;
-          
-          try {
-            // Extrair dados - os campos estão trocados no JSON original
-            final String? cpfOriginal = pessoa['documentos']?['cpf'];
-            final String nomeReal = pessoa['documentos']?['rg'] ?? 'Nome não informado';
-            
-            // Tentar extrair data de nascimento
-            DateTime? dataNascimento;
-            try {
-              if (pessoa['nascimento'] != null) {
-                dataNascimento = DateTime.parse(pessoa['nascimento']);
-              }
-            } catch (e) {
-              // Ignorar erro de data
-            }
-
-            // CPF está no campo cpf mas parece ser um ID
-            String? cpf;
-            if (cpfOriginal != null && cpfOriginal.length >= 11) {
-              cpf = cpfOriginal;
-            }
-
-            // Extrair outros dados (que também estão em campos trocados)
-            final telefone = pessoa['contato']?['telefone'];
-            final celular = pessoa['endereco']?['logradouro'];
-            final email = pessoa['contato']?['email'];
-
-            // Endereço
-            final logradouro = pessoa['religioso']?['nucleo'];
-            final cep = pessoa['religioso']?['padrinho'];
-            final cidade = pessoa['religioso']?['madrinha'];
-            final bairro = pessoa['endereco']?['bairro'];
-
-            // Montar objeto para inserir
-            final Map<String, dynamic> cadastroData = {
-              'nome': nomeReal,
-              'nascimento': dataNascimento?.toIso8601String(),
-              'documentos': {
-                'cpf': cpf,
-                'rg': null,
-              },
-              'contato': {
-                'telefone': telefone,
-                'celular': celular,
-                'email': email,
-              },
-              'endereco': {
-                'logradouro': logradouro,
-                'bairro': bairro,
-                'cidade': cidade,
-                'uf': 'RJ',
-                'cep': cep,
-              },
-              'religioso': {
-                'nucleo': null,
-                'data_batismo': null,
-                'padrinho': null,
-                'madrinha': null,
-              },
-              'data_cadastro': DateTime.now().toIso8601String(),
-            };
-
-            // Inserir no Supabase
-            await supabase.from('cadastros').insert(cadastroData);
-
-            if (!mounted) return;
-            
-            setState(() {
-              _importados++;
-            });
-          } catch (e) {
-            if (!mounted) return;
-            
-            setState(() {
-              _erros++;
-              if (_mensagensErro.length < 20) {
-                _mensagensErro.add('Erro no registro ${i + batch.indexOf(pessoa)}: $e');
-              }
-            });
-          }
-        }
-
-        // Dar um tempo entre lotes para não sobrecarregar
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
-
-      if (!mounted) return;
-      
-      setState(() {
-        _concluido = true;
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '✅ Importação concluída! $_importados registros importados, $_erros erros.',
-            ),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 5),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ Erro ao importar: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isImporting = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -371,13 +217,15 @@ class _ImportarPessoasAntigasPageState
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ..._mensagensErro.map((erro) => Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  '• $erro',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              )),
+                          ..._mensagensErro.map(
+                            (erro) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '• $erro',
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -389,5 +237,163 @@ class _ImportarPessoasAntigasPageState
         ),
       ),
     );
+  }
+
+  Future<void> _importarPessoas() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isImporting = true;
+      _importados = 0;
+      _erros = 0;
+      _mensagensErro.clear();
+      _concluido = false;
+    });
+
+    try {
+      // Carregar JSON do assets ou root
+      final String jsonString = await rootBundle.loadString(
+        'pessoas_supabase.json',
+      );
+      final List<dynamic> pessoas = json.decode(jsonString);
+
+      if (!mounted) return;
+
+      setState(() {
+        _totalRegistros = pessoas.length;
+      });
+
+      final supabase = SupabaseService.instance.client;
+
+      // Processar em lotes de 50
+      const batchSize = 50;
+      for (var i = 0; i < pessoas.length; i += batchSize) {
+        final end = (i + batchSize < pessoas.length)
+            ? i + batchSize
+            : pessoas.length;
+        final batch = pessoas.sublist(i, end);
+
+        for (var pessoa in batch) {
+          // Verificar se ainda está montado antes de processar
+          if (!mounted) return;
+
+          try {
+            // Extrair dados - os campos estão trocados no JSON original
+            final String? cpfOriginal = pessoa['documentos']?['cpf'];
+            final String nomeReal =
+                pessoa['documentos']?['rg'] ?? 'Nome não informado';
+
+            // Tentar extrair data de nascimento
+            DateTime? dataNascimento;
+            try {
+              if (pessoa['nascimento'] != null) {
+                dataNascimento = DateTime.parse(pessoa['nascimento']);
+              }
+            } catch (e) {
+              // Ignorar erro de data
+            }
+
+            // CPF está no campo cpf mas parece ser um ID
+            String? cpf;
+            if (cpfOriginal != null && cpfOriginal.length >= 11) {
+              cpf = cpfOriginal;
+            }
+
+            // Extrair outros dados (que também estão em campos trocados)
+            final telefone = pessoa['contato']?['telefone'];
+            final celular = pessoa['endereco']?['logradouro'];
+            final email = pessoa['contato']?['email'];
+
+            // Endereço
+            final logradouro = pessoa['religioso']?['nucleo'];
+            final cep = pessoa['religioso']?['padrinho'];
+            final cidade = pessoa['religioso']?['madrinha'];
+            final bairro = pessoa['endereco']?['bairro'];
+
+            // Montar objeto para inserir
+            final Map<String, dynamic> cadastroData = {
+              'nome': nomeReal,
+              'nascimento': dataNascimento?.toIso8601String(),
+              'documentos': {'cpf': cpf, 'rg': null},
+              'contato': {
+                'telefone': telefone,
+                'celular': celular,
+                'email': email,
+              },
+              'endereco': {
+                'logradouro': logradouro,
+                'bairro': bairro,
+                'cidade': cidade,
+                'uf': 'RJ',
+                'cep': cep,
+              },
+              'religioso': {
+                'nucleo': null,
+                'data_batismo': null,
+                'padrinho': null,
+                'madrinha': null,
+              },
+              'data_cadastro': DateTime.now().toIso8601String(),
+            };
+
+            // Inserir no Supabase
+            await supabase.from('cadastros').insert(cadastroData);
+
+            if (!mounted) return;
+
+            setState(() {
+              _importados++;
+            });
+          } catch (e) {
+            if (!mounted) return;
+
+            setState(() {
+              _erros++;
+              if (_mensagensErro.length < 20) {
+                _mensagensErro.add(
+                  'Erro no registro ${i + batch.indexOf(pessoa)}: $e',
+                );
+              }
+            });
+          }
+        }
+
+        // Dar um tempo entre lotes para não sobrecarregar
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _concluido = true;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '✅ Importação concluída! $_importados registros importados, $_erros erros.',
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Erro ao importar: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isImporting = false;
+        });
+      }
+    }
   }
 }
