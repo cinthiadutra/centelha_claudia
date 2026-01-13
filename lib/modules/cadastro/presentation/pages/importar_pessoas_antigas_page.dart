@@ -19,6 +19,7 @@ class _ImportarPessoasAntigasPageState
   int _totalRegistros = 0;
   int _importados = 0;
   int _erros = 0;
+  int _duplicados = 0;
   final List<String> _mensagensErro = [];
   bool _concluido = false;
 
@@ -116,16 +117,20 @@ class _ImportarPessoasAntigasPageState
                           const SizedBox(height: 16),
                           if (_totalRegistros > 0)
                             LinearProgressIndicator(
-                              value: (_importados + _erros) / _totalRegistros,
+                              value:
+                                  (_importados + _erros + _duplicados) /
+                                  _totalRegistros,
                             ),
                           const SizedBox(height: 12),
                           Text(
-                            'Progresso: ${_importados + _erros} / $_totalRegistros',
+                            'Progresso: ${_importados + _erros + _duplicados} / $_totalRegistros',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            spacing: 16,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
                             children: [
                               Text(
                                 '✅ $_importados importados',
@@ -134,7 +139,14 @@ class _ImportarPessoasAntigasPageState
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 24),
+                              if (_duplicados > 0)
+                                Text(
+                                  '⚠️ $_duplicados já existentes',
+                                  style: const TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               Text(
                                 '❌ $_erros erros',
                                 style: const TextStyle(
@@ -182,6 +194,17 @@ class _ImportarPessoasAntigasPageState
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          if (_duplicados > 0) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              '⚠️ $_duplicados registros já existentes (pulados)',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                           if (_erros > 0) ...[
                             const SizedBox(height: 8),
                             Text(
@@ -246,6 +269,7 @@ class _ImportarPessoasAntigasPageState
       _isImporting = true;
       _importados = 0;
       _erros = 0;
+      _duplicados = 0;
       _mensagensErro.clear();
       _concluido = false;
     });
@@ -310,6 +334,22 @@ class _ImportarPessoasAntigasPageState
             final cidade = pessoa['religioso']?['madrinha'];
             final bairro = pessoa['endereco']?['bairro'];
 
+            // Verificar se já existe registro com mesmo nome
+            final existente = await supabase
+                .from('cadastros')
+                .select('id')
+                .eq('nome', nomeReal)
+                .maybeSingle();
+
+            if (existente != null) {
+              // Já existe, pular
+              if (!mounted) return;
+              setState(() {
+                _duplicados++;
+              });
+              continue;
+            }
+
             // Montar objeto para inserir
             final Map<String, dynamic> cadastroData = {
               'nome': nomeReal,
@@ -372,7 +412,7 @@ class _ImportarPessoasAntigasPageState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '✅ Importação concluída! $_importados registros importados, $_erros erros.',
+              '✅ Importação concluída! $_importados novos, $_duplicados já existentes, $_erros erros.',
             ),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 5),

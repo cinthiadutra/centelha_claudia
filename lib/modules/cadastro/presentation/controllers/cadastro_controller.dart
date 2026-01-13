@@ -1,83 +1,35 @@
 import 'package:get/get.dart';
-import '../../domain/entities/usuario.dart';
-import '../../data/models/usuario_model.dart';
+
+import '../../../../core/utils/string_utils.dart';
 import '../../data/datasources/usuario_datasource.dart';
+import '../../data/models/usuario_model.dart';
+import '../../domain/entities/usuario.dart';
 
 /// Controller GetX para operações de cadastro
 class CadastroController extends GetxController {
   final UsuarioDatasource _datasource;
 
-  CadastroController(this._datasource);
-
   // Observables
   final usuarios = <Usuario>[].obs;
+
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final searchResults = <Usuario>[].obs;
-
   // Usuario em edição
   final Rx<Usuario?> usuarioEmEdicao = Rx<Usuario?>(null);
 
-  @override
-  void onInit() {
-    super.onInit();
-    carregarUsuarios();
-  }
-
-  /// Carrega todos os usuários
-  Future<void> carregarUsuarios() async {
-    try {
-      isLoading.value = true;
-      errorMessage.value = '';
-      final data = await _datasource.getUsuarios();
-      usuarios.value = data;
-    } catch (e) {
-      errorMessage.value = 'Erro ao carregar usuários: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  /// Gera próximo número de cadastro (5 dígitos)
-  String gerarNumeroCadastro() {
-    if (usuarios.isEmpty) {
-      return '00001';
-    }
-
-    // Encontra o maior número existente
-    final numeros = usuarios
-        .where((u) => u.numeroCadastro != null)
-        .map((u) => int.tryParse(u.numeroCadastro!) ?? 0)
-        .toList();
-
-    if (numeros.isEmpty) {
-      return '00001';
-    }
-
-    final maiorNumero = numeros.reduce((a, b) => a > b ? a : b);
-    final proximoNumero = maiorNumero + 1;
-
-    return proximoNumero.toString().padLeft(5, '0');
-  }
-
-  /// Verifica se CPF já existe
-  Future<bool> cpfJaExiste(String cpf, {String? ignorarId}) async {
-    final cpfLimpo = cpf.replaceAll(RegExp(r'[^\d]'), '');
-    
-    return usuarios.any((u) => 
-      u.cpf == cpfLimpo && u.id != ignorarId
-    );
-  }
+  CadastroController(this._datasource);
 
   /// Busca usuários com nome similar (para alertar duplicação)
   List<Usuario> buscarNomesSimilares(String nome) {
     if (nome.isEmpty) return [];
 
-    final nomeLimpo = nome.toLowerCase().trim();
-    
+    final nomeNormalizado = normalizarParaBusca(nome);
+
     return usuarios.where((u) {
-      final nomeUsuario = u.nome.toLowerCase();
-      return nomeUsuario.contains(nomeLimpo) || nomeLimpo.contains(nomeUsuario);
+      final nomeUsuarioNormalizado = normalizarParaBusca(u.nome);
+      return nomeUsuarioNormalizado.contains(nomeNormalizado) ||
+          nomeNormalizado.contains(nomeUsuarioNormalizado);
     }).toList();
   }
 
@@ -140,12 +92,14 @@ class CadastroController extends GetxController {
         madrinhaBatismo: usuarioFinal.madrinhaBatismo,
         dataPrimeiroCasamento: usuarioFinal.dataPrimeiroCasamento,
         nomePrimeiroConjuge: usuarioFinal.nomePrimeiroConjuge,
-        mediumCelebrantePrimeiroCasamento: usuarioFinal.mediumCelebrantePrimeiroCasamento,
+        mediumCelebrantePrimeiroCasamento:
+            usuarioFinal.mediumCelebrantePrimeiroCasamento,
         padrinhoPrimeiroCasamento: usuarioFinal.padrinhoPrimeiroCasamento,
         madrinhaPrimeiroCasamento: usuarioFinal.madrinhaPrimeiroCasamento,
         dataSegundoCasamento: usuarioFinal.dataSegundoCasamento,
         nomeSegundoConjuge: usuarioFinal.nomeSegundoConjuge,
-        mediumCelebranteSegundoCasamento: usuarioFinal.mediumCelebranteSegundoCasamento,
+        mediumCelebranteSegundoCasamento:
+            usuarioFinal.mediumCelebranteSegundoCasamento,
         padrinhoSegundoCasamento: usuarioFinal.padrinhoSegundoCasamento,
         madrinhaSegundoCasamento: usuarioFinal.madrinhaSegundoCasamento,
         primeiroContatoEmergencia: usuarioFinal.primeiroContatoEmergencia,
@@ -154,22 +108,26 @@ class CadastroController extends GetxController {
         desistenciaPrimeiroEstagio: usuarioFinal.desistenciaPrimeiroEstagio,
         primeiroRitoPassagem: usuarioFinal.primeiroRitoPassagem,
         dataPrimeiroDesligamento: usuarioFinal.dataPrimeiroDesligamento,
-        justificativaPrimeiroDesligamento: usuarioFinal.justificativaPrimeiroDesligamento,
+        justificativaPrimeiroDesligamento:
+            usuarioFinal.justificativaPrimeiroDesligamento,
         inicioSegundoEstagio: usuarioFinal.inicioSegundoEstagio,
         desistenciaSegundoEstagio: usuarioFinal.desistenciaSegundoEstagio,
         segundoRitoPassagem: usuarioFinal.segundoRitoPassagem,
         dataSegundoDesligamento: usuarioFinal.dataSegundoDesligamento,
-        justificativaSegundoDesligamento: usuarioFinal.justificativaSegundoDesligamento,
+        justificativaSegundoDesligamento:
+            usuarioFinal.justificativaSegundoDesligamento,
         inicioTerceiroEstagio: usuarioFinal.inicioTerceiroEstagio,
         desistenciaTerceiroEstagio: usuarioFinal.desistenciaTerceiroEstagio,
         terceiroRitoPassagem: usuarioFinal.terceiroRitoPassagem,
         dataTerceiroDesligamento: usuarioFinal.dataTerceiroDesligamento,
-        justificativaTerceiroDesligamento: usuarioFinal.justificativaTerceiroDesligamento,
+        justificativaTerceiroDesligamento:
+            usuarioFinal.justificativaTerceiroDesligamento,
         inicioQuartoEstagio: usuarioFinal.inicioQuartoEstagio,
         desistenciaQuartoEstagio: usuarioFinal.desistenciaQuartoEstagio,
         quartoRitoPassagem: usuarioFinal.quartoRitoPassagem,
         dataQuartoDesligamento: usuarioFinal.dataQuartoDesligamento,
-        justificativaQuartoDesligamento: usuarioFinal.justificativaQuartoDesligamento,
+        justificativaQuartoDesligamento:
+            usuarioFinal.justificativaQuartoDesligamento,
         dataJogoOrixa: usuarioFinal.dataJogoOrixa,
         primeiroOrixa: usuarioFinal.primeiroOrixa,
         adjuntoPrimeiroOrixa: usuarioFinal.adjuntoPrimeiroOrixa,
@@ -204,39 +162,6 @@ class CadastroController extends GetxController {
     }
   }
 
-  /// Pesquisa usuários
-  void pesquisar({String? numero, String? cpf, String? nome}) {
-    searchResults.clear();
-
-    if (numero != null && numero.isNotEmpty) {
-      // Busca exata por número
-      final resultado = usuarios.where((u) => u.numeroCadastro == numero).toList();
-      searchResults.value = resultado;
-      return;
-    }
-
-    if (cpf != null && cpf.isNotEmpty) {
-      // Busca exata por CPF
-      final cpfLimpo = cpf.replaceAll(RegExp(r'[^\d]'), '');
-      final resultado = usuarios.where((u) => u.cpf == cpfLimpo).toList();
-      searchResults.value = resultado;
-      return;
-    }
-
-    if (nome != null && nome.isNotEmpty) {
-      // Busca parcial por nome
-      final nomeLimpo = nome.toLowerCase();
-      final resultado = usuarios
-          .where((u) => u.nome.toLowerCase().contains(nomeLimpo))
-          .toList();
-      searchResults.value = resultado;
-      return;
-    }
-
-    // Se não há critério, retorna todos
-    searchResults.value = usuarios;
-  }
-
   /// Carrega usuário para edição
   Future<void> carregarParaEdicao(String id) async {
     try {
@@ -249,6 +174,27 @@ class CadastroController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// Carrega todos os usuários
+  Future<void> carregarUsuarios() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      final data = await _datasource.getUsuarios();
+      usuarios.value = data;
+    } catch (e) {
+      errorMessage.value = 'Erro ao carregar usuários: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Verifica se CPF já existe
+  Future<bool> cpfJaExiste(String cpf, {String? ignorarId}) async {
+    final cpfLimpo = cpf.replaceAll(RegExp(r'[^\d]'), '');
+
+    return usuarios.any((u) => u.cpf == cpfLimpo && u.id != ignorarId);
   }
 
   /// Atualiza cadastro existente
@@ -299,12 +245,14 @@ class CadastroController extends GetxController {
         madrinhaBatismo: usuario.madrinhaBatismo,
         dataPrimeiroCasamento: usuario.dataPrimeiroCasamento,
         nomePrimeiroConjuge: usuario.nomePrimeiroConjuge,
-        mediumCelebrantePrimeiroCasamento: usuario.mediumCelebrantePrimeiroCasamento,
+        mediumCelebrantePrimeiroCasamento:
+            usuario.mediumCelebrantePrimeiroCasamento,
         padrinhoPrimeiroCasamento: usuario.padrinhoPrimeiroCasamento,
         madrinhaPrimeiroCasamento: usuario.madrinhaPrimeiroCasamento,
         dataSegundoCasamento: usuario.dataSegundoCasamento,
         nomeSegundoConjuge: usuario.nomeSegundoConjuge,
-        mediumCelebranteSegundoCasamento: usuario.mediumCelebranteSegundoCasamento,
+        mediumCelebranteSegundoCasamento:
+            usuario.mediumCelebranteSegundoCasamento,
         padrinhoSegundoCasamento: usuario.padrinhoSegundoCasamento,
         madrinhaSegundoCasamento: usuario.madrinhaSegundoCasamento,
         primeiroContatoEmergencia: usuario.primeiroContatoEmergencia,
@@ -313,22 +261,26 @@ class CadastroController extends GetxController {
         desistenciaPrimeiroEstagio: usuario.desistenciaPrimeiroEstagio,
         primeiroRitoPassagem: usuario.primeiroRitoPassagem,
         dataPrimeiroDesligamento: usuario.dataPrimeiroDesligamento,
-        justificativaPrimeiroDesligamento: usuario.justificativaPrimeiroDesligamento,
+        justificativaPrimeiroDesligamento:
+            usuario.justificativaPrimeiroDesligamento,
         inicioSegundoEstagio: usuario.inicioSegundoEstagio,
         desistenciaSegundoEstagio: usuario.desistenciaSegundoEstagio,
         segundoRitoPassagem: usuario.segundoRitoPassagem,
         dataSegundoDesligamento: usuario.dataSegundoDesligamento,
-        justificativaSegundoDesligamento: usuario.justificativaSegundoDesligamento,
+        justificativaSegundoDesligamento:
+            usuario.justificativaSegundoDesligamento,
         inicioTerceiroEstagio: usuario.inicioTerceiroEstagio,
         desistenciaTerceiroEstagio: usuario.desistenciaTerceiroEstagio,
         terceiroRitoPassagem: usuario.terceiroRitoPassagem,
         dataTerceiroDesligamento: usuario.dataTerceiroDesligamento,
-        justificativaTerceiroDesligamento: usuario.justificativaTerceiroDesligamento,
+        justificativaTerceiroDesligamento:
+            usuario.justificativaTerceiroDesligamento,
         inicioQuartoEstagio: usuario.inicioQuartoEstagio,
         desistenciaQuartoEstagio: usuario.desistenciaQuartoEstagio,
         quartoRitoPassagem: usuario.quartoRitoPassagem,
         dataQuartoDesligamento: usuario.dataQuartoDesligamento,
-        justificativaQuartoDesligamento: usuario.justificativaQuartoDesligamento,
+        justificativaQuartoDesligamento:
+            usuario.justificativaQuartoDesligamento,
         dataJogoOrixa: usuario.dataJogoOrixa,
         primeiroOrixa: usuario.primeiroOrixa,
         adjuntoPrimeiroOrixa: usuario.adjuntoPrimeiroOrixa,
@@ -387,15 +339,78 @@ class CadastroController extends GetxController {
     }
   }
 
-  /// Limpa resultados de pesquisa
-  void limparPesquisa() {
-    searchResults.clear();
-    errorMessage.value = '';
+  /// Gera próximo número de cadastro (5 dígitos)
+  String gerarNumeroCadastro() {
+    if (usuarios.isEmpty) {
+      return '00001';
+    }
+
+    // Encontra o maior número existente
+    final numeros = usuarios
+        .where((u) => u.numeroCadastro != null)
+        .map((u) => int.tryParse(u.numeroCadastro!) ?? 0)
+        .toList();
+
+    if (numeros.isEmpty) {
+      return '00001';
+    }
+
+    final maiorNumero = numeros.reduce((a, b) => a > b ? a : b);
+    final proximoNumero = maiorNumero + 1;
+
+    return proximoNumero.toString().padLeft(5, '0');
   }
 
   /// Limpa usuário em edição
   void limparEdicao() {
     usuarioEmEdicao.value = null;
     errorMessage.value = '';
+  }
+
+  /// Limpa resultados de pesquisa
+  void limparPesquisa() {
+    searchResults.clear();
+    errorMessage.value = '';
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    carregarUsuarios();
+  }
+
+  /// Pesquisa usuários
+  void pesquisar({String? numero, String? cpf, String? nome}) {
+    searchResults.clear();
+
+    if (numero != null && numero.isNotEmpty) {
+      // Busca exata por número
+      final resultado = usuarios
+          .where((u) => u.numeroCadastro == numero)
+          .toList();
+      searchResults.value = resultado;
+      return;
+    }
+
+    if (cpf != null && cpf.isNotEmpty) {
+      // Busca exata por CPF
+      final cpfLimpo = cpf.replaceAll(RegExp(r'[^\d]'), '');
+      final resultado = usuarios.where((u) => u.cpf == cpfLimpo).toList();
+      searchResults.value = resultado;
+      return;
+    }
+
+    if (nome != null && nome.isNotEmpty) {
+      // Busca parcial por nome (sem acentos)
+      final nomeNormalizado = normalizarParaBusca(nome);
+      final resultado = usuarios
+          .where((u) => normalizarParaBusca(u.nome).contains(nomeNormalizado))
+          .toList();
+      searchResults.value = resultado;
+      return;
+    }
+
+    // Se não há critério, retorna todos
+    searchResults.value = usuarios;
   }
 }

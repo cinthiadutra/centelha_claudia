@@ -1,3 +1,4 @@
+import '../../../../core/utils/string_utils.dart';
 import '../../domain/entities/usuario.dart';
 
 /// Model de dados do Usuário
@@ -85,228 +86,6 @@ class UsuarioModel extends Usuario {
     super.cargoLideranca,
   });
 
-  factory UsuarioModel.fromJson(Map<String, dynamic> json) {
-    return UsuarioModel(
-      id: json['id'],
-      nome: json['nome'],
-      cpf: json['cpf'],
-      numeroCadastro: json['numeroCadastro'],
-      dataNascimento: json['dataNascimento'] != null 
-          ? DateTime.parse(json['dataNascimento']) 
-          : null,
-      telefoneFixo: json['telefoneFixo'],
-      telefoneCelular: json['telefoneCelular'],
-      email: json['email'],
-      nomeResponsavel: json['nomeResponsavel'],
-      telefoneResponsavel: json['telefoneResponsavel'],
-      emailResponsavel: json['emailResponsavel'],
-      endereco: json['endereco'],
-      bairro: json['bairro'],
-      cidade: json['cidade'],
-      estado: json['estado'],
-      cep: json['cep'],
-      sexo: json['sexo'],
-      estadoCivil: json['estadoCivil'],
-      tipoSanguineo: json['tipoSanguineo'],
-      apelido1: json['apelido1'],
-      apelido2: json['apelido2'],
-      nucleoCadastro: json['nucleoCadastro'],
-      dataCadastro: json['dataCadastro'] != null 
-          ? DateTime.parse(json['dataCadastro']) 
-          : null,
-      nucleoPertence: json['nucleoPertence'],
-      statusAtual: json['statusAtual'],
-      classificacao: json['classificacao'],
-      diaSessao: json['diaSessao'],
-      dataBatismo: json['dataBatismo'] != null 
-          ? DateTime.parse(json['dataBatismo']) 
-          : null,
-      mediumCelebranteBatismo: json['mediumCelebranteBatismo'],
-      guiaCelebranteBatismo: json['guiaCelebranteBatismo'],
-      padrinhoBatismo: json['padrinhoBatismo'],
-      madrinhaBatismo: json['madrinhaBatismo'],
-      dataPrimeiroCasamento: json['dataPrimeiroCasamento'] != null 
-          ? DateTime.parse(json['dataPrimeiroCasamento']) 
-          : null,
-      nomePrimeiroConjuge: json['nomePrimeiroConjuge'],
-      mediumCelebrantePrimeiroCasamento: json['mediumCelebrantePrimeiroCasamento'],
-      padrinhoPrimeiroCasamento: json['padrinhoPrimeiroCasamento'],
-      madrinhaPrimeiroCasamento: json['madrinhaPrimeiroCasamento'],
-      dataSegundoCasamento: json['dataSegundoCasamento'] != null 
-          ? DateTime.parse(json['dataSegundoCasamento']) 
-          : null,
-      nomeSegundoConjuge: json['nomeSegundoConjuge'],
-      mediumCelebranteSegundoCasamento: json['mediumCelebranteSegundoCasamento'],
-      padrinhoSegundoCasamento: json['padrinhoSegundoCasamento'],
-      madrinhaSegundoCasamento: json['madrinhaSegundoCasamento'],
-      primeiroContatoEmergencia: json['primeiroContatoEmergencia'],
-      segundoContatoEmergencia: json['segundoContatoEmergencia'],
-      inicioPrimeiroEstagio: json['inicioPrimeiroEstagio'] != null 
-          ? DateTime.parse(json['inicioPrimeiroEstagio']) 
-          : null,
-      desistenciaPrimeiroEstagio: json['desistenciaPrimeiroEstagio'] != null 
-          ? DateTime.parse(json['desistenciaPrimeiroEstagio']) 
-          : null,
-      primeiroRitoPassagem: json['primeiroRitoPassagem'] != null 
-          ? DateTime.parse(json['primeiroRitoPassagem']) 
-          : null,
-      dataPrimeiroDesligamento: json['dataPrimeiroDesligamento'] != null 
-          ? DateTime.parse(json['dataPrimeiroDesligamento']) 
-          : null,
-      justificativaPrimeiroDesligamento: json['justificativaPrimeiroDesligamento'],
-      inicioSegundoEstagio: json['inicioSegundoEstagio'] != null 
-          ? DateTime.parse(json['inicioSegundoEstagio']) 
-          : null,
-      desistenciaSegundoEstagio: json['desistenciaSegundoEstagio'] != null 
-          ? DateTime.parse(json['desistenciaSegundoEstagio']) 
-          : null,
-      segundoRitoPassagem: json['segundoRitoPassagem'] != null 
-          ? DateTime.parse(json['segundoRitoPassagem']) 
-          : null,
-      dataSegundoDesligamento: json['dataSegundoDesligamento'] != null 
-          ? DateTime.parse(json['dataSegundoDesligamento']) 
-          : null,
-      justificativaSegundoDesligamento: json['justificativaSegundoDesligamento'],
-      inicioTerceiroEstagio: json['inicioTerceiroEstagio'] != null 
-          ? DateTime.parse(json['inicioTerceiroEstagio']) 
-          : null,
-      desistenciaTerceiroEstagio: json['desistenciaTerceiroEstagio'] != null 
-          ? DateTime.parse(json['desistenciaTerceiroEstagio']) 
-          : null,
-      terceiroRitoPassagem: json['terceiroRitoPassagem'] != null 
-          ? DateTime.parse(json['terceiroRitoPassagem']) 
-          : null,
-      dataTerceiroDesligamento: json['dataTerceiroDesligamento'] != null 
-          ? DateTime.parse(json['dataTerceiroDesligamento']) 
-          : null,
-      justificativaTerceiroDesligamento: json['justificativaTerceiroDesligamento'],
-      inicioQuartoEstagio: json['inicioQuartoEstagio'] != null 
-          ? DateTime.parse(json['inicioQuartoEstagio']) 
-          : null,
-      desistenciaQuartoEstagio: json['desistenciaQuartoEstagio'] != null 
-          ? DateTime.parse(json['desistenciaQuartoEstagio']) 
-          : null,
-      quartoRitoPassagem: json['quartoRitoPassagem'] != null 
-          ? DateTime.parse(json['quartoRitoPassagem']) 
-          : null,
-      dataQuartoDesligamento: json['dataQuartoDesligamento'] != null 
-          ? DateTime.parse(json['dataQuartoDesligamento']) 
-          : null,
-      justificativaQuartoDesligamento: json['justificativaQuartoDesligamento'],
-      dataJogoOrixa: json['dataJogoOrixa'] != null 
-          ? DateTime.parse(json['dataJogoOrixa']) 
-          : null,
-      primeiroOrixa: json['primeiroOrixa'],
-      adjuntoPrimeiroOrixa: json['adjuntoPrimeiroOrixa'],
-      segundoOrixa: json['segundoOrixa'],
-      adjuntoSegundoOrixa: json['adjuntoSegundoOrixa'],
-      terceiroOrixa: json['terceiroOrixa'],
-      quartoOrixa: json['quartoOrixa'],
-      coroacaoSacerdote: json['coroacaoSacerdote'] != null 
-          ? DateTime.parse(json['coroacaoSacerdote']) 
-          : null,
-      primeiraCamarinha: json['primeiraCamarinha'] != null 
-          ? DateTime.parse(json['primeiraCamarinha']) 
-          : null,
-      segundaCamarinha: json['segundaCamarinha'] != null 
-          ? DateTime.parse(json['segundaCamarinha']) 
-          : null,
-      terceiraCamarinha: json['terceiraCamarinha'] != null 
-          ? DateTime.parse(json['terceiraCamarinha']) 
-          : null,
-      atividadeEspiritual: json['atividadeEspiritual'],
-      grupoAtividadeEspiritual: json['grupoAtividadeEspiritual'],
-      grupoTarefa: json['grupoTarefa'],
-      grupoAcaoSocial: json['grupoAcaoSocial'],
-      cargoLideranca: json['cargoLideranca'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nome': nome,
-      'cpf': cpf,
-      'numeroCadastro': numeroCadastro,
-      'dataNascimento': dataNascimento?.toIso8601String(),
-      'telefoneFixo': telefoneFixo,
-      'telefoneCelular': telefoneCelular,
-      'email': email,
-      'nomeResponsavel': nomeResponsavel,
-      'telefoneResponsavel': telefoneResponsavel,
-      'emailResponsavel': emailResponsavel,
-      'endereco': endereco,
-      'bairro': bairro,
-      'cidade': cidade,
-      'estado': estado,
-      'cep': cep,
-      'sexo': sexo,
-      'estadoCivil': estadoCivil,
-      'tipoSanguineo': tipoSanguineo,
-      'apelido1': apelido1,
-      'apelido2': apelido2,
-      'nucleoCadastro': nucleoCadastro,
-      'dataCadastro': dataCadastro?.toIso8601String(),
-      'nucleoPertence': nucleoPertence,
-      'statusAtual': statusAtual,
-      'classificacao': classificacao,
-      'diaSessao': diaSessao,
-      'dataBatismo': dataBatismo?.toIso8601String(),
-      'mediumCelebranteBatismo': mediumCelebranteBatismo,
-      'guiaCelebranteBatismo': guiaCelebranteBatismo,
-      'padrinhoBatismo': padrinhoBatismo,
-      'madrinhaBatismo': madrinhaBatismo,
-      'dataPrimeiroCasamento': dataPrimeiroCasamento?.toIso8601String(),
-      'nomePrimeiroConjuge': nomePrimeiroConjuge,
-      'mediumCelebrantePrimeiroCasamento': mediumCelebrantePrimeiroCasamento,
-      'padrinhoPrimeiroCasamento': padrinhoPrimeiroCasamento,
-      'madrinhaPrimeiroCasamento': madrinhaPrimeiroCasamento,
-      'dataSegundoCasamento': dataSegundoCasamento?.toIso8601String(),
-      'nomeSegundoConjuge': nomeSegundoConjuge,
-      'mediumCelebranteSegundoCasamento': mediumCelebranteSegundoCasamento,
-      'padrinhoSegundoCasamento': padrinhoSegundoCasamento,
-      'madrinhaSegundoCasamento': madrinhaSegundoCasamento,
-      'primeiroContatoEmergencia': primeiroContatoEmergencia,
-      'segundoContatoEmergencia': segundoContatoEmergencia,
-      'inicioPrimeiroEstagio': inicioPrimeiroEstagio?.toIso8601String(),
-      'desistenciaPrimeiroEstagio': desistenciaPrimeiroEstagio?.toIso8601String(),
-      'primeiroRitoPassagem': primeiroRitoPassagem?.toIso8601String(),
-      'dataPrimeiroDesligamento': dataPrimeiroDesligamento?.toIso8601String(),
-      'justificativaPrimeiroDesligamento': justificativaPrimeiroDesligamento,
-      'inicioSegundoEstagio': inicioSegundoEstagio?.toIso8601String(),
-      'desistenciaSegundoEstagio': desistenciaSegundoEstagio?.toIso8601String(),
-      'segundoRitoPassagem': segundoRitoPassagem?.toIso8601String(),
-      'dataSegundoDesligamento': dataSegundoDesligamento?.toIso8601String(),
-      'justificativaSegundoDesligamento': justificativaSegundoDesligamento,
-      'inicioTerceiroEstagio': inicioTerceiroEstagio?.toIso8601String(),
-      'desistenciaTerceiroEstagio': desistenciaTerceiroEstagio?.toIso8601String(),
-      'terceiroRitoPassagem': terceiroRitoPassagem?.toIso8601String(),
-      'dataTerceiroDesligamento': dataTerceiroDesligamento?.toIso8601String(),
-      'justificativaTerceiroDesligamento': justificativaTerceiroDesligamento,
-      'inicioQuartoEstagio': inicioQuartoEstagio?.toIso8601String(),
-      'desistenciaQuartoEstagio': desistenciaQuartoEstagio?.toIso8601String(),
-      'quartoRitoPassagem': quartoRitoPassagem?.toIso8601String(),
-      'dataQuartoDesligamento': dataQuartoDesligamento?.toIso8601String(),
-      'justificativaQuartoDesligamento': justificativaQuartoDesligamento,
-      'dataJogoOrixa': dataJogoOrixa?.toIso8601String(),
-      'primeiroOrixa': primeiroOrixa,
-      'adjuntoPrimeiroOrixa': adjuntoPrimeiroOrixa,
-      'segundoOrixa': segundoOrixa,
-      'adjuntoSegundoOrixa': adjuntoSegundoOrixa,
-      'terceiroOrixa': terceiroOrixa,
-      'quartoOrixa': quartoOrixa,
-      'coroacaoSacerdote': coroacaoSacerdote?.toIso8601String(),
-      'primeiraCamarinha': primeiraCamarinha?.toIso8601String(),
-      'segundaCamarinha': segundaCamarinha?.toIso8601String(),
-      'terceiraCamarinha': terceiraCamarinha?.toIso8601String(),
-      'atividadeEspiritual': atividadeEspiritual,
-      'grupoAtividadeEspiritual': grupoAtividadeEspiritual,
-      'grupoTarefa': grupoTarefa,
-      'grupoAcaoSocial': grupoAcaoSocial,
-      'cargoLideranca': cargoLideranca,
-    };
-  }
-
   factory UsuarioModel.fromEntity(Usuario usuario) {
     return UsuarioModel(
       id: usuario.id,
@@ -332,12 +111,14 @@ class UsuarioModel extends Usuario {
       madrinhaBatismo: usuario.madrinhaBatismo,
       dataPrimeiroCasamento: usuario.dataPrimeiroCasamento,
       nomePrimeiroConjuge: usuario.nomePrimeiroConjuge,
-      mediumCelebrantePrimeiroCasamento: usuario.mediumCelebrantePrimeiroCasamento,
+      mediumCelebrantePrimeiroCasamento:
+          usuario.mediumCelebrantePrimeiroCasamento,
       padrinhoPrimeiroCasamento: usuario.padrinhoPrimeiroCasamento,
       madrinhaPrimeiroCasamento: usuario.madrinhaPrimeiroCasamento,
       dataSegundoCasamento: usuario.dataSegundoCasamento,
       nomeSegundoConjuge: usuario.nomeSegundoConjuge,
-      mediumCelebranteSegundoCasamento: usuario.mediumCelebranteSegundoCasamento,
+      mediumCelebranteSegundoCasamento:
+          usuario.mediumCelebranteSegundoCasamento,
       padrinhoSegundoCasamento: usuario.padrinhoSegundoCasamento,
       madrinhaSegundoCasamento: usuario.madrinhaSegundoCasamento,
       primeiroContatoEmergencia: usuario.primeiroContatoEmergencia,
@@ -346,17 +127,20 @@ class UsuarioModel extends Usuario {
       desistenciaPrimeiroEstagio: usuario.desistenciaPrimeiroEstagio,
       primeiroRitoPassagem: usuario.primeiroRitoPassagem,
       dataPrimeiroDesligamento: usuario.dataPrimeiroDesligamento,
-      justificativaPrimeiroDesligamento: usuario.justificativaPrimeiroDesligamento,
+      justificativaPrimeiroDesligamento:
+          usuario.justificativaPrimeiroDesligamento,
       inicioSegundoEstagio: usuario.inicioSegundoEstagio,
       desistenciaSegundoEstagio: usuario.desistenciaSegundoEstagio,
       segundoRitoPassagem: usuario.segundoRitoPassagem,
       dataSegundoDesligamento: usuario.dataSegundoDesligamento,
-      justificativaSegundoDesligamento: usuario.justificativaSegundoDesligamento,
+      justificativaSegundoDesligamento:
+          usuario.justificativaSegundoDesligamento,
       inicioTerceiroEstagio: usuario.inicioTerceiroEstagio,
       desistenciaTerceiroEstagio: usuario.desistenciaTerceiroEstagio,
       terceiroRitoPassagem: usuario.terceiroRitoPassagem,
       dataTerceiroDesligamento: usuario.dataTerceiroDesligamento,
-      justificativaTerceiroDesligamento: usuario.justificativaTerceiroDesligamento,
+      justificativaTerceiroDesligamento:
+          usuario.justificativaTerceiroDesligamento,
       inicioQuartoEstagio: usuario.inicioQuartoEstagio,
       desistenciaQuartoEstagio: usuario.desistenciaQuartoEstagio,
       quartoRitoPassagem: usuario.quartoRitoPassagem,
@@ -379,5 +163,246 @@ class UsuarioModel extends Usuario {
       grupoAcaoSocial: usuario.grupoAcaoSocial,
       cargoLideranca: usuario.cargoLideranca,
     );
+  }
+
+  factory UsuarioModel.fromJson(Map<String, dynamic> json) {
+    return UsuarioModel(
+      id: json['id'],
+      nome: json['nome'],
+      cpf: json['cpf'],
+      numeroCadastro: json['numeroCadastro'],
+      dataNascimento: json['dataNascimento'] != null
+          ? DateTime.parse(json['dataNascimento'])
+          : null,
+      telefoneFixo: json['telefoneFixo'],
+      telefoneCelular: json['telefoneCelular'],
+      email: json['email'],
+      nomeResponsavel: json['nomeResponsavel'],
+      telefoneResponsavel: json['telefoneResponsavel'],
+      emailResponsavel: json['emailResponsavel'],
+      endereco: json['endereco'],
+      bairro: json['bairro'],
+      cidade: json['cidade'],
+      estado: json['estado'],
+      cep: json['cep'],
+      sexo: json['sexo'],
+      estadoCivil: json['estadoCivil'],
+      tipoSanguineo: json['tipoSanguineo'],
+      apelido1: json['apelido1'],
+      apelido2: json['apelido2'],
+      nucleoCadastro: json['nucleoCadastro'],
+      dataCadastro: json['dataCadastro'] != null
+          ? DateTime.parse(json['dataCadastro'])
+          : null,
+      nucleoPertence: json['nucleoPertence'],
+      statusAtual: json['statusAtual'],
+      classificacao: json['classificacao'],
+      diaSessao: json['diaSessao'],
+      dataBatismo: json['dataBatismo'] != null
+          ? DateTime.parse(json['dataBatismo'])
+          : null,
+      mediumCelebranteBatismo: json['mediumCelebranteBatismo'],
+      guiaCelebranteBatismo: json['guiaCelebranteBatismo'],
+      padrinhoBatismo: json['padrinhoBatismo'],
+      madrinhaBatismo: json['madrinhaBatismo'],
+      dataPrimeiroCasamento: json['dataPrimeiroCasamento'] != null
+          ? DateTime.parse(json['dataPrimeiroCasamento'])
+          : null,
+      nomePrimeiroConjuge: json['nomePrimeiroConjuge'],
+      mediumCelebrantePrimeiroCasamento:
+          json['mediumCelebrantePrimeiroCasamento'],
+      padrinhoPrimeiroCasamento: json['padrinhoPrimeiroCasamento'],
+      madrinhaPrimeiroCasamento: json['madrinhaPrimeiroCasamento'],
+      dataSegundoCasamento: json['dataSegundoCasamento'] != null
+          ? DateTime.parse(json['dataSegundoCasamento'])
+          : null,
+      nomeSegundoConjuge: json['nomeSegundoConjuge'],
+      mediumCelebranteSegundoCasamento:
+          json['mediumCelebranteSegundoCasamento'],
+      padrinhoSegundoCasamento: json['padrinhoSegundoCasamento'],
+      madrinhaSegundoCasamento: json['madrinhaSegundoCasamento'],
+      primeiroContatoEmergencia: json['primeiroContatoEmergencia'],
+      segundoContatoEmergencia: json['segundoContatoEmergencia'],
+      inicioPrimeiroEstagio: json['inicioPrimeiroEstagio'] != null
+          ? DateTime.parse(json['inicioPrimeiroEstagio'])
+          : null,
+      desistenciaPrimeiroEstagio: json['desistenciaPrimeiroEstagio'] != null
+          ? DateTime.parse(json['desistenciaPrimeiroEstagio'])
+          : null,
+      primeiroRitoPassagem: json['primeiroRitoPassagem'] != null
+          ? DateTime.parse(json['primeiroRitoPassagem'])
+          : null,
+      dataPrimeiroDesligamento: json['dataPrimeiroDesligamento'] != null
+          ? DateTime.parse(json['dataPrimeiroDesligamento'])
+          : null,
+      justificativaPrimeiroDesligamento:
+          json['justificativaPrimeiroDesligamento'],
+      inicioSegundoEstagio: json['inicioSegundoEstagio'] != null
+          ? DateTime.parse(json['inicioSegundoEstagio'])
+          : null,
+      desistenciaSegundoEstagio: json['desistenciaSegundoEstagio'] != null
+          ? DateTime.parse(json['desistenciaSegundoEstagio'])
+          : null,
+      segundoRitoPassagem: json['segundoRitoPassagem'] != null
+          ? DateTime.parse(json['segundoRitoPassagem'])
+          : null,
+      dataSegundoDesligamento: json['dataSegundoDesligamento'] != null
+          ? DateTime.parse(json['dataSegundoDesligamento'])
+          : null,
+      justificativaSegundoDesligamento:
+          json['justificativaSegundoDesligamento'],
+      inicioTerceiroEstagio: json['inicioTerceiroEstagio'] != null
+          ? DateTime.parse(json['inicioTerceiroEstagio'])
+          : null,
+      desistenciaTerceiroEstagio: json['desistenciaTerceiroEstagio'] != null
+          ? DateTime.parse(json['desistenciaTerceiroEstagio'])
+          : null,
+      terceiroRitoPassagem: json['terceiroRitoPassagem'] != null
+          ? DateTime.parse(json['terceiroRitoPassagem'])
+          : null,
+      dataTerceiroDesligamento: json['dataTerceiroDesligamento'] != null
+          ? DateTime.parse(json['dataTerceiroDesligamento'])
+          : null,
+      justificativaTerceiroDesligamento:
+          json['justificativaTerceiroDesligamento'],
+      inicioQuartoEstagio: json['inicioQuartoEstagio'] != null
+          ? DateTime.parse(json['inicioQuartoEstagio'])
+          : null,
+      desistenciaQuartoEstagio: json['desistenciaQuartoEstagio'] != null
+          ? DateTime.parse(json['desistenciaQuartoEstagio'])
+          : null,
+      quartoRitoPassagem: json['quartoRitoPassagem'] != null
+          ? DateTime.parse(json['quartoRitoPassagem'])
+          : null,
+      dataQuartoDesligamento: json['dataQuartoDesligamento'] != null
+          ? DateTime.parse(json['dataQuartoDesligamento'])
+          : null,
+      justificativaQuartoDesligamento: json['justificativaQuartoDesligamento'],
+      dataJogoOrixa: json['dataJogoOrixa'] != null
+          ? DateTime.parse(json['dataJogoOrixa'])
+          : null,
+      primeiroOrixa: json['primeiroOrixa'],
+      adjuntoPrimeiroOrixa: json['adjuntoPrimeiroOrixa'],
+      segundoOrixa: json['segundoOrixa'],
+      adjuntoSegundoOrixa: json['adjuntoSegundoOrixa'],
+      terceiroOrixa: json['terceiroOrixa'],
+      quartoOrixa: json['quartoOrixa'],
+      coroacaoSacerdote: json['coroacaoSacerdote'] != null
+          ? DateTime.parse(json['coroacaoSacerdote'])
+          : null,
+      primeiraCamarinha: json['primeiraCamarinha'] != null
+          ? DateTime.parse(json['primeiraCamarinha'])
+          : null,
+      segundaCamarinha: json['segundaCamarinha'] != null
+          ? DateTime.parse(json['segundaCamarinha'])
+          : null,
+      terceiraCamarinha: json['terceiraCamarinha'] != null
+          ? DateTime.parse(json['terceiraCamarinha'])
+          : null,
+      atividadeEspiritual: json['atividadeEspiritual'],
+      grupoAtividadeEspiritual: json['grupoAtividadeEspiritual'],
+      grupoTarefa: json['grupoTarefa'],
+      grupoAcaoSocial: json['grupoAcaoSocial'],
+      cargoLideranca: json['cargoLideranca'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nome': toUpperCaseOrNull(nome),
+      'cpf': cpf,
+      'numeroCadastro': numeroCadastro,
+      'dataNascimento': dataNascimento?.toIso8601String(),
+      'telefoneFixo': telefoneFixo,
+      'telefoneCelular': telefoneCelular,
+      'email': email?.toLowerCase(), // Email em lowercase
+      'nomeResponsavel': toUpperCaseOrNull(nomeResponsavel),
+      'telefoneResponsavel': telefoneResponsavel,
+      'emailResponsavel': emailResponsavel?.toLowerCase(), // Email em lowercase
+      'endereco': toUpperCaseOrNull(endereco),
+      'bairro': toUpperCaseOrNull(bairro),
+      'cidade': toUpperCaseOrNull(cidade),
+      'estado': toUpperCaseOrNull(estado),
+      'cep': cep,
+      'sexo': toUpperCaseOrNull(sexo),
+      'estadoCivil': toUpperCaseOrNull(estadoCivil),
+      'tipoSanguineo': toUpperCaseOrNull(tipoSanguineo),
+      'apelido1': toUpperCaseOrNull(apelido1),
+      'apelido2': toUpperCaseOrNull(apelido2),
+      'nucleoCadastro': toUpperCaseOrNull(nucleoCadastro),
+      'dataCadastro': dataCadastro?.toIso8601String(),
+      'nucleoPertence': toUpperCaseOrNull(nucleoPertence),
+      'statusAtual': toUpperCaseOrNull(statusAtual),
+      'classificacao': toUpperCaseOrNull(classificacao),
+      'diaSessao': toUpperCaseOrNull(diaSessao),
+      'dataBatismo': dataBatismo?.toIso8601String(),
+      'mediumCelebranteBatismo': toUpperCaseOrNull(mediumCelebranteBatismo),
+      'guiaCelebranteBatismo': toUpperCaseOrNull(guiaCelebranteBatismo),
+      'padrinhoBatismo': toUpperCaseOrNull(padrinhoBatismo),
+      'madrinhaBatismo': toUpperCaseOrNull(madrinhaBatismo),
+      'dataPrimeiroCasamento': dataPrimeiroCasamento?.toIso8601String(),
+      'nomePrimeiroConjuge': toUpperCaseOrNull(nomePrimeiroConjuge),
+      'mediumCelebrantePrimeiroCasamento': toUpperCaseOrNull(
+        mediumCelebrantePrimeiroCasamento,
+      ),
+      'padrinhoPrimeiroCasamento': toUpperCaseOrNull(padrinhoPrimeiroCasamento),
+      'madrinhaPrimeiroCasamento': toUpperCaseOrNull(madrinhaPrimeiroCasamento),
+      'dataSegundoCasamento': dataSegundoCasamento?.toIso8601String(),
+      'nomeSegundoConjuge': toUpperCaseOrNull(nomeSegundoConjuge),
+      'mediumCelebranteSegundoCasamento': toUpperCaseOrNull(
+        mediumCelebranteSegundoCasamento,
+      ),
+      'padrinhoSegundoCasamento': toUpperCaseOrNull(padrinhoSegundoCasamento),
+      'madrinhaSegundoCasamento': toUpperCaseOrNull(madrinhaSegundoCasamento),
+      'primeiroContatoEmergencia': toUpperCaseOrNull(primeiroContatoEmergencia),
+      'segundoContatoEmergencia': toUpperCaseOrNull(segundoContatoEmergencia),
+      'inicioPrimeiroEstagio': inicioPrimeiroEstagio?.toIso8601String(),
+      'desistenciaPrimeiroEstagio': desistenciaPrimeiroEstagio
+          ?.toIso8601String(),
+      'primeiroRitoPassagem': primeiroRitoPassagem?.toIso8601String(),
+      'dataPrimeiroDesligamento': dataPrimeiroDesligamento?.toIso8601String(),
+      'justificativaPrimeiroDesligamento': toUpperCaseOrNull(
+        justificativaPrimeiroDesligamento,
+      ),
+      'inicioSegundoEstagio': inicioSegundoEstagio?.toIso8601String(),
+      'desistenciaSegundoEstagio': desistenciaSegundoEstagio?.toIso8601String(),
+      'segundoRitoPassagem': segundoRitoPassagem?.toIso8601String(),
+      'dataSegundoDesligamento': dataSegundoDesligamento?.toIso8601String(),
+      'justificativaSegundoDesligamento': toUpperCaseOrNull(
+        justificativaSegundoDesligamento,
+      ),
+      'inicioTerceiroEstagio': inicioTerceiroEstagio?.toIso8601String(),
+      'desistenciaTerceiroEstagio': desistenciaTerceiroEstagio
+          ?.toIso8601String(),
+      'terceiroRitoPassagem': terceiroRitoPassagem?.toIso8601String(),
+      'dataTerceiroDesligamento': dataTerceiroDesligamento?.toIso8601String(),
+      'justificativaTerceiroDesligamento': toUpperCaseOrNull(
+        justificativaTerceiroDesligamento,
+      ),
+      'inicioQuartoEstagio': inicioQuartoEstagio?.toIso8601String(),
+      'desistenciaQuartoEstagio': desistenciaQuartoEstagio?.toIso8601String(),
+      'quartoRitoPassagem': quartoRitoPassagem?.toIso8601String(),
+      'dataQuartoDesligamento': dataQuartoDesligamento?.toIso8601String(),
+      'justificativaQuartoDesligamento': toUpperCaseOrNull(
+        justificativaQuartoDesligamento,
+      ),
+      'dataJogoOrixa': dataJogoOrixa?.toIso8601String(),
+      'primeiroOrixa': toUpperCaseOrNull(primeiroOrixa),
+      'adjuntoPrimeiroOrixa': toUpperCaseOrNull(adjuntoPrimeiroOrixa),
+      'segundoOrixa': toUpperCaseOrNull(segundoOrixa),
+      'adjuntoSegundoOrixa': toUpperCaseOrNull(adjuntoSegundoOrixa),
+      'terceiroOrixa': toUpperCaseOrNull(terceiroOrixa),
+      'quartoOrixa': toUpperCaseOrNull(quartoOrixa),
+      'coroacaoSacerdote': coroacaoSacerdote?.toIso8601String(),
+      'primeiraCamarinha': primeiraCamarinha?.toIso8601String(),
+      'segundaCamarinha': segundaCamarinha?.toIso8601String(),
+      'terceiraCamarinha': terceiraCamarinha?.toIso8601String(),
+      'atividadeEspiritual': toUpperCaseOrNull(atividadeEspiritual),
+      'grupoAtividadeEspiritual': toUpperCaseOrNull(grupoAtividadeEspiritual),
+      'grupoTarefa': toUpperCaseOrNull(grupoTarefa),
+      'grupoAcaoSocial': toUpperCaseOrNull(grupoAcaoSocial),
+      'cargoLideranca': toUpperCaseOrNull(cargoLideranca),
+    };
   }
 }

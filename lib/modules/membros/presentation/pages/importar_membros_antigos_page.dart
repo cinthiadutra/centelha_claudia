@@ -18,6 +18,7 @@ class _ImportarMembrosAntigosPageState
   int _totalRegistros = 0;
   int _importados = 0;
   int _erros = 0;
+  int _duplicados = 0;
   final List<String> _mensagensErro = [];
   bool _concluido = false;
 
@@ -116,16 +117,20 @@ class _ImportarMembrosAntigosPageState
                           const SizedBox(height: 16),
                           if (_totalRegistros > 0)
                             LinearProgressIndicator(
-                              value: (_importados + _erros) / _totalRegistros,
+                              value:
+                                  (_importados + _erros + _duplicados) /
+                                  _totalRegistros,
                             ),
                           const SizedBox(height: 12),
                           Text(
-                            'Progresso: ${_importados + _erros} / $_totalRegistros',
+                            'Progresso: ${_importados + _erros + _duplicados} / $_totalRegistros',
                             style: const TextStyle(fontSize: 16),
                           ),
                           const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            spacing: 16,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
                             children: [
                               Text(
                                 '✅ $_importados importados',
@@ -134,7 +139,14 @@ class _ImportarMembrosAntigosPageState
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 24),
+                              if (_duplicados > 0)
+                                Text(
+                                  '⚠️ $_duplicados já existentes',
+                                  style: const TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               Text(
                                 '❌ $_erros erros',
                                 style: const TextStyle(
@@ -182,6 +194,17 @@ class _ImportarMembrosAntigosPageState
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          if (_duplicados > 0) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              '⚠️ $_duplicados membros já existentes (pulados)',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                           if (_erros > 0) ...[
                             const SizedBox(height: 8),
                             Text(
@@ -246,6 +269,7 @@ class _ImportarMembrosAntigosPageState
       _isImporting = true;
       _importados = 0;
       _erros = 0;
+      _duplicados = 0;
       _mensagensErro.clear();
       _concluido = false;
     });
@@ -265,7 +289,7 @@ class _ImportarMembrosAntigosPageState
       if (!mounted) return;
 
       // Ignorar primeiras 3 linhas (metadados) e pegar cabeçalhos da linha 4
-      final headers = csvData[3];
+      // final headers = csvData[3]; // Não usado
       final registros = csvData.sublist(4);
 
       setState(() {
@@ -289,21 +313,31 @@ class _ImportarMembrosAntigosPageState
 
           try {
             // Extrair dados (índices baseados no CSV)
-            final mov = registro.length > 1 ? registro[1] : null;
+            final mov = registro.length > 1
+                ? _parseIntOrNull(registro[1]?.toString())
+                : null;
             final cadastro = registro.length > 2
-                ? registro[2]?.toString()
+                ? _stringOrNull(registro[2]?.toString())
                 : null;
             final nome = registro.length > 3
-                ? registro[3]?.toString()
+                ? (registro[3]?.toString().trim().isEmpty ?? true
+                      ? 'Nome não informado'
+                      : registro[3]?.toString())
                 : 'Nome não informado';
-            final nucleo = registro.length > 4 ? registro[4]?.toString() : null;
-            final status = registro.length > 5 ? registro[5]?.toString() : null;
-            final funcao = registro.length > 6 ? registro[6]?.toString() : null;
+            final nucleo = registro.length > 4
+                ? _stringOrNull(registro[4]?.toString())
+                : null;
+            final status = registro.length > 5
+                ? _stringOrNull(registro[5]?.toString())
+                : null;
+            final funcao = registro.length > 6
+                ? _stringOrNull(registro[6]?.toString())
+                : null;
             final classificacao = registro.length > 7
-                ? registro[7]?.toString()
+                ? _stringOrNull(registro[7]?.toString())
                 : null;
             final diaSessao = registro.length > 8
-                ? registro[8]?.toString()
+                ? _stringOrNull(registro[8]?.toString())
                 : null;
 
             // Datas de estágios
@@ -320,7 +354,7 @@ class _ImportarMembrosAntigosPageState
               registro.length > 12 ? registro[12]?.toString() : null,
             );
             final primeiroDesligamentoJust = registro.length > 13
-                ? registro[13]?.toString()
+                ? _stringOrNull(registro[13]?.toString())
                 : null;
             final segundoRito = _parseDate(
               registro.length > 14 ? registro[14]?.toString() : null,
@@ -329,7 +363,7 @@ class _ImportarMembrosAntigosPageState
               registro.length > 15 ? registro[15]?.toString() : null,
             );
             final segundoDesligamentoJust = registro.length > 16
-                ? registro[16]?.toString()
+                ? _stringOrNull(registro[16]?.toString())
                 : null;
             final terceiroRito = _parseDate(
               registro.length > 17 ? registro[17]?.toString() : null,
@@ -338,7 +372,7 @@ class _ImportarMembrosAntigosPageState
               registro.length > 18 ? registro[18]?.toString() : null,
             );
             final terceiroDesligamentoJust = registro.length > 19
-                ? registro[19]?.toString()
+                ? _stringOrNull(registro[19]?.toString())
                 : null;
 
             // Sacramentos
@@ -363,33 +397,50 @@ class _ImportarMembrosAntigosPageState
 
             // Atividades e Grupos
             final atividadeEspiritual = registro.length > 26
-                ? registro[26]?.toString()
+                ? _stringOrNull(registro[26]?.toString())
                 : null;
             final grupoTrabalho = registro.length > 27
-                ? registro[27]?.toString()
+                ? _stringOrNull(registro[27]?.toString())
                 : null;
 
             // Orixás
             final orixa1 = registro.length > 28
-                ? registro[28]?.toString()
+                ? _stringOrNull(registro[28]?.toString())
                 : null;
             final adjunto1 = registro.length > 29
-                ? registro[29]?.toString()
+                ? _stringOrNull(registro[29]?.toString())
                 : null;
             final orixa2 = registro.length > 30
-                ? registro[30]?.toString()
+                ? _stringOrNull(registro[30]?.toString())
                 : null;
             final adjunto2 = registro.length > 31
-                ? registro[31]?.toString()
+                ? _stringOrNull(registro[31]?.toString())
                 : null;
             final orixa34 = registro.length > 32
-                ? registro[32]?.toString()
+                ? _stringOrNull(registro[32]?.toString())
                 : null;
 
             // Observações
             final observacoes = registro.length > 33
-                ? registro[33]?.toString()
+                ? _stringOrNull(registro[33]?.toString())
                 : null;
+
+            // Verificar se já existe registro com mesmo nome e cadastro
+            final existente = await supabase
+                .from('membros_historico')
+                .select('id')
+                .eq('nome', nome ?? '')
+                .eq('cadastro', cadastro ?? '')
+                .maybeSingle();
+
+            if (existente != null) {
+              // Já existe, pular
+              if (!mounted) return;
+              setState(() {
+                _duplicados++;
+              });
+              continue;
+            }
 
             // Montar objeto para inserir
             final Map<String, dynamic> membroData = {
@@ -464,7 +515,7 @@ class _ImportarMembrosAntigosPageState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '✅ Importação concluída! $_importados registros importados, $_erros erros.',
+              '✅ Importação concluída! $_importados novos, $_duplicados já existentes, $_erros erros.',
             ),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 5),
@@ -512,5 +563,24 @@ class _ImportarMembrosAntigosPageState
     }
 
     return null;
+  }
+
+  // Função auxiliar para converter para int ou null
+  int? _parseIntOrNull(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    try {
+      return int.parse(trimmed);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Função auxiliar para converter strings vazias em null
+  String? _stringOrNull(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 }

@@ -1,13 +1,14 @@
+import '../../../../core/utils/string_utils.dart';
 import '../models/membro_model.dart';
 
 /// Datasource para operações com membros (mock)
 abstract class MembroDatasource {
-  List<MembroModel> getMembros();
-  MembroModel? getMembroPorNumero(String numero);
-  MembroModel? getMembroPorCpf(String cpf);
-  List<MembroModel> pesquisarPorNome(String nome);
   void adicionarMembro(MembroModel membro);
   void atualizarMembro(MembroModel membro);
+  MembroModel? getMembroPorCpf(String cpf);
+  MembroModel? getMembroPorNumero(String numero);
+  List<MembroModel> getMembros();
+  List<MembroModel> pesquisarPorNome(String nome);
   void removerMembro(String numero);
 }
 
@@ -93,14 +94,15 @@ class MembroDatasourceImpl implements MembroDatasource {
   ];
 
   @override
-  List<MembroModel> getMembros() => List.from(_membros);
+  void adicionarMembro(MembroModel membro) {
+    _membros.add(membro);
+  }
 
   @override
-  MembroModel? getMembroPorNumero(String numero) {
-    try {
-      return _membros.firstWhere((m) => m.numeroCadastro == numero);
-    } catch (e) {
-      return null;
+  void atualizarMembro(MembroModel membro) {
+    final index = _membros.indexWhere((m) => m.id == membro.id);
+    if (index != -1) {
+      _membros[index] = membro;
     }
   }
 
@@ -114,24 +116,23 @@ class MembroDatasourceImpl implements MembroDatasource {
   }
 
   @override
-  List<MembroModel> pesquisarPorNome(String nome) {
-    final nomeLower = nome.toLowerCase();
-    return _membros
-        .where((m) => m.nome.toLowerCase().contains(nomeLower))
-        .toList();
-  }
-
-  @override
-  void adicionarMembro(MembroModel membro) {
-    _membros.add(membro);
-  }
-
-  @override
-  void atualizarMembro(MembroModel membro) {
-    final index = _membros.indexWhere((m) => m.id == membro.id);
-    if (index != -1) {
-      _membros[index] = membro;
+  MembroModel? getMembroPorNumero(String numero) {
+    try {
+      return _membros.firstWhere((m) => m.numeroCadastro == numero);
+    } catch (e) {
+      return null;
     }
+  }
+
+  @override
+  List<MembroModel> getMembros() => List.from(_membros);
+
+  @override
+  List<MembroModel> pesquisarPorNome(String nome) {
+    final nomeNormalizado = normalizarParaBusca(nome);
+    return _membros
+        .where((m) => normalizarParaBusca(m.nome).contains(nomeNormalizado))
+        .toList();
   }
 
   @override
