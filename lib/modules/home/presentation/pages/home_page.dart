@@ -462,19 +462,56 @@ class _AppDrawer extends StatelessWidget {
   }
 
   void _navigateToRoute(BuildContext context, String route) {
-    // Rotas implementadas para cadastro
+    // Rotas implementadas mapeadas
     final routeMap = {
+      // Cadastros
       '/cadastros/cadastrar': '/cadastrar',
       '/cadastros/pesquisar': '/pesquisar',
       '/cadastros/editar': '/editar',
       '/cadastros/excluir': '/excluir',
+
+      // Membros
       '/membros/incluir': '/membros/incluir',
       '/membros/pesquisar': '/membros/pesquisar',
       '/membros/editar': '/membros/editar',
       '/membros/relatorios': '/membros/relatorios',
+
+      // Consultas
       '/consultas/nova': '/consultas/nova',
       '/consultas/pesquisar': '/consultas/pesquisar',
       '/consultas/ler': '/consultas/ler',
+
+      // Grupos Tarefas
+      '/grupos-tarefas/gerenciar': '/grupos-tarefas/gerenciar',
+      '/grupos-tarefas/relatorios': '/grupos-tarefas/relatorios',
+
+      // Grupos Ações Sociais
+      '/grupos-acoes-sociais/gerenciar': '/grupos-acoes-sociais/gerenciar',
+      '/grupos-acoes-sociais/relatorios': '/grupos-acoes-sociais/relatorios',
+
+      // Grupos Trabalhos Espirituais
+      '/grupos-trabalhos-espirituais/gerenciar':
+          '/grupos-trabalhos-espirituais/gerenciar',
+      '/grupos-trabalhos-espirituais/relatorios':
+          '/grupos-trabalhos-espirituais/relatorios',
+
+      // Usuários Sistema
+      '/usuarios-sistema/cadastrar': '/usuarios-sistema/cadastrar',
+      '/usuarios-sistema/listar': '/usuarios-sistema/listar',
+
+      // Organização
+      '/organizacao/incluir-nucleo': '/organizacao/gerenciar',
+      '/organizacao/excluir-nucleo': '/organizacao/gerenciar',
+      '/organizacao/incluir-dia-sessao': '/organizacao/gerenciar',
+      '/organizacao/excluir-dia-sessao': '/organizacao/gerenciar',
+      '/organizacao/incluir-grupo-tarefa': '/organizacao/gerenciar',
+      '/organizacao/excluir-grupo-tarefa': '/organizacao/gerenciar',
+      '/organizacao/incluir-grupo-acao-social': '/organizacao/gerenciar',
+      '/organizacao/excluir-grupo-acao-social': '/organizacao/gerenciar',
+      '/organizacao/incluir-grupo-trabalho-espiritual':
+          '/organizacao/gerenciar',
+      '/organizacao/excluir-grupo-trabalho-espiritual':
+          '/organizacao/gerenciar',
     };
 
     if (routeMap.containsKey(route)) {

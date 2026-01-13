@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../../core/services/supabase_service.dart';
+import '../../../../core/services/supabase_service.dart';
 import '../../data/models/usuario_model.dart';
 
 class ImportarExcelPage extends StatefulWidget {

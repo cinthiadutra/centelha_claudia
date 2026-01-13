@@ -37,8 +37,6 @@ class UsuarioSistemaDatasourceImpl implements UsuarioSistemaDatasource {
     ),
   ];
 
-  final int _nextId = 3;
-
   @override
   Future<void> adicionar(UsuarioSistemaModel usuario) async {
     _usuarios.add(usuario);
