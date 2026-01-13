@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:sistema_ponto/sistema_ponto.dart';
 
 import 'core/di/auth_bloc_binding.dart';
 import 'core/di/injection_container.dart' as di;
@@ -14,6 +15,7 @@ import 'modules/cadastro/presentation/pages/cadastrar_page.dart';
 import 'modules/cadastro/presentation/pages/editar_page.dart';
 import 'modules/cadastro/presentation/pages/excluir_page.dart';
 import 'modules/cadastro/presentation/pages/importar_excel_page.dart';
+import 'modules/cadastro/presentation/pages/importar_pessoas_antigas_page.dart';
 import 'modules/cadastro/presentation/pages/pesquisar_page.dart';
 import 'modules/consultas/presentation/pages/ler_consulta_page.dart';
 import 'modules/consultas/presentation/pages/nova_consulta_page.dart';
@@ -71,6 +73,10 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/importar-excel',
             page: () => const ImportarExcelPage(),
+          ),
+          GetPage(
+            name: '/importar-pessoas-antigas',
+            page: () => const ImportarPessoasAntigasPage(),
           ),
 
           // Membros
@@ -130,6 +136,12 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/grupos-trabalhos-espirituais/relatorios',
             page: () => const RelatoriosGrupoTrabalhoEspiritualPage(),
+          ),
+
+          // Sistema de Ponto
+          GetPage(
+            name: '/sistema-ponto/importar-calendario',
+            page: () => const ImportarCalendarioPage(),
           ),
 
           // Usuários Sistema

@@ -1,26 +1,5 @@
 import '../../modules/auth/domain/entities/usuario_sistema.dart';
 
-class MenuItem {
-  final String title;
-  final String icon;
-  final String? route;
-  final List<MenuItem>? subItems;
-  final NivelAcesso? nivelRequerido;
-
-  const MenuItem({
-    required this.title,
-    required this.icon,
-    this.route,
-    this.subItems,
-    this.nivelRequerido,
-  });
-
-  bool temPermissao(NivelAcesso nivelUsuario) {
-    if (nivelRequerido == null) return true;
-    return nivelUsuario.index >= nivelRequerido!.index;
-  }
-}
-
 class AppMenus {
   static final List<MenuItem> menuItems = [
     MenuItem(
@@ -42,6 +21,12 @@ class AppMenus {
           title: 'Editar Cadastro',
           icon: 'edit',
           route: '/cadastros/editar',
+        ),
+        const MenuItem(
+          title: 'Importar Sistema Antigo',
+          icon: 'cloud_download',
+          route: '/importar-pessoas-antigas',
+          nivelRequerido: NivelAcesso.nivel4,
         ),
         const MenuItem(
           title: 'Excluir Cadastro',
@@ -221,6 +206,33 @@ class AppMenus {
       ],
     ),
     MenuItem(
+      title: 'SISTEMA DE PONTO',
+      icon: 'star',
+      nivelRequerido: NivelAcesso.nivel2,
+      subItems: [
+        const MenuItem(
+          title: 'Importar Calendário 2026',
+          icon: 'cloud_upload',
+          route: '/sistema-ponto/importar-calendario',
+        ),
+        const MenuItem(
+          title: 'Avaliações Mensais',
+          icon: 'assessment',
+          route: '/sistema-ponto/avaliacoes',
+        ),
+        const MenuItem(
+          title: 'Rankings',
+          icon: 'leaderboard',
+          route: '/sistema-ponto/rankings',
+        ),
+        const MenuItem(
+          title: 'Relatórios',
+          icon: 'description',
+          route: '/sistema-ponto/relatorios',
+        ),
+      ],
+    ),
+    MenuItem(
       title: 'USUÁRIOS DO SISTEMA',
       icon: 'admin_panel_settings',
       nivelRequerido: NivelAcesso.nivel4,
@@ -305,4 +317,25 @@ class AppMenus {
       ],
     ),
   ];
+}
+
+class MenuItem {
+  final String title;
+  final String icon;
+  final String? route;
+  final List<MenuItem>? subItems;
+  final NivelAcesso? nivelRequerido;
+
+  const MenuItem({
+    required this.title,
+    required this.icon,
+    this.route,
+    this.subItems,
+    this.nivelRequerido,
+  });
+
+  bool temPermissao(NivelAcesso nivelUsuario) {
+    if (nivelRequerido == null) return true;
+    return nivelUsuario.index >= nivelRequerido!.index;
+  }
 }

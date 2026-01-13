@@ -443,6 +443,10 @@ class _AppDrawer extends StatelessWidget {
       'casino': Icons.casino,
       'home': Icons.home,
       'star': Icons.star,
+      'cloud_upload': Icons.cloud_upload,
+      'leaderboard': Icons.leaderboard,
+      'description': Icons.description,
+      'cloud_download': Icons.cloud_download,
       'school': Icons.school,
       'class': Icons.class_,
       'assignment': Icons.assignment,
@@ -469,6 +473,7 @@ class _AppDrawer extends StatelessWidget {
       '/cadastros/pesquisar': '/pesquisar',
       '/cadastros/editar': '/editar',
       '/cadastros/excluir': '/excluir',
+      '/importar-pessoas-antigas': '/importar-pessoas-antigas',
 
       // Membros
       '/membros/incluir': '/membros/incluir',
@@ -494,6 +499,9 @@ class _AppDrawer extends StatelessWidget {
           '/grupos-trabalhos-espirituais/gerenciar',
       '/grupos-trabalhos-espirituais/relatorios':
           '/grupos-trabalhos-espirituais/relatorios',
+
+      // Sistema de Ponto
+      '/sistema-ponto/importar-calendario': '/sistema-ponto/importar-calendario',
 
       // Usuários Sistema
       '/usuarios-sistema/cadastrar': '/usuarios-sistema/cadastrar',
