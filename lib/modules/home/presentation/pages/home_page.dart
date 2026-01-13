@@ -479,6 +479,7 @@ class _AppDrawer extends StatelessWidget {
       '/membros/incluir': '/membros/incluir',
       '/membros/pesquisar': '/membros/pesquisar',
       '/membros/editar': '/membros/editar',
+      '/membros/importar-antigos': '/membros/importar-antigos',
       '/membros/relatorios': '/membros/relatorios',
 
       // Consultas

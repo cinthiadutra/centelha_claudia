@@ -57,6 +57,12 @@ class AppMenus {
           route: '/membros/editar',
         ),
         const MenuItem(
+          title: 'Importar Histórico Antigo',
+          icon: 'history',
+          route: '/membros/importar-antigos',
+          nivelRequerido: NivelAcesso.nivel4,
+        ),
+        const MenuItem(
           title: 'Gerar Relatórios de Membros',
           icon: 'assessment',
           route: '/membros/relatorios',

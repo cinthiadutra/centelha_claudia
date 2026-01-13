@@ -28,6 +28,7 @@ import 'modules/grupos_trabalhos_espirituais/presentation/pages/gerenciar_grupo_
 import 'modules/grupos_trabalhos_espirituais/presentation/pages/relatorios_grupo_trabalho_espiritual_page.dart';
 import 'modules/home/presentation/pages/home_page.dart';
 import 'modules/membros/presentation/pages/editar_membro_page.dart';
+import 'modules/membros/presentation/pages/importar_membros_antigos_page.dart';
 import 'modules/membros/presentation/pages/incluir_membro_page.dart';
 import 'modules/membros/presentation/pages/pesquisar_membro_page.dart';
 import 'modules/membros/presentation/pages/relatorios_membro_page.dart';
@@ -80,6 +81,10 @@ class MyApp extends StatelessWidget {
           ),
 
           // Membros
+          GetPage(
+            name: '/membros/importar-antigos',
+            page: () => const ImportarMembrosAntigosPage(),
+          ),
           GetPage(
             name: '/membros/incluir',
             page: () => const IncluirMembroPage(),
