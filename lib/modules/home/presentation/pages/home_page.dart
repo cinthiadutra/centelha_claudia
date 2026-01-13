@@ -501,7 +501,8 @@ class _AppDrawer extends StatelessWidget {
           '/grupos-trabalhos-espirituais/relatorios',
 
       // Sistema de Ponto
-      '/sistema-ponto/importar-calendario': '/sistema-ponto/importar-calendario',
+      '/sistema-ponto/importar-calendario':
+          '/sistema-ponto/importar-calendario',
 
       // Usuários Sistema
       '/usuarios-sistema/cadastrar': '/usuarios-sistema/cadastrar',

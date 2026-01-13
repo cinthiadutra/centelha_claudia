@@ -23,6 +23,8 @@ class _ImportarPessoasAntigasPageState
   bool _concluido = false;
 
   Future<void> _importarPessoas() async {
+    if (!mounted) return;
+    
     setState(() {
       _isImporting = true;
       _importados = 0;
@@ -36,6 +38,8 @@ class _ImportarPessoasAntigasPageState
       final String jsonString = await rootBundle.loadString('pessoas_supabase.json');
       final List<dynamic> pessoas = json.decode(jsonString);
 
+      if (!mounted) return;
+      
       setState(() {
         _totalRegistros = pessoas.length;
       });
@@ -49,6 +53,9 @@ class _ImportarPessoasAntigasPageState
         final batch = pessoas.sublist(i, end);
 
         for (var pessoa in batch) {
+          // Verificar se ainda está montado antes de processar
+          if (!mounted) return;
+          
           try {
             // Extrair dados - os campos estão trocados no JSON original
             final String? cpfOriginal = pessoa['documentos']?['cpf'];
@@ -113,10 +120,14 @@ class _ImportarPessoasAntigasPageState
             // Inserir no Supabase
             await supabase.from('cadastros').insert(cadastroData);
 
+            if (!mounted) return;
+            
             setState(() {
               _importados++;
             });
           } catch (e) {
+            if (!mounted) return;
+            
             setState(() {
               _erros++;
               if (_mensagensErro.length < 20) {
@@ -130,6 +141,8 @@ class _ImportarPessoasAntigasPageState
         await Future.delayed(const Duration(milliseconds: 100));
       }
 
+      if (!mounted) return;
+      
       setState(() {
         _concluido = true;
       });
@@ -155,9 +168,11 @@ class _ImportarPessoasAntigasPageState
         );
       }
     } finally {
-      setState(() {
-        _isImporting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isImporting = false;
+        });
+      }
     }
   }
 

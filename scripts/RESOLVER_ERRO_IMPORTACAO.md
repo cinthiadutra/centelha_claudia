@@ -3,7 +3,7 @@
 ## ❌ Erro Encontrado
 
 ```
-PostgrestException: Could not find the table 'public.cadastros' 
+PostgrestException: Could not find the table 'public.cadastros'
 in the schema cache
 ```
 
@@ -81,9 +81,9 @@ CREATE TABLE IF NOT EXISTS cadastros (
 
 ALTER TABLE cadastros ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Permitir acesso para autenticados" 
-ON cadastros FOR ALL 
-TO authenticated 
+CREATE POLICY "Permitir acesso para autenticados"
+ON cadastros FOR ALL
+TO authenticated
 USING (true) WITH CHECK (true);
 ```
 
