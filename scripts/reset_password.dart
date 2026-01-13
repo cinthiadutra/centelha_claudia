@@ -2,18 +2,11 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Configure suas credenciais do Supabase aqui
-const String supabaseUrl = 'SUA_URL_SUPABASE';
-const String supabaseServiceKey = 'SUA_SERVICE_KEY'; // Use a service_role key, não a anon key
-
 void main() async {
   print('🔐 Script de Reset de Senha - Centelha Divina\n');
 
   // Inicializar Supabase com service role key
-  await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey: supabaseServiceKey,
-  );
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseServiceKey);
 
   final supabase = Supabase.instance.client;
 
@@ -49,11 +42,9 @@ void main() async {
   try {
     // Buscar usuário no Supabase Auth
     // Nota: Esta operação requer service_role key
-    final response = await supabase.auth.admin.updateUserById(
+    await supabase.auth.admin.updateUserById(
       email, // Na verdade precisamos do UUID, mas vamos tentar reset por email
-      attributes: UserAttributes(
-        password: novaSenha,
-      ),
+      attributes: AdminUserAttributes(password: novaSenha),
     );
 
     print('✅ Senha redefinida com sucesso para $email!');
@@ -70,3 +61,9 @@ void main() async {
 
   exit(0);
 }
+
+const String supabaseServiceKey =
+    'SUA_SERVICE_KEY'; // Use a service_role key, não a anon key
+
+// Configure suas credenciais do Supabase aqui
+const String supabaseUrl = 'SUA_URL_SUPABASE';

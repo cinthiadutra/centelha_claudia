@@ -276,9 +276,7 @@ class _ImportarPessoasAntigasPageState
 
     try {
       // Carregar JSON do assets ou root
-      final String jsonString = await rootBundle.loadString(
-        'pessoas_supabase.json',
-      );
+      final String jsonString = await rootBundle.loadString('CAD_PESSOAS.json');
       final List<dynamic> pessoas = json.decode(jsonString);
 
       if (!mounted) return;
