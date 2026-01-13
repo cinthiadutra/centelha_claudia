@@ -300,37 +300,50 @@ class _ImportarPessoasAntigasPageState
           if (!mounted) return;
 
           try {
-            // Extrair dados - os campos estão trocados no JSON original
-            final String? cpfOriginal = pessoa['documentos']?['cpf'];
-            final String nomeReal =
-                pessoa['documentos']?['rg'] ?? 'Nome não informado';
+            // Extrair dados do JSON CAD_PESSOAS
+            final String nomeReal = pessoa['NOME'] ?? 'Nome não informado';
+            final String? cpf = pessoa['CPF']?.toString().replaceAll(
+              RegExp(r'[^\d]'),
+              '',
+            );
 
-            // Tentar extrair data de nascimento
+            // Tentar extrair data de nascimento (formato DD/MM/YYYY)
             DateTime? dataNascimento;
             try {
-              if (pessoa['nascimento'] != null) {
-                dataNascimento = DateTime.parse(pessoa['nascimento']);
+              if (pessoa['NASCIMENTO'] != null &&
+                  pessoa['NASCIMENTO'].toString().isNotEmpty) {
+                final parts = pessoa['NASCIMENTO'].toString().split('/');
+                if (parts.length == 3) {
+                  dataNascimento = DateTime(
+                    int.parse(parts[2]), // ano
+                    int.parse(parts[1]), // mês
+                    int.parse(parts[0]), // dia
+                  );
+                }
               }
             } catch (e) {
               // Ignorar erro de data
             }
 
-            // CPF está no campo cpf mas parece ser um ID
-            String? cpf;
-            if (cpfOriginal != null && cpfOriginal.length >= 11) {
-              cpf = cpfOriginal;
-            }
-
-            // Extrair outros dados (que também estão em campos trocados)
-            final telefone = pessoa['contato']?['telefone'];
-            final celular = pessoa['endereco']?['logradouro'];
-            final email = pessoa['contato']?['email'];
+            // Extrair contatos
+            final telefone = pessoa['TELEFONE'];
+            final celular = pessoa['CELULAR'];
+            final email = pessoa['E-MAIL'];
 
             // Endereço
-            final logradouro = pessoa['religioso']?['nucleo'];
-            final cep = pessoa['religioso']?['padrinho'];
-            final cidade = pessoa['religioso']?['madrinha'];
-            final bairro = pessoa['endereco']?['bairro'];
+            final logradouro = pessoa['RUA / AV'];
+            final numero = pessoa['NUMERO'];
+            final complemento = pessoa['COMPLEMENTO'];
+            final bairro = pessoa['BAIRRO'];
+            final cep = pessoa['CEP'];
+            final cidade = pessoa['CIDADE'];
+            final uf = pessoa['UF'];
+
+            // Dados religiosos
+            final nucleo = pessoa['NUCLEO'];
+            final dataBatismo = pessoa['DATA DE BATISMO'];
+            final padrinho = pessoa['PADRINHO'];
+            final madrinha = pessoa['MADRINHA'];
 
             // Verificar se já existe registro com mesmo nome
             final existente = await supabase
@@ -359,17 +372,19 @@ class _ImportarPessoasAntigasPageState
                 'email': email,
               },
               'endereco': {
-                'logradouro': logradouro,
+                'logradouro': logradouro != null && numero != null
+                    ? '$logradouro, $numero${complemento != null && complemento.toString().isNotEmpty ? ' - $complemento' : ''}'
+                    : logradouro,
                 'bairro': bairro,
                 'cidade': cidade,
-                'uf': 'RJ',
+                'uf': uf ?? 'RJ',
                 'cep': cep,
               },
               'religioso': {
-                'nucleo': null,
-                'data_batismo': null,
-                'padrinho': null,
-                'madrinha': null,
+                'nucleo': nucleo,
+                'data_batismo': dataBatismo,
+                'padrinho': padrinho,
+                'madrinha': madrinha,
               },
               'data_cadastro': DateTime.now().toIso8601String(),
             };
