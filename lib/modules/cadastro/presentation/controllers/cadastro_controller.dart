@@ -184,10 +184,13 @@ class CadastroController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
+      print('🔍 [CADASTRO] Carregando usuários do Supabase...');
       final data = await _datasource.getUsuarios();
       usuarios.value = data;
+      print('✅ [CADASTRO] ${data.length} usuários carregados do Supabase');
     } catch (e) {
       errorMessage.value = 'Erro ao carregar usuários: $e';
+      print('❌ [CADASTRO] Erro ao carregar: $e');
     } finally {
       isLoading.value = false;
     }

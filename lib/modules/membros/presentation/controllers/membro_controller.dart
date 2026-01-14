@@ -89,9 +89,13 @@ class MembroController extends GetxController {
   Future<void> carregarMembros() async {
     isLoading.value = true;
     try {
+      print('🔍 [MEMBROS] Carregando membros do Supabase...');
       // Garante que dados estão carregados do Supabase
       await repository.garantirDadosCarregados();
       membros.value = repository.getMembros();
+      print('✅ [MEMBROS] ${membros.length} membros carregados do Supabase');
+    } catch (e) {
+      print('❌ [MEMBROS] Erro ao carregar: $e');
     } finally {
       isLoading.value = false;
     }
