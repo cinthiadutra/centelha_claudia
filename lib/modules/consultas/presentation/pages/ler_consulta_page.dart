@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/consulta.dart';
-import '../controllers/consulta_controller.dart';
+import 'package:get/get.dart';
+
 import '../../../../modules/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../modules/auth/presentation/bloc/auth_state.dart';
+import '../../domain/entities/consulta.dart';
+import '../controllers/consulta_controller.dart';
 
 /// Página para ler consulta por número
 /// Disponível para todos os níveis (nível 1 só vê as próprias)
@@ -21,69 +22,6 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
 
   Consulta? consultaEncontrada;
   bool buscaRealizada = false;
-
-  @override
-  void dispose() {
-    numeroController.dispose();
-    super.dispose();
-  }
-
-  void _buscar(BuildContext context) {
-    final authState = context.read<AuthBloc>().state;
-    
-    if (authState is! AuthAuthenticated) {
-      Get.snackbar('Erro', 'Usuário não autenticado');
-      return;
-    }
-
-    final consulta = consultaController.buscarPorNumero(numeroController.text);
-    
-    setState(() {
-      buscaRealizada = true;
-      consultaEncontrada = consulta;
-    });
-
-    if (consulta == null) {
-      Get.snackbar(
-        'Não encontrado',
-        'Nenhuma consulta com este número',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    // Verifica permissão (nível 1 só vê as próprias)
-    final nivelUsuario = authState.usuario.nivelAcesso.index + 1;
-    // Para nível 1, usar o ID do usuário como cadastro
-    final cadastroUsuario = authState.usuario.id;
-
-    if (!consultaController.podeVerConsulta(consulta, cadastroUsuario, nivelUsuario)) {
-      setState(() => consultaEncontrada = null);
-      
-      Get.snackbar(
-        'Sem Permissão',
-        'Você NÃO TEM PERMISSÃO para visualizar esta consulta',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 4),
-      );
-    }
-  }
-
-  void _limpar() {
-    setState(() {
-      numeroController.clear();
-      consultaEncontrada = null;
-      buscaRealizada = false;
-    });
-  }
-
-  String _formatarData(DateTime data) {
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +108,11 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.check_circle, color: Colors.green, size: 32),
+                            const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 32,
+                            ),
                             const SizedBox(width: 12),
                             Text(
                               'Consulta ${consultaEncontrada!.numeroConsulta}',
@@ -186,16 +128,37 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
                         const Divider(height: 32),
 
                         _buildInfoSection('INFORMAÇÕES GERAIS'),
-                        _buildInfoRow('Número da Consulta', consultaEncontrada!.numeroConsulta),
-                        _buildInfoRow('Data', _formatarData(consultaEncontrada!.data)),
-                        _buildInfoRow('Hora de Início', consultaEncontrada!.horaInicio),
+                        _buildInfoRow(
+                          'Número da Consulta',
+                          consultaEncontrada!.numeroConsulta,
+                        ),
+                        _buildInfoRow(
+                          'Data',
+                          _formatarData(consultaEncontrada!.data),
+                        ),
+                        _buildInfoRow(
+                          'Hora de Início',
+                          consultaEncontrada!.horaInicio,
+                        ),
 
                         const SizedBox(height: 24),
                         _buildInfoSection('PARTICIPANTES'),
-                        _buildInfoRow('Nome do Consulente', consultaEncontrada!.nomeConsulente),
-                        _buildInfoRow('Nome do Médium', consultaEncontrada!.nomeMedium),
-                        _buildInfoRow('Nome do Cambono', consultaEncontrada!.nomeCambono),
-                        _buildInfoRow('Nome da Entidade', consultaEncontrada!.nomeEntidade),
+                        _buildInfoRow(
+                          'Nome do Consulente',
+                          consultaEncontrada!.nomeConsulente,
+                        ),
+                        _buildInfoRow(
+                          'Nome do Médium',
+                          consultaEncontrada!.nomeMedium,
+                        ),
+                        _buildInfoRow(
+                          'Nome do Cambono',
+                          consultaEncontrada!.nomeCambono,
+                        ),
+                        _buildInfoRow(
+                          'Nome da Entidade',
+                          consultaEncontrada!.nomeEntidade,
+                        ),
 
                         const SizedBox(height: 24),
                         _buildInfoSection('DESCRIÇÃO DA CONSULTA'),
@@ -224,11 +187,18 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Colors.grey.shade400,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'Nenhuma consulta encontrada',
-                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
@@ -237,6 +207,31 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
             ],
           ],
         ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    numeroController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 180,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          Expanded(child: Text(value, style: const TextStyle(fontSize: 15))),
+        ],
       ),
     );
   }
@@ -255,27 +250,66 @@ class _LerConsultaPageState extends State<LerConsultaPage> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 180,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 15),
-            ),
-          ),
-        ],
-      ),
+  Future<void> _buscar(BuildContext context) async {
+    final authState = context.read<AuthBloc>().state;
+
+    if (authState is! AuthAuthenticated) {
+      Get.snackbar('Erro', 'Usuário não autenticado');
+      return;
+    }
+
+    final consulta = await consultaController.buscarPorNumero(
+      numeroController.text,
     );
+
+    setState(() {
+      buscaRealizada = true;
+      consultaEncontrada = consulta;
+    });
+
+    if (consulta == null) {
+      Get.snackbar(
+        'Não encontrado',
+        'Nenhuma consulta com este número',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Verifica permissão (nível 1 só vê as próprias)
+    final nivelUsuario = authState.usuario.nivelAcesso.index + 1;
+    // Para nível 1, usar o ID do usuário como cadastro
+    final cadastroUsuario = authState.usuario.id;
+
+    if (!consultaController.podeVerConsulta(
+      consulta,
+      cadastroUsuario,
+      nivelUsuario,
+    )) {
+      setState(() => consultaEncontrada = null);
+
+      Get.snackbar(
+        'Sem Permissão',
+        'Você NÃO TEM PERMISSÃO para visualizar esta consulta',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+    }
+  }
+
+  String _formatarData(DateTime data) {
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  void _limpar() {
+    setState(() {
+      numeroController.clear();
+      consultaEncontrada = null;
+      buscaRealizada = false;
+    });
   }
 }

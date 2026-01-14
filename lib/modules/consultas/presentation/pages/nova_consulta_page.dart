@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../domain/entities/consulta.dart';
-import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
-import '../controllers/consulta_controller.dart';
+
 import '../../../../core/constants/consulta_constants.dart';
+import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
+import '../../domain/entities/consulta.dart';
+import '../controllers/consulta_controller.dart';
 
 /// Página para registrar nova consulta espiritual
 /// Disponível para níveis 2 e 4
@@ -33,9 +34,302 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
   String? entidadeSelecionada;
 
   @override
-  void initState() {
-    super.initState();
-    numeroConsultaController.text = consultaController.gerarProximoNumero();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Nova Consulta'),
+        backgroundColor: Colors.purple,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            // Número da consulta (gerado automaticamente)
+            TextFormField(
+              controller: numeroConsultaController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'Número da Consulta',
+                prefixIcon: Icon(Icons.numbers),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Color(0xFFF5F5F5),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('DADOS DA CONSULTA'),
+
+            // Data
+            TextFormField(
+              readOnly: true,
+              controller: TextEditingController(
+                text: _formatarData(dataSelecionada),
+              ),
+              onTap: _selecionarData,
+              decoration: InputDecoration(
+                labelText: 'Data *',
+                prefixIcon: const Icon(Icons.calendar_today),
+                border: const OutlineInputBorder(),
+                suffixIcon: dataSelecionada != null
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => dataSelecionada = null),
+                      )
+                    : null,
+              ),
+              validator: (v) =>
+                  dataSelecionada == null ? 'Campo obrigatório' : null,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Hora de início
+            TextFormField(
+              readOnly: true,
+              controller: TextEditingController(
+                text: _formatarHora(horaSelecionada),
+              ),
+              onTap: _selecionarHora,
+              decoration: InputDecoration(
+                labelText: 'Hora de Início *',
+                prefixIcon: const Icon(Icons.access_time),
+                border: const OutlineInputBorder(),
+                suffixIcon: horaSelecionada != null
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => setState(() => horaSelecionada = null),
+                      )
+                    : null,
+              ),
+              validator: (v) =>
+                  horaSelecionada == null ? 'Campo obrigatório' : null,
+            ),
+
+            const SizedBox(height: 16),
+
+            // Entidade
+            DropdownButtonFormField<String>(
+              initialValue: entidadeSelecionada,
+              decoration: const InputDecoration(
+                labelText: 'Nome da Entidade *',
+                prefixIcon: Icon(Icons.person_pin),
+                border: OutlineInputBorder(),
+              ),
+              items: ConsultaConstants.entidadesOpcoes.map((entidade) {
+                return DropdownMenuItem(value: entidade, child: Text(entidade));
+              }).toList(),
+              onChanged: (v) => setState(() => entidadeSelecionada = v),
+              validator: (v) => v == null ? 'Campo obrigatório' : null,
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('CONSULENTE'),
+
+            // Cadastro do consulente
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: cadastroConsulenteController,
+                    decoration: const InputDecoration(
+                      labelText: 'Número de Cadastro *',
+                      prefixIcon: Icon(Icons.badge),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Campo obrigatório' : null,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: () => _buscarNomePorCadastro(
+                    cadastroConsulenteController.text,
+                    nomeConsulenteController,
+                  ),
+                  icon: const Icon(Icons.search),
+                  label: const Text('Buscar'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Nome do consulente (preenchido automaticamente)
+            TextFormField(
+              controller: nomeConsulenteController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Consulente',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Color(0xFFF5F5F5),
+              ),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('CAMBONO'),
+
+            // Cadastro do cambono
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: cadastroCambonoController,
+                    decoration: const InputDecoration(
+                      labelText: 'Número de Cadastro *',
+                      prefixIcon: Icon(Icons.badge),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Campo obrigatório' : null,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: () => _buscarNomePorCadastro(
+                    cadastroCambonoController.text,
+                    nomeCambonoController,
+                  ),
+                  icon: const Icon(Icons.search),
+                  label: const Text('Buscar'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Nome do cambono (preenchido automaticamente)
+            TextFormField(
+              controller: nomeCambonoController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Cambono',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Color(0xFFF5F5F5),
+              ),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('MÉDIUM'),
+
+            // Cadastro do médium
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: cadastroMediumController,
+                    decoration: const InputDecoration(
+                      labelText: 'Número de Cadastro *',
+                      prefixIcon: Icon(Icons.badge),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Campo obrigatório' : null,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: () => _buscarNomePorCadastro(
+                    cadastroMediumController.text,
+                    nomeMediumController,
+                  ),
+                  icon: const Icon(Icons.search),
+                  label: const Text('Buscar'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Nome do médium (preenchido automaticamente)
+            TextFormField(
+              controller: nomeMediumController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Médium',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Color(0xFFF5F5F5),
+              ),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('DESCRIÇÃO DA CONSULTA'),
+
+            // Descrição
+            TextFormField(
+              controller: descricaoController,
+              maxLines: 8,
+              decoration: const InputDecoration(
+                labelText: 'Descrição da Consulta *',
+                hintText:
+                    'Descreva aqui os detalhes da consulta, orientações recebidas, etc.',
+                border: OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'Campo obrigatório' : null,
+            ),
+
+            const SizedBox(height: 32),
+
+            // Botões
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text('Cancelar'),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton.icon(
+                  onPressed: _salvar,
+                  icon: const Icon(Icons.save),
+                  label: const Text('Registrar Consulta'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -49,6 +343,26 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
     nomeMediumController.dispose();
     descricaoController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarNumeroConsulta();
+  }
+
+  Widget _buildSecaoTitulo(String titulo) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+        titulo,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.purple,
+        ),
+      ),
+    );
   }
 
   void _buscarNomePorCadastro(
@@ -78,27 +392,9 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
     }
   }
 
-  Future<void> _selecionarData() async {
-    final data = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale('pt', 'BR'),
-    );
-    if (data != null) {
-      setState(() => dataSelecionada = data);
-    }
-  }
-
-  Future<void> _selecionarHora() async {
-    final hora = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (hora != null) {
-      setState(() => horaSelecionada = hora);
-    }
+  Future<void> _carregarNumeroConsulta() async {
+    numeroConsultaController.text = await consultaController
+        .gerarProximoNumero();
   }
 
   String _formatarData(DateTime? data) {
@@ -156,302 +452,26 @@ class _NovaConsultaPageState extends State<NovaConsultaPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nova Consulta'),
-        backgroundColor: Colors.purple,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Número da consulta (gerado automaticamente)
-            TextFormField(
-              controller: numeroConsultaController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Número da Consulta',
-                prefixIcon: Icon(Icons.numbers),
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color(0xFFF5F5F5),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-            _buildSecaoTitulo('DADOS DA CONSULTA'),
-
-            // Data
-            TextFormField(
-              readOnly: true,
-              controller: TextEditingController(text: _formatarData(dataSelecionada)),
-              onTap: _selecionarData,
-              decoration: InputDecoration(
-                labelText: 'Data *',
-                prefixIcon: const Icon(Icons.calendar_today),
-                border: const OutlineInputBorder(),
-                suffixIcon: dataSelecionada != null
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () => setState(() => dataSelecionada = null),
-                      )
-                    : null,
-              ),
-              validator: (v) => dataSelecionada == null ? 'Campo obrigatório' : null,
-            ),
-
-            const SizedBox(height: 16),
-
-            // Hora de início
-            TextFormField(
-              readOnly: true,
-              controller: TextEditingController(text: _formatarHora(horaSelecionada)),
-              onTap: _selecionarHora,
-              decoration: InputDecoration(
-                labelText: 'Hora de Início *',
-                prefixIcon: const Icon(Icons.access_time),
-                border: const OutlineInputBorder(),
-                suffixIcon: horaSelecionada != null
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () => setState(() => horaSelecionada = null),
-                      )
-                    : null,
-              ),
-              validator: (v) => horaSelecionada == null ? 'Campo obrigatório' : null,
-            ),
-
-            const SizedBox(height: 16),
-
-            // Entidade
-            DropdownButtonFormField<String>(
-              value: entidadeSelecionada,
-              decoration: const InputDecoration(
-                labelText: 'Nome da Entidade *',
-                prefixIcon: Icon(Icons.person_pin),
-                border: OutlineInputBorder(),
-              ),
-              items: ConsultaConstants.entidadesOpcoes.map((entidade) {
-                return DropdownMenuItem(value: entidade, child: Text(entidade));
-              }).toList(),
-              onChanged: (v) => setState(() => entidadeSelecionada = v),
-              validator: (v) => v == null ? 'Campo obrigatório' : null,
-            ),
-
-            const SizedBox(height: 24),
-            _buildSecaoTitulo('CONSULENTE'),
-
-            // Cadastro do consulente
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: cadastroConsulenteController,
-                    decoration: const InputDecoration(
-                      labelText: 'Número de Cadastro *',
-                      prefixIcon: Icon(Icons.badge),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: () => _buscarNomePorCadastro(
-                    cadastroConsulenteController.text,
-                    nomeConsulenteController,
-                  ),
-                  icon: const Icon(Icons.search),
-                  label: const Text('Buscar'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // Nome do consulente (preenchido automaticamente)
-            TextFormField(
-              controller: nomeConsulenteController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Nome do Consulente',
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color(0xFFF5F5F5),
-              ),
-              validator: (v) => v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
-            ),
-
-            const SizedBox(height: 24),
-            _buildSecaoTitulo('CAMBONO'),
-
-            // Cadastro do cambono
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: cadastroCambonoController,
-                    decoration: const InputDecoration(
-                      labelText: 'Número de Cadastro *',
-                      prefixIcon: Icon(Icons.badge),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: () => _buscarNomePorCadastro(
-                    cadastroCambonoController.text,
-                    nomeCambonoController,
-                  ),
-                  icon: const Icon(Icons.search),
-                  label: const Text('Buscar'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // Nome do cambono (preenchido automaticamente)
-            TextFormField(
-              controller: nomeCambonoController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Nome do Cambono',
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color(0xFFF5F5F5),
-              ),
-              validator: (v) => v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
-            ),
-
-            const SizedBox(height: 24),
-            _buildSecaoTitulo('MÉDIUM'),
-
-            // Cadastro do médium
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: cadastroMediumController,
-                    decoration: const InputDecoration(
-                      labelText: 'Número de Cadastro *',
-                      prefixIcon: Icon(Icons.badge),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: () => _buscarNomePorCadastro(
-                    cadastroMediumController.text,
-                    nomeMediumController,
-                  ),
-                  icon: const Icon(Icons.search),
-                  label: const Text('Buscar'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // Nome do médium (preenchido automaticamente)
-            TextFormField(
-              controller: nomeMediumController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Nome do Médium',
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Color(0xFFF5F5F5),
-              ),
-              validator: (v) => v == null || v.isEmpty ? 'Busque o cadastro primeiro' : null,
-            ),
-
-            const SizedBox(height: 24),
-            _buildSecaoTitulo('DESCRIÇÃO DA CONSULTA'),
-
-            // Descrição
-            TextFormField(
-              controller: descricaoController,
-              maxLines: 8,
-              decoration: const InputDecoration(
-                labelText: 'Descrição da Consulta *',
-                hintText: 'Descreva aqui os detalhes da consulta, orientações recebidas, etc.',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-              validator: (v) => v == null || v.isEmpty ? 'Campo obrigatório' : null,
-            ),
-
-            const SizedBox(height: 32),
-
-            // Botões
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: const Text('Cancelar'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton.icon(
-                  onPressed: _salvar,
-                  icon: const Icon(Icons.save),
-                  label: const Text('Registrar Consulta'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+  Future<void> _selecionarData() async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      locale: const Locale('pt', 'BR'),
     );
+    if (data != null) {
+      setState(() => dataSelecionada = data);
+    }
   }
 
-  Widget _buildSecaoTitulo(String titulo) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Text(
-        titulo,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.purple,
-        ),
-      ),
+  Future<void> _selecionarHora() async {
+    final hora = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
     );
+    if (hora != null) {
+      setState(() => horaSelecionada = hora);
+    }
   }
 }

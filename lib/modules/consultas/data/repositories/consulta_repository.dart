@@ -28,8 +28,8 @@ class ConsultaRepositoryImpl implements ConsultaRepository {
   }
 
   @override
-  String gerarProximoNumero() {
-    return datasource.gerarProximoNumero();
+  Future<String> gerarProximoNumero() async {
+    return await datasource.gerarProximoNumero();
   }
 
   @override
