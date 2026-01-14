@@ -17,7 +17,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
     try {
       // Usar count direto na query
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select('id')
           .count(CountOption.exact);
 
@@ -40,7 +40,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
       data.remove('updated_at');
 
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .insert(data)
           .select()
           .single();
@@ -59,7 +59,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   @override
   Future<void> deleteUsuario(String id) async {
     try {
-      await _supabaseService.client.from('usuarios').delete().eq('id', id);
+      await _supabaseService.client.from('cadastro').delete().eq('id', id);
     } on PostgrestException catch (error) {
       throw Exception('Erro ao deletar usuário: ${error.message}');
     } catch (error) {
@@ -71,7 +71,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   Future<UsuarioModel?> getUsuarioByCpf(String cpf) async {
     try {
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .eq('cpf', cpf)
           .maybeSingle();
@@ -89,7 +89,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   Future<UsuarioModel> getUsuarioById(String id) async {
     try {
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .eq('id', id)
           .single();
@@ -111,7 +111,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   Future<UsuarioModel> getUsuarioByNumeroCadastro(String numeroCadastro) async {
     try {
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .eq('numero_cadastro', numeroCadastro)
           .single();
@@ -130,12 +130,12 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   @override
   Future<List<UsuarioModel>> getUsuarios() async {
     try {
-      print('🔍 [DATASOURCE] Buscando usuários da tabela "usuarios"...');
+      print('🔍 [DATASOURCE] Buscando usuários da tabela "cadastro"...');
 
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
-          .order('nome', ascending: true);
+          .order('NOME', ascending: true); // Usar nome da coluna em MAIÚSCULA
 
       print('📊 [DATASOURCE] Response type: ${response.runtimeType}');
       print('📊 [DATASOURCE] Response length: ${(response as List).length}');
@@ -143,7 +143,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
       if (response.isEmpty) {
         print('⚠️ [DATASOURCE] Nenhum dado retornado do Supabase!');
         print('⚠️ [DATASOURCE] Verifique:');
-        print('   1. Se a tabela "usuarios" existe');
+        print('   1. Se a tabela "cadastro" existe');
         print('   2. Se há dados na tabela');
         print('   3. Se as políticas RLS estão configuradas corretamente');
       }
@@ -172,7 +172,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   Future<List<UsuarioModel>> getUsuariosByNucleo(String nucleo) async {
     try {
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .eq('nucleo_pertence', nucleo)
           .order('nome', ascending: true);
@@ -191,7 +191,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   Future<List<UsuarioModel>> getUsuariosByStatus(String status) async {
     try {
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .eq('status_atual', status)
           .order('nome', ascending: true);
@@ -214,7 +214,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
 
       // Buscar todos os usuários e filtrar localmente para busca sem acentos
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .select()
           .order('nome', ascending: true);
 
@@ -246,7 +246,7 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
       data.remove('created_at');
 
       final response = await _supabaseService.client
-          .from('usuarios')
+          .from('cadastro')
           .update(data)
           .eq('id', usuario.id!)
           .select()

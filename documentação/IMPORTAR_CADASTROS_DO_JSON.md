@@ -3,8 +3,9 @@
 ## 🔍 Situação Atual
 
 - ✅ **Membros no Supabase**: 428 registros (tabela `membros_historico`)
-- ❌ **Usuários no Supabase**: apenas 2 registros (tabela `usuarios`)
+- ⚠️ **Cadastros no Supabase**: verificar quantos existem na tabela `cadastro`
 - 📁 **Arquivo local**: 2.254 cadastros em `assets/CAD_PESSOAS.json`
+- 🔧 **Tabela correta**: `cadastro` (não `usuarios`)
 
 ## 🎯 Solução: Importar via Interface do Sistema
 
@@ -103,18 +104,18 @@ DATA DO CADASTRO         → data_cadastro
 Após a importação, você pode verificar diretamente no Supabase:
 
 ```sql
--- Contar usuários importados
-SELECT COUNT(*) FROM usuarios;
+-- Contar cadastros importados
+SELECT COUNT(*) FROM cadastro;
 
 -- Ver os 10 primeiros
 SELECT numero_cadastro, nome, cpf, data_cadastro
-FROM usuarios
+FROM cadastro
 ORDER BY numero_cadastro
 LIMIT 10;
 
 -- Verificar origem dos dados
 SELECT nucleo_cadastro, COUNT(*) as total
-FROM usuarios
+FROM cadastro
 GROUP BY nucleo_cadastro;
 ```
 

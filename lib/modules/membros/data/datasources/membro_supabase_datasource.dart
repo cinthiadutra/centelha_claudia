@@ -75,10 +75,30 @@ class MembroSupabaseDatasource implements MembroDatasource {
 
   @override
   MembroModel? getMembroPorNumero(String numero) {
-    return _cache.cast<MembroModel?>().firstWhere(
-      (m) => m?.numeroCadastro == numero,
-      orElse: () => null,
+    print('🔍 [MEMBROS DATASOURCE] Buscando membro por número: "$numero"');
+    print('📊 [MEMBROS DATASOURCE] Cache tem ${_cache.length} membros');
+
+    final resultado = _cache.cast<MembroModel?>().firstWhere(
+      (m) {
+        final match = m?.numeroCadastro == numero;
+        if (match) {
+          print(
+            '✅ [MEMBROS DATASOURCE] Encontrado: ${m?.nome} (${m?.numeroCadastro})',
+          );
+        }
+        return match;
+      },
+      orElse: () {
+        print('⚠️ [MEMBROS DATASOURCE] Membro não encontrado no cache');
+        print('   Exemplos de números no cache:');
+        _cache.take(5).forEach((m) {
+          print('   - ${m.numeroCadastro} (${m.nome})');
+        });
+        return null;
+      },
     );
+
+    return resultado;
   }
 
   @override

@@ -166,144 +166,259 @@ class UsuarioModel extends Usuario {
   }
 
   factory UsuarioModel.fromJson(Map<String, dynamic> json) {
+    // Helper para tentar múltiplos nomes de campo (case-insensitive)
+    dynamic getField(List<String> possibleNames) {
+      for (var name in possibleNames) {
+        if (json.containsKey(name)) return json[name];
+      }
+      return null;
+    }
+
+    // Parse de data segura (aceita Date ou String)
+    DateTime? parseDate(dynamic value) {
+      if (value == null) return null;
+      if (value is DateTime) return value;
+      if (value is String && value.isNotEmpty) {
+        try {
+          return DateTime.parse(value);
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    // Monta endereço completo a partir dos campos separados
+    String? montarEndereco() {
+      final rua = getField(['RUA', 'rua', 'endereco', 'logradouro']);
+      final numero = getField(['NUMERO', 'numero']);
+      final complemento = getField(['COMPLEMENTO', 'complemento']);
+
+      if (rua == null) return null;
+
+      final partes = <String>[rua];
+      if (numero != null) partes.add(numero.toString());
+      if (complemento != null && complemento.toString().isNotEmpty) {
+        partes.add('- $complemento');
+      }
+
+      return partes.join(', ');
+    }
+
     return UsuarioModel(
       id: json['id'],
-      nome: json['nome'],
-      cpf: json['cpf'],
-      numeroCadastro: json['numeroCadastro'],
-      dataNascimento: json['dataNascimento'] != null
-          ? DateTime.parse(json['dataNascimento'])
-          : null,
-      telefoneFixo: json['telefoneFixo'],
-      telefoneCelular: json['telefoneCelular'],
-      email: json['email'],
-      nomeResponsavel: json['nomeResponsavel'],
-      telefoneResponsavel: json['telefoneResponsavel'],
-      emailResponsavel: json['emailResponsavel'],
-      endereco: json['endereco'],
-      bairro: json['bairro'],
-      cidade: json['cidade'],
-      estado: json['estado'],
-      cep: json['cep'],
-      sexo: json['sexo'],
-      estadoCivil: json['estadoCivil'],
-      tipoSanguineo: json['tipoSanguineo'],
-      apelido1: json['apelido1'],
-      apelido2: json['apelido2'],
-      nucleoCadastro: json['nucleoCadastro'],
-      dataCadastro: json['dataCadastro'] != null
-          ? DateTime.parse(json['dataCadastro'])
-          : null,
-      nucleoPertence: json['nucleoPertence'],
-      statusAtual: json['statusAtual'],
-      classificacao: json['classificacao'],
-      diaSessao: json['diaSessao'],
-      dataBatismo: json['dataBatismo'] != null
-          ? DateTime.parse(json['dataBatismo'])
-          : null,
-      mediumCelebranteBatismo: json['mediumCelebranteBatismo'],
-      guiaCelebranteBatismo: json['guiaCelebranteBatismo'],
-      padrinhoBatismo: json['padrinhoBatismo'],
-      madrinhaBatismo: json['madrinhaBatismo'],
-      dataPrimeiroCasamento: json['dataPrimeiroCasamento'] != null
-          ? DateTime.parse(json['dataPrimeiroCasamento'])
-          : null,
-      nomePrimeiroConjuge: json['nomePrimeiroConjuge'],
-      mediumCelebrantePrimeiroCasamento:
-          json['mediumCelebrantePrimeiroCasamento'],
-      padrinhoPrimeiroCasamento: json['padrinhoPrimeiroCasamento'],
-      madrinhaPrimeiroCasamento: json['madrinhaPrimeiroCasamento'],
-      dataSegundoCasamento: json['dataSegundoCasamento'] != null
-          ? DateTime.parse(json['dataSegundoCasamento'])
-          : null,
-      nomeSegundoConjuge: json['nomeSegundoConjuge'],
-      mediumCelebranteSegundoCasamento:
-          json['mediumCelebranteSegundoCasamento'],
-      padrinhoSegundoCasamento: json['padrinhoSegundoCasamento'],
-      madrinhaSegundoCasamento: json['madrinhaSegundoCasamento'],
-      primeiroContatoEmergencia: json['primeiroContatoEmergencia'],
-      segundoContatoEmergencia: json['segundoContatoEmergencia'],
-      inicioPrimeiroEstagio: json['inicioPrimeiroEstagio'] != null
-          ? DateTime.parse(json['inicioPrimeiroEstagio'])
-          : null,
-      desistenciaPrimeiroEstagio: json['desistenciaPrimeiroEstagio'] != null
-          ? DateTime.parse(json['desistenciaPrimeiroEstagio'])
-          : null,
-      primeiroRitoPassagem: json['primeiroRitoPassagem'] != null
-          ? DateTime.parse(json['primeiroRitoPassagem'])
-          : null,
-      dataPrimeiroDesligamento: json['dataPrimeiroDesligamento'] != null
-          ? DateTime.parse(json['dataPrimeiroDesligamento'])
-          : null,
-      justificativaPrimeiroDesligamento:
-          json['justificativaPrimeiroDesligamento'],
-      inicioSegundoEstagio: json['inicioSegundoEstagio'] != null
-          ? DateTime.parse(json['inicioSegundoEstagio'])
-          : null,
-      desistenciaSegundoEstagio: json['desistenciaSegundoEstagio'] != null
-          ? DateTime.parse(json['desistenciaSegundoEstagio'])
-          : null,
-      segundoRitoPassagem: json['segundoRitoPassagem'] != null
-          ? DateTime.parse(json['segundoRitoPassagem'])
-          : null,
-      dataSegundoDesligamento: json['dataSegundoDesligamento'] != null
-          ? DateTime.parse(json['dataSegundoDesligamento'])
-          : null,
-      justificativaSegundoDesligamento:
-          json['justificativaSegundoDesligamento'],
-      inicioTerceiroEstagio: json['inicioTerceiroEstagio'] != null
-          ? DateTime.parse(json['inicioTerceiroEstagio'])
-          : null,
-      desistenciaTerceiroEstagio: json['desistenciaTerceiroEstagio'] != null
-          ? DateTime.parse(json['desistenciaTerceiroEstagio'])
-          : null,
-      terceiroRitoPassagem: json['terceiroRitoPassagem'] != null
-          ? DateTime.parse(json['terceiroRitoPassagem'])
-          : null,
-      dataTerceiroDesligamento: json['dataTerceiroDesligamento'] != null
-          ? DateTime.parse(json['dataTerceiroDesligamento'])
-          : null,
-      justificativaTerceiroDesligamento:
-          json['justificativaTerceiroDesligamento'],
-      inicioQuartoEstagio: json['inicioQuartoEstagio'] != null
-          ? DateTime.parse(json['inicioQuartoEstagio'])
-          : null,
-      desistenciaQuartoEstagio: json['desistenciaQuartoEstagio'] != null
-          ? DateTime.parse(json['desistenciaQuartoEstagio'])
-          : null,
-      quartoRitoPassagem: json['quartoRitoPassagem'] != null
-          ? DateTime.parse(json['quartoRitoPassagem'])
-          : null,
-      dataQuartoDesligamento: json['dataQuartoDesligamento'] != null
-          ? DateTime.parse(json['dataQuartoDesligamento'])
-          : null,
-      justificativaQuartoDesligamento: json['justificativaQuartoDesligamento'],
-      dataJogoOrixa: json['dataJogoOrixa'] != null
-          ? DateTime.parse(json['dataJogoOrixa'])
-          : null,
-      primeiroOrixa: json['primeiroOrixa'],
-      adjuntoPrimeiroOrixa: json['adjuntoPrimeiroOrixa'],
-      segundoOrixa: json['segundoOrixa'],
-      adjuntoSegundoOrixa: json['adjuntoSegundoOrixa'],
-      terceiroOrixa: json['terceiroOrixa'],
-      quartoOrixa: json['quartoOrixa'],
-      coroacaoSacerdote: json['coroacaoSacerdote'] != null
-          ? DateTime.parse(json['coroacaoSacerdote'])
-          : null,
-      primeiraCamarinha: json['primeiraCamarinha'] != null
-          ? DateTime.parse(json['primeiraCamarinha'])
-          : null,
-      segundaCamarinha: json['segundaCamarinha'] != null
-          ? DateTime.parse(json['segundaCamarinha'])
-          : null,
-      terceiraCamarinha: json['terceiraCamarinha'] != null
-          ? DateTime.parse(json['terceiraCamarinha'])
-          : null,
-      atividadeEspiritual: json['atividadeEspiritual'],
-      grupoAtividadeEspiritual: json['grupoAtividadeEspiritual'],
-      grupoTarefa: json['grupoTarefa'],
-      grupoAcaoSocial: json['grupoAcaoSocial'],
-      cargoLideranca: json['cargoLideranca'],
+      // Tenta NOME (maiúscula) e nome (minúscula)
+      nome: getField(['NOME', 'nome']) ?? '',
+      // Tenta CPF (maiúscula) e cpf (minúscula)
+      cpf: getField(['CPF', 'cpf']) ?? '',
+      // numero_cadastro ou CADASTRO
+      numeroCadastro: getField([
+        'numero_cadastro',
+        'numeroCadastro',
+        'CADASTRO',
+        'cadastro',
+      ]),
+      // NASCIMENTO (text) ou nascimento (date)
+      dataNascimento: parseDate(getField(['nascimento', 'NASCIMENTO'])),
+      // TELEFONE
+      telefoneFixo: getField(['TELEFONE', 'telefoneFixo', 'telefone_fixo']),
+      // CELULAR
+      telefoneCelular: getField(['CELULAR', 'telefoneCelular', 'celular']),
+      // E-MAIL (note o hífen!)
+      email: getField(['E-MAIL', 'email', 'EMAIL']),
+      // Campos de responsável (não existem na tabela atual)
+      nomeResponsavel: getField(['nomeResponsavel', 'NOME_RESPONSAVEL']),
+      telefoneResponsavel: getField([
+        'telefoneResponsavel',
+        'TELEFONE_RESPONSAVEL',
+      ]),
+      emailResponsavel: getField(['emailResponsavel', 'EMAIL_RESPONSAVEL']),
+      // Endereço - monta a partir dos campos separados
+      endereco: getField(['endereco']) ?? montarEndereco(),
+      bairro: getField(['BAIRRO', 'bairro']),
+      cidade: getField(['CIDADE', 'cidade']),
+      estado: getField(['UF', 'estado', 'uf']),
+      cep: getField(['CEP', 'cep']),
+      // Campos que não existem na tabela atual
+      sexo: getField(['sexo', 'SEXO']),
+      estadoCivil: getField(['estadoCivil', 'ESTADO_CIVIL']),
+      tipoSanguineo: getField(['tipoSanguineo', 'TIPO_SANGUINEO']),
+      apelido1: getField(['apelido1', 'APELIDO1']),
+      apelido2: getField(['apelido2', 'APELIDO2']),
+      // NUCLEO
+      nucleoCadastro: getField(['NUCLEO', 'nucleoCadastro', 'nucleo_cadastro']),
+      // data_cadastro (date) ou DATA_CADASTRO (text)
+      dataCadastro: parseDate(getField(['data_cadastro', 'DATA_CADASTRO'])),
+      nucleoPertence: getField(['nucleoPertence', 'nucleo_pertence', 'NUCLEO']),
+      statusAtual: getField(['statusAtual', 'status_atual', 'STATUS']),
+      classificacao: getField(['classificacao', 'CLASSIFICACAO']),
+      diaSessao: getField(['diaSessao', 'dia_sessao', 'DIA_SESSAO']),
+      // data_batismo (date) ou DATA_BATISMO (text)
+      dataBatismo: parseDate(getField(['data_batismo', 'DATA_BATISMO'])),
+      mediumCelebranteBatismo: getField([
+        'mediumCelebranteBatismo',
+        'MEDIUM_CELEBRANTE_BATISMO',
+      ]),
+      guiaCelebranteBatismo: getField([
+        'guiaCelebranteBatismo',
+        'GUIA_CELEBRANTE_BATISMO',
+      ]),
+      // PADRINHO
+      padrinhoBatismo: getField(['PADRINHO', 'padrinhoBatismo', 'padrinho']),
+      // MADRINHA
+      madrinhaBatismo: getField(['MADRINHA', 'madrinhaBatismo', 'madrinha']),
+      dataPrimeiroCasamento: parseDate(
+        getField(['dataPrimeiroCasamento', 'data_primeiro_casamento']),
+      ),
+      nomePrimeiroConjuge: getField([
+        'nomePrimeiroConjuge',
+        'nome_primeiro_conjuge',
+      ]),
+      mediumCelebrantePrimeiroCasamento: getField([
+        'mediumCelebrantePrimeiroCasamento',
+        'medium_celebrante_primeiro_casamento',
+      ]),
+      padrinhoPrimeiroCasamento: getField([
+        'padrinhoPrimeiroCasamento',
+        'padrinho_primeiro_casamento',
+      ]),
+      madrinhaPrimeiroCasamento: getField([
+        'madrinhaPrimeiroCasamento',
+        'madrinha_primeiro_casamento',
+      ]),
+      dataSegundoCasamento: parseDate(
+        getField(['dataSegundoCasamento', 'data_segundo_casamento']),
+      ),
+      nomeSegundoConjuge: getField([
+        'nomeSegundoConjuge',
+        'nome_segundo_conjuge',
+      ]),
+      mediumCelebranteSegundoCasamento: getField([
+        'mediumCelebranteSegundoCasamento',
+        'medium_celebrante_segundo_casamento',
+      ]),
+      padrinhoSegundoCasamento: getField([
+        'padrinhoSegundoCasamento',
+        'padrinho_segundo_casamento',
+      ]),
+      madrinhaSegundoCasamento: getField([
+        'madrinhaSegundoCasamento',
+        'madrinha_segundo_casamento',
+      ]),
+      primeiroContatoEmergencia: getField([
+        'primeiroContatoEmergencia',
+        'primeiro_contato_emergencia',
+      ]),
+      segundoContatoEmergencia: getField([
+        'segundoContatoEmergencia',
+        'segundo_contato_emergencia',
+      ]),
+      inicioPrimeiroEstagio: parseDate(
+        getField(['inicioPrimeiroEstagio', 'inicio_primeiro_estagio']),
+      ),
+      desistenciaPrimeiroEstagio: parseDate(
+        getField([
+          'desistenciaPrimeiroEstagio',
+          'desistencia_primeiro_estagio',
+        ]),
+      ),
+      primeiroRitoPassagem: parseDate(
+        getField(['primeiroRitoPassagem', 'primeiro_rito_passagem']),
+      ),
+      dataPrimeiroDesligamento: parseDate(
+        getField(['dataPrimeiroDesligamento', 'data_primeiro_desligamento']),
+      ),
+      justificativaPrimeiroDesligamento: getField([
+        'justificativaPrimeiroDesligamento',
+        'justificativa_primeiro_desligamento',
+      ]),
+      inicioSegundoEstagio: parseDate(
+        getField(['inicioSegundoEstagio', 'inicio_segundo_estagio']),
+      ),
+      desistenciaSegundoEstagio: parseDate(
+        getField(['desistenciaSegundoEstagio', 'desistencia_segundo_estagio']),
+      ),
+      segundoRitoPassagem: parseDate(
+        getField(['segundoRitoPassagem', 'segundo_rito_passagem']),
+      ),
+      dataSegundoDesligamento: parseDate(
+        getField(['dataSegundoDesligamento', 'data_segundo_desligamento']),
+      ),
+      justificativaSegundoDesligamento: getField([
+        'justificativaSegundoDesligamento',
+        'justificativa_segundo_desligamento',
+      ]),
+      inicioTerceiroEstagio: parseDate(
+        getField(['inicioTerceiroEstagio', 'inicio_terceiro_estagio']),
+      ),
+      desistenciaTerceiroEstagio: parseDate(
+        getField([
+          'desistenciaTerceiroEstagio',
+          'desistencia_terceiro_estagio',
+        ]),
+      ),
+      terceiroRitoPassagem: parseDate(
+        getField(['terceiroRitoPassagem', 'terceiro_rito_passagem']),
+      ),
+      dataTerceiroDesligamento: parseDate(
+        getField(['dataTerceiroDesligamento', 'data_terceiro_desligamento']),
+      ),
+      justificativaTerceiroDesligamento: getField([
+        'justificativaTerceiroDesligamento',
+        'justificativa_terceiro_desligamento',
+      ]),
+      inicioQuartoEstagio: parseDate(
+        getField(['inicioQuartoEstagio', 'inicio_quarto_estagio']),
+      ),
+      desistenciaQuartoEstagio: parseDate(
+        getField(['desistenciaQuartoEstagio', 'desistencia_quarto_estagio']),
+      ),
+      quartoRitoPassagem: parseDate(
+        getField(['quartoRitoPassagem', 'quarto_rito_passagem']),
+      ),
+      dataQuartoDesligamento: parseDate(
+        getField(['dataQuartoDesligamento', 'data_quarto_desligamento']),
+      ),
+      justificativaQuartoDesligamento: getField([
+        'justificativaQuartoDesligamento',
+        'justificativa_quarto_desligamento',
+      ]),
+      dataJogoOrixa: parseDate(getField(['dataJogoOrixa', 'data_jogo_orixa'])),
+      primeiroOrixa: getField(['primeiroOrixa', 'primeiro_orixa']),
+      adjuntoPrimeiroOrixa: getField([
+        'adjuntoPrimeiroOrixa',
+        'adjunto_primeiro_orixa',
+      ]),
+      segundoOrixa: getField(['segundoOrixa', 'segundo_orixa']),
+      adjuntoSegundoOrixa: getField([
+        'adjuntoSegundoOrixa',
+        'adjunto_segundo_orixa',
+      ]),
+      terceiroOrixa: getField(['terceiroOrixa', 'terceiro_orixa']),
+      quartoOrixa: getField(['quartoOrixa', 'quarto_orixa']),
+      coroacaoSacerdote: parseDate(
+        getField(['coroacaoSacerdote', 'coroacao_sacerdote']),
+      ),
+      primeiraCamarinha: parseDate(
+        getField(['primeiraCamarinha', 'primeira_camarinha']),
+      ),
+      segundaCamarinha: parseDate(
+        getField(['segundaCamarinha', 'segunda_camarinha']),
+      ),
+      terceiraCamarinha: parseDate(
+        getField(['terceiraCamarinha', 'terceira_camarinha']),
+      ),
+      atividadeEspiritual: getField([
+        'atividadeEspiritual',
+        'atividade_espiritual',
+      ]),
+      grupoAtividadeEspiritual: getField([
+        'grupoAtividadeEspiritual',
+        'grupo_atividade_espiritual',
+      ]),
+      grupoTarefa: getField(['grupoTarefa', 'grupo_tarefa']),
+      grupoAcaoSocial: getField(['grupoAcaoSocial', 'grupo_acao_social']),
+      cargoLideranca: getField(['cargoLideranca', 'cargo_lideranca']),
     );
   }
 

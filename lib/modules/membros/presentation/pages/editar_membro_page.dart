@@ -477,23 +477,43 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     // Remove duplicatas e mantém apenas itens únicos
     final uniqueItems = items.toSet().toList();
 
-    // Verifica se o valor existe na lista
+    // Função para normalizar texto (remove acentos, pontuação, case-insensitive)
+    String normalizar(String texto) {
+      return texto
+          .toLowerCase()
+          .replaceAll(RegExp(r'[àáâãäå]'), 'a')
+          .replaceAll(RegExp(r'[èéêë]'), 'e')
+          .replaceAll(RegExp(r'[ìíîï]'), 'i')
+          .replaceAll(RegExp(r'[òóôõö]'), 'o')
+          .replaceAll(RegExp(r'[ùúûü]'), 'u')
+          .replaceAll(RegExp(r'[ç]'), 'c')
+          .replaceAll(RegExp(r'[–—-]'), '') // Remove travessões e hífens
+          .replaceAll(RegExp(r'\s+'), ' ') // Normaliza espaços
+          .trim();
+    }
+
+    // Verifica se o valor existe na lista (comparação normalizada)
     String validValue = value;
-    if (!uniqueItems.contains(value)) {
-      // Tenta encontrar um item similar (normaliza caracteres especiais)
-      final normalized = value.replaceAll('–', '-').replaceAll('—', '-').trim();
-      validValue = uniqueItems.firstWhere(
-        (item) =>
-            item.replaceAll('–', '-').replaceAll('—', '-').trim() == normalized,
-        orElse: () => uniqueItems.first,
-      );
+    final valorNormalizado = normalizar(value);
+
+    final itemEncontrado = uniqueItems.firstWhere(
+      (item) => normalizar(item) == valorNormalizado,
+      orElse: () => '',
+    );
+
+    if (itemEncontrado.isEmpty) {
+      // Não encontrou correspondência exata, usar primeiro item
+      validValue = uniqueItems.first;
 
       // Debug: mostra quando há inconsistência
       debugPrint('⚠️ Valor do dropdown não encontrado na lista.');
       debugPrint('   Campo: $label');
       debugPrint('   Valor original: "$value"');
+      debugPrint('   Valor normalizado: "$valorNormalizado"');
       debugPrint('   Valor usado: "$validValue"');
       debugPrint('   Lista disponível: $uniqueItems');
+    } else {
+      validValue = itemEncontrado;
     }
 
     return Padding(

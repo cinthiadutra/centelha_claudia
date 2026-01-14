@@ -347,7 +347,7 @@ class _ImportarPessoasAntigasPageState
 
             // Verificar se já existe registro com mesmo nome
             final existente = await supabase
-                .from('cadastros')
+                .from('cadastro')
                 .select('id')
                 .eq('nome', nomeReal)
                 .maybeSingle();
@@ -390,7 +390,7 @@ class _ImportarPessoasAntigasPageState
             };
 
             // Inserir no Supabase
-            await supabase.from('cadastros').insert(cadastroData);
+            await supabase.from('cadastro').insert(cadastroData);
 
             if (!mounted) return;
 
