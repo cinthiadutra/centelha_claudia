@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../core/constants/membro_constants.dart';
 import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
-import '../../../../core/constants/membro_constants.dart';
 
-/// Página para gerar relatórios de membros da CENTELHA
+/// Página para gerar relatórios de membros da CLAUDIA
 /// Disponível para níveis 2 e 4
 class RelatoriosMembroPage extends StatefulWidget {
   const RelatoriosMembroPage({super.key});
@@ -30,64 +31,6 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
 
   List<Membro> resultados = [];
   bool relatorioGerado = false;
-
-  void _gerarRelatorio() {
-    setState(() {
-      resultados = membroController.filtrarParaRelatorio(
-        status: statusFiltro,
-        funcao: funcaoFiltro,
-        classificacao: classificacaoFiltro,
-        diaSessao: diaSessaoFiltro,
-        temJogoOrixa: temJogoOrixa,
-        temBatizado: temBatizado,
-        temCamarinha: temCamarinha,
-        atividadeEspiritual: atividadeEspiritualFiltro,
-        grupoTrabalho: grupoTrabalhoFiltro,
-        orixa: orixaFiltro,
-      );
-      relatorioGerado = true;
-    });
-  }
-
-  void _limparFiltros() {
-    setState(() {
-      statusFiltro = null;
-      funcaoFiltro = null;
-      classificacaoFiltro = null;
-      diaSessaoFiltro = null;
-      temJogoOrixa = null;
-      temBatizado = null;
-      temCamarinha = null;
-      atividadeEspiritualFiltro = null;
-      grupoTrabalhoFiltro = null;
-      orixaFiltro = null;
-      resultados = [];
-      relatorioGerado = false;
-    });
-  }
-
-  void _exportarParaExcel() {
-    // TODO: Implementar exportação real para Excel
-    Get.snackbar(
-      'Exportação',
-      'Exportando ${resultados.length} registros para Excel...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
-    
-    // Simular exportação
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.snackbar(
-        'Sucesso',
-        'Relatório exportado com sucesso!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -391,7 +334,7 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
@@ -417,5 +360,63 @@ class _RelatoriosMembroPageState extends State<RelatoriosMembroPage> {
         onChanged: onChanged,
       ),
     );
+  }
+
+  void _exportarParaExcel() {
+    // TODO: Implementar exportação real para Excel
+    Get.snackbar(
+      'Exportação',
+      'Exportando ${resultados.length} registros para Excel...',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
+    
+    // Simular exportação
+    Future.delayed(const Duration(seconds: 2), () {
+      Get.snackbar(
+        'Sucesso',
+        'Relatório exportado com sucesso!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    });
+  }
+
+  void _gerarRelatorio() {
+    setState(() {
+      resultados = membroController.filtrarParaRelatorio(
+        status: statusFiltro,
+        funcao: funcaoFiltro,
+        classificacao: classificacaoFiltro,
+        diaSessao: diaSessaoFiltro,
+        temJogoOrixa: temJogoOrixa,
+        temBatizado: temBatizado,
+        temCamarinha: temCamarinha,
+        atividadeEspiritual: atividadeEspiritualFiltro,
+        grupoTrabalho: grupoTrabalhoFiltro,
+        orixa: orixaFiltro,
+      );
+      relatorioGerado = true;
+    });
+  }
+
+  void _limparFiltros() {
+    setState(() {
+      statusFiltro = null;
+      funcaoFiltro = null;
+      classificacaoFiltro = null;
+      diaSessaoFiltro = null;
+      temJogoOrixa = null;
+      temBatizado = null;
+      temCamarinha = null;
+      atividadeEspiritualFiltro = null;
+      grupoTrabalhoFiltro = null;
+      orixaFiltro = null;
+      resultados = [];
+      relatorioGerado = false;
+    });
   }
 }

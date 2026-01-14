@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../core/constants/membro_constants.dart';
 import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
-import '../../../../core/constants/membro_constants.dart';
 
-/// Página para editar dados de membro da CENTELHA
+/// Página para editar dados de membro da CLAUDIA
 /// Disponível para níveis 2 e 4
 class EditarMembroPage extends StatefulWidget {
   const EditarMembroPage({super.key});
@@ -16,56 +17,9 @@ class EditarMembroPage extends StatefulWidget {
 class _EditarMembroPageState extends State<EditarMembroPage> {
   final membroController = Get.find<MembroController>();
   final numeroController = TextEditingController();
-  
+
   Membro? membroSelecionado;
   bool buscaRealizada = false;
-
-  @override
-  void dispose() {
-    numeroController.dispose();
-    super.dispose();
-  }
-
-  void _buscar() {
-    final membro = membroController.buscarPorNumero(numeroController.text);
-    
-    setState(() {
-      buscaRealizada = true;
-      membroSelecionado = membro;
-    });
-
-    if (membro == null) {
-      Get.snackbar(
-        'Não encontrado',
-        'Nenhum membro com este número de cadastro',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  void _limpar() {
-    setState(() {
-      numeroController.clear();
-      membroSelecionado = null;
-      buscaRealizada = false;
-    });
-  }
-
-  void _editarMembro() {
-    if (membroSelecionado == null) return;
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => _FormularioEdicaoPage(membro: membroSelecionado!),
-      ),
-    ).then((_) {
-      // Recarrega após editar
-      _limpar();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +117,10 @@ class _EditarMembroPageState extends State<EditarMembroPage> {
                         ],
                       ),
                       const Divider(),
-                      _buildInfoRow('Número', membroSelecionado!.numeroCadastro),
+                      _buildInfoRow(
+                        'Número',
+                        membroSelecionado!.numeroCadastro,
+                      ),
                       _buildInfoRow('Nome', membroSelecionado!.nome),
                       _buildInfoRow('Núcleo', membroSelecionado!.nucleo),
                       _buildInfoRow('Status', membroSelecionado!.status),
@@ -219,6 +176,12 @@ class _EditarMembroPageState extends State<EditarMembroPage> {
     );
   }
 
+  @override
+  void dispose() {
+    numeroController.dispose();
+    super.dispose();
+  }
+
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -235,6 +198,47 @@ class _EditarMembroPageState extends State<EditarMembroPage> {
         ],
       ),
     );
+  }
+
+  void _buscar() {
+    final membro = membroController.buscarPorNumero(numeroController.text);
+
+    setState(() {
+      buscaRealizada = true;
+      membroSelecionado = membro;
+    });
+
+    if (membro == null) {
+      Get.snackbar(
+        'Não encontrado',
+        'Nenhum membro com este número de cadastro',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void _editarMembro() {
+    if (membroSelecionado == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => _FormularioEdicaoPage(membro: membroSelecionado!),
+      ),
+    ).then((_) {
+      // Recarrega após editar
+      _limpar();
+    });
+  }
+
+  void _limpar() {
+    setState(() {
+      numeroController.clear();
+      membroSelecionado = null;
+      buscaRealizada = false;
+    });
   }
 }
 
@@ -266,82 +270,6 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   DateTime? segundaCamarinha;
   DateTime? terceiraCamarinha;
   DateTime? dataCoroacaoSacerdote;
-
-  @override
-  void initState() {
-    super.initState();
-    final m = widget.membro;
-    
-    contato1Controller = TextEditingController(text: m.primeiroContatoEmergencia);
-    contato2Controller = TextEditingController(text: m.segundoContatoEmergencia);
-    observacoesOrixaController = TextEditingController(text: m.observacoesOrixa);
-    
-    nucleoSelecionado = m.nucleo;
-    statusSelecionado = m.status;
-    funcaoSelecionada = m.funcao;
-    classificacaoSelecionada = m.classificacao;
-    diaSessaoSelecionado = m.diaSessao;
-    
-    primeiraCamarinha = m.primeiraCamarinha;
-    segundaCamarinha = m.segundaCamarinha;
-    terceiraCamarinha = m.terceiraCamarinha;
-    dataCoroacaoSacerdote = m.dataCoroacaoSacerdote;
-  }
-
-  @override
-  void dispose() {
-    contato1Controller.dispose();
-    contato2Controller.dispose();
-    observacoesOrixaController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _selecionarData(BuildContext context, Function(DateTime?) onSelected) async {
-    final data = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-      locale: const Locale('pt', 'BR'),
-    );
-    if (data != null) {
-      setState(() => onSelected(data));
-    }
-  }
-
-  String _formatarData(DateTime? data) {
-    if (data == null) return '';
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
-
-  Future<void> _salvar() async {
-    if (!_formKey.currentState!.validate()) {
-      Get.snackbar('Atenção', 'Preencha todos os campos obrigatórios');
-      return;
-    }
-
-    final membroAtualizado = widget.membro.copyWith(
-      nucleo: nucleoSelecionado,
-      status: statusSelecionado,
-      funcao: funcaoSelecionada,
-      classificacao: classificacaoSelecionada,
-      diaSessao: diaSessaoSelecionado,
-      primeiroContatoEmergencia: contato1Controller.text.isNotEmpty ? contato1Controller.text : null,
-      segundoContatoEmergencia: contato2Controller.text.isNotEmpty ? contato2Controller.text : null,
-      primeiraCamarinha: primeiraCamarinha,
-      segundaCamarinha: segundaCamarinha,
-      terceiraCamarinha: terceiraCamarinha,
-      dataCoroacaoSacerdote: dataCoroacaoSacerdote,
-      observacoesOrixa: observacoesOrixaController.text.isNotEmpty ? observacoesOrixaController.text : null,
-    );
-
-    try {
-      await membroController.atualizarMembro(membroAtualizado);
-      Get.back();
-    } catch (e) {
-      // Erro já tratado no controller
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -399,10 +327,26 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
 
             const SizedBox(height: 24),
             _buildSecaoTitulo('HISTÓRICO ESPIRITUAL'),
-            _buildCampoData('1ª camarinha', primeiraCamarinha, (d) => primeiraCamarinha = d),
-            _buildCampoData('2ª camarinha', segundaCamarinha, (d) => segundaCamarinha = d),
-            _buildCampoData('3ª camarinha', terceiraCamarinha, (d) => terceiraCamarinha = d),
-            _buildCampoData('Data da coroação de sacerdote', dataCoroacaoSacerdote, (d) => dataCoroacaoSacerdote = d),
+            _buildCampoData(
+              '1ª camarinha',
+              primeiraCamarinha,
+              (d) => primeiraCamarinha = d,
+            ),
+            _buildCampoData(
+              '2ª camarinha',
+              segundaCamarinha,
+              (d) => segundaCamarinha = d,
+            ),
+            _buildCampoData(
+              '3ª camarinha',
+              terceiraCamarinha,
+              (d) => terceiraCamarinha = d,
+            ),
+            _buildCampoData(
+              'Data da coroação de sacerdote',
+              dataCoroacaoSacerdote,
+              (d) => dataCoroacaoSacerdote = d,
+            ),
 
             const SizedBox(height: 24),
             _buildSecaoTitulo('OBSERVAÇÕES'),
@@ -444,15 +388,62 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     );
   }
 
-  Widget _buildSecaoTitulo(String titulo) {
+  @override
+  void dispose() {
+    contato1Controller.dispose();
+    contato2Controller.dispose();
+    observacoesOrixaController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final m = widget.membro;
+
+    contato1Controller = TextEditingController(
+      text: m.primeiroContatoEmergencia,
+    );
+    contato2Controller = TextEditingController(
+      text: m.segundoContatoEmergencia,
+    );
+    observacoesOrixaController = TextEditingController(
+      text: m.observacoesOrixa,
+    );
+
+    nucleoSelecionado = m.nucleo;
+    statusSelecionado = m.status;
+    funcaoSelecionada = m.funcao;
+    classificacaoSelecionada = m.classificacao;
+    diaSessaoSelecionado = m.diaSessao;
+
+    primeiraCamarinha = m.primeiraCamarinha;
+    segundaCamarinha = m.segundaCamarinha;
+    terceiraCamarinha = m.terceiraCamarinha;
+    dataCoroacaoSacerdote = m.dataCoroacaoSacerdote;
+  }
+
+  Widget _buildCampoData(
+    String label,
+    DateTime? data,
+    Function(DateTime?) onSelected,
+  ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16, top: 8),
-      child: Text(
-        titulo,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.purple,
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        readOnly: true,
+        controller: TextEditingController(text: _formatarData(data)),
+        onTap: () => _selecionarData(context, onSelected),
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.calendar_today),
+          border: const OutlineInputBorder(),
+          suffixIcon: data != null
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () => setState(() => onSelected(null)),
+                )
+              : null,
         ),
       ),
     );
@@ -476,28 +467,6 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     );
   }
 
-  Widget _buildCampoData(String label, DateTime? data, Function(DateTime?) onSelected) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        readOnly: true,
-        controller: TextEditingController(text: _formatarData(data)),
-        onTap: () => _selecionarData(context, onSelected),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: const Icon(Icons.calendar_today),
-          border: const OutlineInputBorder(),
-          suffixIcon: data != null
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () => setState(() => onSelected(null)),
-                )
-              : null,
-        ),
-      ),
-    );
-  }
-
   Widget _buildDropdown({
     required String value,
     required String label,
@@ -507,7 +476,7 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
@@ -519,5 +488,75 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
         validator: (v) => v == null ? 'Campo obrigatório' : null,
       ),
     );
+  }
+
+  Widget _buildSecaoTitulo(String titulo) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: 8),
+      child: Text(
+        titulo,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.purple,
+        ),
+      ),
+    );
+  }
+
+  String _formatarData(DateTime? data) {
+    if (data == null) return '';
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  Future<void> _salvar() async {
+    if (!_formKey.currentState!.validate()) {
+      Get.snackbar('Atenção', 'Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    final membroAtualizado = widget.membro.copyWith(
+      nucleo: nucleoSelecionado,
+      status: statusSelecionado,
+      funcao: funcaoSelecionada,
+      classificacao: classificacaoSelecionada,
+      diaSessao: diaSessaoSelecionado,
+      primeiroContatoEmergencia: contato1Controller.text.isNotEmpty
+          ? contato1Controller.text
+          : null,
+      segundoContatoEmergencia: contato2Controller.text.isNotEmpty
+          ? contato2Controller.text
+          : null,
+      primeiraCamarinha: primeiraCamarinha,
+      segundaCamarinha: segundaCamarinha,
+      terceiraCamarinha: terceiraCamarinha,
+      dataCoroacaoSacerdote: dataCoroacaoSacerdote,
+      observacoesOrixa: observacoesOrixaController.text.isNotEmpty
+          ? observacoesOrixaController.text
+          : null,
+    );
+
+    try {
+      await membroController.atualizarMembro(membroAtualizado);
+      Get.back();
+    } catch (e) {
+      // Erro já tratado no controller
+    }
+  }
+
+  Future<void> _selecionarData(
+    BuildContext context,
+    Function(DateTime?) onSelected,
+  ) async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      locale: const Locale('pt', 'BR'),
+    );
+    if (data != null) {
+      setState(() => onSelected(data));
+    }
   }
 }

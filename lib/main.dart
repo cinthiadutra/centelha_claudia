@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => di.sl<AuthBloc>()..add(CheckAuthEvent()),
       child: GetMaterialApp(
-        title: 'Centelha Divina',
+        title: 'CLAUDIA',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         home: BlocBuilder<AuthBloc, AuthState>(

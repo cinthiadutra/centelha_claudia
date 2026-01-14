@@ -14,9 +14,7 @@ class MembroSupabaseDatasource implements MembroDatasource {
   final List<MembroModel> _cache = [];
   bool _cacheCarregado = false;
 
-  MembroSupabaseDatasource(this._supabaseService) {
-    _carregarCache();
-  }
+  MembroSupabaseDatasource(this._supabaseService);
 
   @override
   void adicionarMembro(MembroModel membro) {
@@ -26,9 +24,10 @@ class MembroSupabaseDatasource implements MembroDatasource {
     data.remove('data_criacao');
     data.remove('data_ultima_alteracao');
 
-    _supabaseService.client
-        .from('membros_historico')
-        .insert(data)
+    _garantirCacheCarregado()
+        .then((_) {
+          return _supabaseService.client.from('membros_historico').insert(data);
+        })
         .then((_) {
           _cache.add(membro);
         })
@@ -62,21 +61,24 @@ class MembroSupabaseDatasource implements MembroDatasource {
   }
 
   @override
+  Future<void> garantirDadosCarregados() async {
+    await _garantirCacheCarregado();
+  }
+
+  @override
   MembroModel? getMembroPorCpf(String cpf) {
-    try {
-      return _cache.firstWhere((m) => m.cpf == cpf);
-    } catch (e) {
-      return null;
-    }
+    return _cache.cast<MembroModel?>().firstWhere(
+      (m) => m?.cpf == cpf,
+      orElse: () => null,
+    );
   }
 
   @override
   MembroModel? getMembroPorNumero(String numero) {
-    try {
-      return _cache.firstWhere((m) => m.numeroCadastro == numero);
-    } catch (e) {
-      return null;
-    }
+    return _cache.cast<MembroModel?>().firstWhere(
+      (m) => m?.numeroCadastro == numero,
+      orElse: () => null,
+    );
   }
 
   @override
@@ -124,5 +126,11 @@ class MembroSupabaseDatasource implements MembroDatasource {
     } catch (e) {
       // Cache não carregado, retornará lista vazia
     }
+  }
+
+  /// Garante que o cache está carregado antes de qualquer operação
+  Future<void> _garantirCacheCarregado() async {
+    if (_cacheCarregado) return;
+    await _carregarCache();
   }
 }

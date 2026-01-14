@@ -383,7 +383,12 @@ class CadastroController extends GetxController {
   }
 
   /// Pesquisa usuários
-  void pesquisar({String? numero, String? cpf, String? nome}) {
+  Future<void> pesquisar({String? numero, String? cpf, String? nome}) async {
+    // Garante que os dados estão carregados
+    if (usuarios.isEmpty && !isLoading.value) {
+      await carregarUsuarios();
+    }
+
     searchResults.clear();
 
     if (numero != null && numero.isNotEmpty) {

@@ -5,10 +5,14 @@ import '../models/membro_model.dart';
 abstract class MembroDatasource {
   void adicionarMembro(MembroModel membro);
   void atualizarMembro(MembroModel membro);
+
+  /// Método para garantir que dados estão carregados (para datasources assíncronos)
+  Future<void> garantirDadosCarregados() async {}
   MembroModel? getMembroPorCpf(String cpf);
   MembroModel? getMembroPorNumero(String numero);
   List<MembroModel> getMembros();
   List<MembroModel> pesquisarPorNome(String nome);
+
   void removerMembro(String numero);
 }
 
@@ -104,6 +108,12 @@ class MembroDatasourceImpl implements MembroDatasource {
     if (index != -1) {
       _membros[index] = membro;
     }
+  }
+
+  @override
+  Future<void> garantirDadosCarregados() async {
+    // Mock datasource já tem dados carregados em memória
+    return;
   }
 
   @override

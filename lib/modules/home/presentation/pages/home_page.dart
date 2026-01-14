@@ -45,8 +45,21 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          const Expanded(
+                            child: Text(
+                              'CENTRAL LÓGICA DE ATENDIMENTO UNIFICADO E DE DISPONIBILIZAÇÃO DE INFORMAÇÕES ADMINISTRATIVAS - CLAUDIA',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                          const SizedBox(width: 24),
                           Text(
                             state.usuario.nome,
                             style: const TextStyle(

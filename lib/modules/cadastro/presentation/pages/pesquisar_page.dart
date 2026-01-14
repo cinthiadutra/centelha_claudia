@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
 import '../../domain/entities/usuario.dart';
 import '../controllers/cadastro_controller.dart';
 
@@ -25,144 +26,6 @@ class _PesquisarPageState extends State<PesquisarPage> {
   );
 
   String tipoPesquisa = 'numero'; // numero, cpf, nome
-
-  @override
-  void initState() {
-    super.initState();
-    controller.limparPesquisa();
-  }
-
-  @override
-  void dispose() {
-    numeroController.dispose();
-    cpfController.dispose();
-    nomeController.dispose();
-    super.dispose();
-  }
-
-  void _pesquisar() {
-    switch (tipoPesquisa) {
-      case 'numero':
-        if (numeroController.text.isEmpty) {
-          Get.snackbar('Atenção', 'Digite o número de cadastro');
-          return;
-        }
-        controller.pesquisar(numero: numeroController.text.trim());
-        break;
-      case 'cpf':
-        if (cpfController.text.isEmpty) {
-          Get.snackbar('Atenção', 'Digite o CPF');
-          return;
-        }
-        controller.pesquisar(cpf: cpfController.text);
-        break;
-      case 'nome':
-        if (nomeController.text.isEmpty) {
-          Get.snackbar('Atenção', 'Digite o nome');
-          return;
-        }
-        controller.pesquisar(nome: nomeController.text.trim());
-        break;
-    }
-  }
-
-  void _limpar() {
-    numeroController.clear();
-    cpfController.clear();
-    nomeController.clear();
-    controller.limparPesquisa();
-  }
-
-  void _verDetalhes(Usuario usuario) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(usuario.nome),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildInfoRow('Número', usuario.numeroCadastro ?? '-'),
-              _buildInfoRow('CPF', _formatarCPF(usuario.cpf)),
-              if (usuario.dataNascimento != null)
-                _buildInfoRow('Data Nasc.', _formatarData(usuario.dataNascimento!)),
-              _buildInfoRow('Telefone', _formatarTelefone(usuario.telefoneCelular ?? '')),
-              _buildInfoRow('E-mail', usuario.email ?? ''),
-              if (usuario.endereco != null && usuario.endereco!.isNotEmpty) ...[
-                const Divider(),
-                _buildInfoRow('Endereço', usuario.endereco ?? ''),
-                _buildInfoRow('Bairro', usuario.bairro ?? ''),
-                _buildInfoRow('Cidade', '${usuario.cidade ?? ''}/${usuario.estado ?? ''}'),
-                _buildInfoRow('CEP', _formatarCEP(usuario.cep ?? '')),
-              ],
-              if (usuario.nucleoPertence != null && usuario.nucleoPertence!.isNotEmpty) ...[
-                const Divider(),
-                _buildInfoRow('Núcleo', usuario.nucleoPertence ?? ''),
-              ],
-              if (usuario.sexo != null) _buildInfoRow('Sexo', usuario.sexo!),
-              if (usuario.estadoCivil != null) _buildInfoRow('Estado Civil', usuario.estadoCivil!),
-              if (usuario.tipoSanguineo != null) _buildInfoRow('Tipo Sanguíneo', usuario.tipoSanguineo!),
-              if (usuario.nomeResponsavel != null) ...[
-                const Divider(),
-                _buildInfoRow('Responsável', usuario.nomeResponsavel!),
-                if (usuario.telefoneResponsavel != null)
-                  _buildInfoRow('Tel. Resp.', _formatarTelefone(usuario.telefoneResponsavel!)),
-              ],
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Fechar'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
-  }
-
-  String _formatarCPF(String cpf) {
-    if (cpf.length != 11) return cpf;
-    return '${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9)}';
-  }
-
-  String _formatarTelefone(String telefone) {
-    if (telefone.length == 11) {
-      return '(${telefone.substring(0, 2)}) ${telefone.substring(2, 7)}-${telefone.substring(7)}';
-    }
-    return telefone;
-  }
-
-  String _formatarCEP(String cep) {
-    if (cep.length == 8) {
-      return '${cep.substring(0, 5)}-${cep.substring(5)}';
-    }
-    return cep;
-  }
-
-  String _formatarData(DateTime data) {
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +197,9 @@ class _PesquisarPageState extends State<PesquisarPage> {
                           Text('CPF: ${_formatarCPF(usuario.cpf)}'),
                           if (usuario.numeroCadastro != null)
                             Text('Nº: ${usuario.numeroCadastro}'),
-                          Text('Tel: ${_formatarTelefone(usuario.telefoneCelular ?? '')}'),
+                          Text(
+                            'Tel: ${_formatarTelefone(usuario.telefoneCelular ?? '')}',
+                          ),
                         ],
                       ),
                       trailing: IconButton(
@@ -348,6 +213,159 @@ class _PesquisarPageState extends State<PesquisarPage> {
                 },
               );
             }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    numeroController.dispose();
+    cpfController.dispose();
+    nomeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller.limparPesquisa();
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
+
+  String _formatarCEP(String cep) {
+    if (cep.length == 8) {
+      return '${cep.substring(0, 5)}-${cep.substring(5)}';
+    }
+    return cep;
+  }
+
+  String _formatarCPF(String cpf) {
+    if (cpf.length != 11) return cpf;
+    return '${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9)}';
+  }
+
+  String _formatarData(DateTime data) {
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  String _formatarTelefone(String telefone) {
+    if (telefone.length == 11) {
+      return '(${telefone.substring(0, 2)}) ${telefone.substring(2, 7)}-${telefone.substring(7)}';
+    }
+    return telefone;
+  }
+
+  void _limpar() {
+    numeroController.clear();
+    cpfController.clear();
+    nomeController.clear();
+    controller.limparPesquisa();
+  }
+
+  Future<void> _pesquisar() async {
+    switch (tipoPesquisa) {
+      case 'numero':
+        if (numeroController.text.isEmpty) {
+          Get.snackbar('Atenção', 'Digite o número de cadastro');
+          return;
+        }
+        await controller.pesquisar(numero: numeroController.text.trim());
+        break;
+      case 'cpf':
+        if (cpfController.text.isEmpty) {
+          Get.snackbar('Atenção', 'Digite o CPF');
+          return;
+        }
+        await controller.pesquisar(cpf: cpfController.text);
+        break;
+      case 'nome':
+        if (nomeController.text.isEmpty) {
+          Get.snackbar('Atenção', 'Digite o nome');
+          return;
+        }
+        await controller.pesquisar(nome: nomeController.text.trim());
+        break;
+    }
+  }
+
+  void _verDetalhes(Usuario usuario) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(usuario.nome),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildInfoRow('Número', usuario.numeroCadastro ?? '-'),
+              _buildInfoRow('CPF', _formatarCPF(usuario.cpf)),
+              if (usuario.dataNascimento != null)
+                _buildInfoRow(
+                  'Data Nasc.',
+                  _formatarData(usuario.dataNascimento!),
+                ),
+              _buildInfoRow(
+                'Telefone',
+                _formatarTelefone(usuario.telefoneCelular ?? ''),
+              ),
+              _buildInfoRow('E-mail', usuario.email ?? ''),
+              if (usuario.endereco != null && usuario.endereco!.isNotEmpty) ...[
+                const Divider(),
+                _buildInfoRow('Endereço', usuario.endereco ?? ''),
+                _buildInfoRow('Bairro', usuario.bairro ?? ''),
+                _buildInfoRow(
+                  'Cidade',
+                  '${usuario.cidade ?? ''}/${usuario.estado ?? ''}',
+                ),
+                _buildInfoRow('CEP', _formatarCEP(usuario.cep ?? '')),
+              ],
+              if (usuario.nucleoPertence != null &&
+                  usuario.nucleoPertence!.isNotEmpty) ...[
+                const Divider(),
+                _buildInfoRow('Núcleo', usuario.nucleoPertence ?? ''),
+              ],
+              if (usuario.sexo != null) _buildInfoRow('Sexo', usuario.sexo!),
+              if (usuario.estadoCivil != null)
+                _buildInfoRow('Estado Civil', usuario.estadoCivil!),
+              if (usuario.tipoSanguineo != null)
+                _buildInfoRow('Tipo Sanguíneo', usuario.tipoSanguineo!),
+              if (usuario.nomeResponsavel != null) ...[
+                const Divider(),
+                _buildInfoRow('Responsável', usuario.nomeResponsavel!),
+                if (usuario.telefoneResponsavel != null)
+                  _buildInfoRow(
+                    'Tel. Resp.',
+                    _formatarTelefone(usuario.telefoneResponsavel!),
+                  ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fechar'),
           ),
         ],
       ),

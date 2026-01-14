@@ -1,56 +1,18 @@
 import 'package:get/get.dart';
-import '../../domain/entities/membro.dart';
-import '../../data/repositories/membro_repository.dart';
 
-/// Controller GetX para gerenciar membros da CENTELHA
+import '../../data/repositories/membro_repository.dart';
+import '../../domain/entities/membro.dart';
+
+/// Controller GetX para gerenciar membros da CLAUDIA
 class MembroController extends GetxController {
   final MembroRepository repository;
 
-  MembroController(this.repository);
-
   // Estado reativo
   final RxList<Membro> membros = <Membro>[].obs;
+
   final RxBool isLoading = false.obs;
   final Rx<Membro?> membroSelecionado = Rx<Membro?>(null);
-
-  @override
-  void onInit() {
-    super.onInit();
-    carregarMembros();
-  }
-
-  /// Carrega todos os membros
-  void carregarMembros() {
-    isLoading.value = true;
-    try {
-      membros.value = repository.getMembros();
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  /// Gera número de cadastro sequencial
-  String gerarNumeroCadastro() {
-    final agora = DateTime.now();
-    final ano = agora.year.toString().substring(2);
-    final mes = agora.month.toString().padLeft(2, '0');
-    final dia = agora.day.toString().padLeft(2, '0');
-    final hora = agora.hour.toString().padLeft(2, '0');
-    final minuto = agora.minute.toString().padLeft(2, '0');
-    final segundo = agora.second.toString().padLeft(2, '0');
-    
-    return 'M$ano$mes$dia$hora$minuto$segundo';
-  }
-
-  /// Verifica se número de cadastro já existe
-  bool numeroCadastroJaExiste(String numero) {
-    return membros.any((m) => m.numeroCadastro == numero);
-  }
-
-  /// Verifica se CPF já tem membro cadastrado
-  bool cpfJaTemMembro(String cpf) {
-    return membros.any((m) => m.cpf == cpf);
-  }
+  MembroController(this.repository);
 
   /// Adiciona novo membro
   Future<void> adicionarMembro(Membro membro) async {
@@ -67,37 +29,18 @@ class MembroController extends GetxController {
 
       repository.adicionarMembro(membro);
       membros.add(membro);
-      
+
       Get.snackbar(
         'Sucesso',
         'Membro ${membro.numeroCadastro} cadastrado com sucesso',
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
-      Get.snackbar(
-        'Erro',
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Erro', e.toString(), snackPosition: SnackPosition.BOTTOM);
       rethrow;
     } finally {
       isLoading.value = false;
     }
-  }
-
-  /// Busca membro por número de cadastro
-  Membro? buscarPorNumero(String numero) {
-    return repository.getMembroPorNumero(numero);
-  }
-
-  /// Busca membro por CPF
-  Membro? buscarPorCpf(String cpf) {
-    return repository.getMembroPorCpf(cpf);
-  }
-
-  /// Pesquisa membros por nome
-  List<Membro> pesquisarPorNome(String nome) {
-    return repository.pesquisarPorNome(nome);
   }
 
   /// Atualiza dados de um membro
@@ -109,7 +52,7 @@ class MembroController extends GetxController {
       );
 
       repository.atualizarMembro(membroAtualizado);
-      
+
       final index = membros.indexWhere((m) => m.id == membro.id);
       if (index != -1) {
         membros[index] = membroAtualizado;
@@ -132,28 +75,31 @@ class MembroController extends GetxController {
     }
   }
 
-  /// Remove um membro
-  Future<void> removerMembro(String numero) async {
+  /// Busca membro por CPF
+  Membro? buscarPorCpf(String cpf) {
+    return repository.getMembroPorCpf(cpf);
+  }
+
+  /// Busca membro por número de cadastro
+  Membro? buscarPorNumero(String numero) {
+    return repository.getMembroPorNumero(numero);
+  }
+
+  /// Carrega todos os membros
+  Future<void> carregarMembros() async {
     isLoading.value = true;
     try {
-      repository.removerMembro(numero);
-      membros.removeWhere((m) => m.numeroCadastro == numero);
-
-      Get.snackbar(
-        'Sucesso',
-        'Membro removido com sucesso',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Erro',
-        'Erro ao remover membro: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      rethrow;
+      // Garante que dados estão carregados do Supabase
+      await repository.garantirDadosCarregados();
+      membros.value = repository.getMembros();
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// Verifica se CPF já tem membro cadastrado
+  bool cpfJaTemMembro(String cpf) {
+    return membros.any((m) => m.cpf == cpf);
   }
 
   /// Filtra membros para relatórios
@@ -180,7 +126,9 @@ class MembroController extends GetxController {
     }
 
     if (classificacao != null && classificacao.isNotEmpty) {
-      resultado = resultado.where((m) => m.classificacao == classificacao).toList();
+      resultado = resultado
+          .where((m) => m.classificacao == classificacao)
+          .toList();
     }
 
     if (diaSessao != null && diaSessao.isNotEmpty) {
@@ -196,44 +144,112 @@ class MembroController extends GetxController {
     }
 
     if (temCamarinha != null && temCamarinha) {
-      resultado = resultado.where((m) => 
-        m.primeiraCamarinha != null || 
-        m.segundaCamarinha != null || 
-        m.terceiraCamarinha != null
-      ).toList();
+      resultado = resultado
+          .where(
+            (m) =>
+                m.primeiraCamarinha != null ||
+                m.segundaCamarinha != null ||
+                m.terceiraCamarinha != null,
+          )
+          .toList();
     }
 
     if (atividadeEspiritual != null && atividadeEspiritual.isNotEmpty) {
-      resultado = resultado.where((m) => 
-        m.atividadeEspiritual?.contains(atividadeEspiritual) ?? false
-      ).toList();
+      resultado = resultado
+          .where(
+            (m) =>
+                m.atividadeEspiritual?.contains(atividadeEspiritual) ?? false,
+          )
+          .toList();
     }
 
     if (grupoTrabalho != null && grupoTrabalho.isNotEmpty) {
-      resultado = resultado.where((m) => 
-        m.grupoTrabalhoEspiritual?.contains(grupoTrabalho) ?? false
-      ).toList();
+      resultado = resultado
+          .where(
+            (m) => m.grupoTrabalhoEspiritual?.contains(grupoTrabalho) ?? false,
+          )
+          .toList();
     }
 
     if (orixa != null && orixa.isNotEmpty) {
-      resultado = resultado.where((m) =>
-        m.primeiroOrixa == orixa ||
-        m.segundoOrixa == orixa ||
-        m.terceiroOrixa == orixa ||
-        m.quartoOrixa == orixa
-      ).toList();
+      resultado = resultado
+          .where(
+            (m) =>
+                m.primeiroOrixa == orixa ||
+                m.segundoOrixa == orixa ||
+                m.terceiroOrixa == orixa ||
+                m.quartoOrixa == orixa,
+          )
+          .toList();
     }
 
     return resultado;
   }
 
-  /// Seleciona um membro
-  void selecionarMembro(Membro? membro) {
-    membroSelecionado.value = membro;
+  /// Gera número de cadastro sequencial
+  String gerarNumeroCadastro() {
+    final agora = DateTime.now();
+    final ano = agora.year.toString().substring(2);
+    final mes = agora.month.toString().padLeft(2, '0');
+    final dia = agora.day.toString().padLeft(2, '0');
+    final hora = agora.hour.toString().padLeft(2, '0');
+    final minuto = agora.minute.toString().padLeft(2, '0');
+    final segundo = agora.second.toString().padLeft(2, '0');
+
+    return 'M$ano$mes$dia$hora$minuto$segundo';
   }
 
   /// Limpa seleção
   void limparSelecao() {
     membroSelecionado.value = null;
+  }
+
+  /// Verifica se número de cadastro já existe
+  bool numeroCadastroJaExiste(String numero) {
+    return membros.any((m) => m.numeroCadastro == numero);
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    carregarMembros();
+  }
+
+  /// Pesquisa membros por nome
+  List<Membro> pesquisarPorNome(String nome) {
+    // Garante que dados estão carregados antes de pesquisar
+    if (membros.isEmpty && !isLoading.value) {
+      carregarMembros();
+    }
+    return repository.pesquisarPorNome(nome);
+  }
+
+  /// Remove um membro
+  Future<void> removerMembro(String numero) async {
+    isLoading.value = true;
+    try {
+      repository.removerMembro(numero);
+      membros.removeWhere((m) => m.numeroCadastro == numero);
+
+      Get.snackbar(
+        'Sucesso',
+        'Membro removido com sucesso',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Erro ao remover membro: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      rethrow;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Seleciona um membro
+  void selecionarMembro(Membro? membro) {
+    membroSelecionado.value = membro;
   }
 }

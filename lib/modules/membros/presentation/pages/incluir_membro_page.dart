@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import '../../domain/entities/membro.dart';
+
+import '../../../../core/constants/membro_constants.dart';
 import '../../../cadastro/domain/entities/usuario.dart';
 import '../../../cadastro/presentation/controllers/cadastro_controller.dart';
+import '../../domain/entities/membro.dart';
 import '../controllers/membro_controller.dart';
-import '../../../../core/constants/membro_constants.dart';
 
-/// Página para incluir novo membro da CENTELHA
+/// Página para incluir novo membro da CLAUDIA
 /// Busca primeiro o cadastro pelo CPF e puxa dados pessoais
 class IncluirMembroPage extends StatefulWidget {
   const IncluirMembroPage({super.key});
@@ -74,164 +75,6 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
   String? justificativa3Selecionada;
   String? condicao4Selecionada;
   String? justificativa4Selecionada;
-
-  @override
-  void dispose() {
-    cpfController.dispose();
-    numeroCadastroController.dispose();
-    contato1Controller.dispose();
-    contato2Controller.dispose();
-    observacoesOrixaController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _buscarPorCPF() async {
-    final cpfLimpo = cpfController.text.replaceAll(RegExp(r'[^\d]'), '');
-    
-    if (cpfLimpo.length != 11) {
-      Get.snackbar('Atenção', 'Digite um CPF válido');
-      return;
-    }
-
-    final usuario = cadastroController.usuarios.firstWhereOrNull(
-      (u) => u.cpf == cpfLimpo,
-    );
-
-    setState(() {
-      cpfBuscado = true;
-      usuarioEncontrado = usuario;
-      
-      if (usuario != null) {
-        // Gera número de cadastro automático
-        numeroCadastroController.text = _gerarNumeroCadastro();
-      }
-    });
-
-    if (usuario == null) {
-      Get.snackbar(
-        'CPF não encontrado',
-        'Este CPF não está cadastrado. Faça primeiro o cadastro pessoal.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 5),
-      );
-    }
-  }
-
-  String _gerarNumeroCadastro() {
-    return membroController.gerarNumeroCadastro();
-  }
-
-  Future<void> _selecionarData(BuildContext context, Function(DateTime?) onSelected) async {
-    final data = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-      locale: const Locale('pt', 'BR'),
-    );
-    if (data != null) {
-      setState(() => onSelected(data));
-    }
-  }
-
-  String _formatarData(DateTime? data) {
-    if (data == null) return '';
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
-
-  Future<void> _salvar() async {
-    if (!_formKey.currentState!.validate()) {
-      Get.snackbar('Atenção', 'Preencha todos os campos obrigatórios');
-      return;
-    }
-
-    if (usuarioEncontrado == null) {
-      Get.snackbar('Erro', 'Nenhum cadastro selecionado');
-      return;
-    }
-
-    // Verifica se CPF já tem membro
-    if (membroController.cpfJaTemMembro(usuarioEncontrado!.cpf)) {
-      Get.snackbar(
-        'Atenção',
-        'Já existe um membro cadastrado com este CPF',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    final membro = Membro(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      numeroCadastro: numeroCadastroController.text,
-      cpf: usuarioEncontrado!.cpf,
-      nome: usuarioEncontrado!.nome,
-      nucleo: nucleoSelecionado!,
-      status: statusSelecionado!,
-      funcao: funcaoSelecionada!,
-      classificacao: classificacaoSelecionada!,
-      diaSessao: diaSessaoSelecionado!,
-      primeiroContatoEmergencia: contato1Controller.text.isNotEmpty ? contato1Controller.text : null,
-      segundoContatoEmergencia: contato2Controller.text.isNotEmpty ? contato2Controller.text : null,
-      // Histórico 1º Estágio
-      inicioPrimeiroEstagio: inicioPrimeiroEstagio,
-      desistenciaPrimeiroEstagio: desistenciaPrimeiroEstagio,
-      primeiroRitoPassagem: primeiroRitoPassagem,
-      dataPrimeiroDesligamento: dataPrimeiroDesligamento,
-      justificativaPrimeiroDesligamento: justificativa1Selecionada,
-      condicaoSegundoEstagio: condicao2Selecionada,
-      // Histórico 2º Estágio
-      inicioSegundoEstagio: inicioSegundoEstagio,
-      desistenciaSegundoEstagio: desistenciaSegundoEstagio,
-      segundoRitoPassagem: segundoRitoPassagem,
-      dataSegundoDesligamento: dataSegundoDesligamento,
-      justificativaSegundoDesligamento: justificativa2Selecionada,
-      condicaoTerceiroEstagio: condicao3Selecionada,
-      // Histórico 3º Estágio
-      inicioTerceiroEstagio: inicioTerceiroEstagio,
-      desistenciaTerceiroEstagio: desistenciaTerceiroEstagio,
-      terceiroRitoPassagem: terceiroRitoPassagem,
-      dataTerceiroDesligamento: dataTerceiroDesligamento,
-      justificativaTerceiroDesligamento: justificativa3Selecionada,
-      condicaoQuartoEstagio: condicao4Selecionada,
-      // Histórico 4º Estágio
-      inicioQuartoEstagio: inicioQuartoEstagio,
-      desistenciaQuartoEstagio: desistenciaQuartoEstagio,
-      quartoRitoPassagem: quartoRitoPassagem,
-      dataQuartoDesligamento: dataQuartoDesligamento,
-      justificativaQuartoDesligamento: justificativa4Selecionada,
-      // Histórico Espiritual (preenchidos do cadastro)
-      dataBatizado: usuarioEncontrado!.dataBatismo,
-      padrinhoBatismo: usuarioEncontrado!.padrinhoBatismo,
-      madrinhaBatismo: usuarioEncontrado!.madrinhaBatismo,
-      dataJogoOrixa: usuarioEncontrado!.dataJogoOrixa,
-      primeiraCamarinha: primeiraCamarinha,
-      segundaCamarinha: segundaCamarinha,
-      terceiraCamarinha: terceiraCamarinha,
-      dataCoroacaoSacerdote: dataCoroacaoSacerdote,
-      atividadeEspiritual: usuarioEncontrado!.atividadeEspiritual,
-      grupoTrabalhoEspiritual: usuarioEncontrado!.grupoAtividadeEspiritual,
-      // Orixás (preenchidos do cadastro)
-      primeiroOrixa: usuarioEncontrado!.primeiroOrixa,
-      adjuntoPrimeiroOrixa: usuarioEncontrado!.adjuntoPrimeiroOrixa,
-      segundoOrixa: usuarioEncontrado!.segundoOrixa,
-      adjuntoSegundoOrixa: usuarioEncontrado!.adjuntoSegundoOrixa,
-      terceiroOrixa: usuarioEncontrado!.terceiroOrixa,
-      quartoOrixa: usuarioEncontrado!.quartoOrixa,
-      observacoesOrixa: observacoesOrixaController.text.isNotEmpty ? observacoesOrixaController.text : null,
-      dataCriacao: DateTime.now(),
-      dataUltimaAlteracao: DateTime.now(),
-    );
-
-    try {
-      await membroController.adicionarMembro(membro);
-      Get.back();
-    } catch (e) {
-      // Erro já tratado no controller
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -339,9 +182,15 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
                       ),
                       const Divider(),
                       _buildInfoRow('Nome', usuarioEncontrado!.nome),
-                      _buildInfoRow('CPF', _formatarCPF(usuarioEncontrado!.cpf)),
+                      _buildInfoRow(
+                        'CPF',
+                        _formatarCPF(usuarioEncontrado!.cpf),
+                      ),
                       if (usuarioEncontrado!.dataNascimento != null)
-                        _buildInfoRow('Data Nasc.', _formatarData(usuarioEncontrado!.dataNascimento!)),
+                        _buildInfoRow(
+                          'Data Nasc.',
+                          _formatarData(usuarioEncontrado!.dataNascimento!),
+                        ),
                     ],
                   ),
                 ),
@@ -408,14 +257,33 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
 
               // FRAME: Histórico
               _buildSecaoTitulo('HISTÓRICO'),
-              
+
               // 1º Estágio
-              const Text('1º Estágio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                '1º Estágio',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
-              _buildCampoData('Início do 1º estágio', inicioPrimeiroEstagio, (d) => inicioPrimeiroEstagio = d),
-              _buildCampoData('Desistência do 1º estágio', desistenciaPrimeiroEstagio, (d) => desistenciaPrimeiroEstagio = d),
-              _buildCampoData('1º rito de passagem', primeiroRitoPassagem, (d) => primeiroRitoPassagem = d),
-              _buildCampoData('1º desligamento', dataPrimeiroDesligamento, (d) => dataPrimeiroDesligamento = d),
+              _buildCampoData(
+                'Início do 1º estágio',
+                inicioPrimeiroEstagio,
+                (d) => inicioPrimeiroEstagio = d,
+              ),
+              _buildCampoData(
+                'Desistência do 1º estágio',
+                desistenciaPrimeiroEstagio,
+                (d) => desistenciaPrimeiroEstagio = d,
+              ),
+              _buildCampoData(
+                '1º rito de passagem',
+                primeiroRitoPassagem,
+                (d) => primeiroRitoPassagem = d,
+              ),
+              _buildCampoData(
+                '1º desligamento',
+                dataPrimeiroDesligamento,
+                (d) => dataPrimeiroDesligamento = d,
+              ),
               _buildDropdown(
                 value: justificativa1Selecionada,
                 label: 'Justificativa do 1º desligamento',
@@ -432,12 +300,31 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
               const SizedBox(height: 16),
 
               // 2º Estágio
-              const Text('2º Estágio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                '2º Estágio',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
-              _buildCampoData('Início do 2º estágio', inicioSegundoEstagio, (d) => inicioSegundoEstagio = d),
-              _buildCampoData('Desistência do 2º estágio', desistenciaSegundoEstagio, (d) => desistenciaSegundoEstagio = d),
-              _buildCampoData('2º rito de passagem', segundoRitoPassagem, (d) => segundoRitoPassagem = d),
-              _buildCampoData('2º desligamento', dataSegundoDesligamento, (d) => dataSegundoDesligamento = d),
+              _buildCampoData(
+                'Início do 2º estágio',
+                inicioSegundoEstagio,
+                (d) => inicioSegundoEstagio = d,
+              ),
+              _buildCampoData(
+                'Desistência do 2º estágio',
+                desistenciaSegundoEstagio,
+                (d) => desistenciaSegundoEstagio = d,
+              ),
+              _buildCampoData(
+                '2º rito de passagem',
+                segundoRitoPassagem,
+                (d) => segundoRitoPassagem = d,
+              ),
+              _buildCampoData(
+                '2º desligamento',
+                dataSegundoDesligamento,
+                (d) => dataSegundoDesligamento = d,
+              ),
               _buildDropdown(
                 value: justificativa2Selecionada,
                 label: 'Justificativa do 2º desligamento',
@@ -454,12 +341,31 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
               const SizedBox(height: 16),
 
               // 3º Estágio
-              const Text('3º Estágio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                '3º Estágio',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
-              _buildCampoData('Início do 3º estágio', inicioTerceiroEstagio, (d) => inicioTerceiroEstagio = d),
-              _buildCampoData('Desistência do 3º estágio', desistenciaTerceiroEstagio, (d) => desistenciaTerceiroEstagio = d),
-              _buildCampoData('3º rito de passagem', terceiroRitoPassagem, (d) => terceiroRitoPassagem = d),
-              _buildCampoData('3º desligamento', dataTerceiroDesligamento, (d) => dataTerceiroDesligamento = d),
+              _buildCampoData(
+                'Início do 3º estágio',
+                inicioTerceiroEstagio,
+                (d) => inicioTerceiroEstagio = d,
+              ),
+              _buildCampoData(
+                'Desistência do 3º estágio',
+                desistenciaTerceiroEstagio,
+                (d) => desistenciaTerceiroEstagio = d,
+              ),
+              _buildCampoData(
+                '3º rito de passagem',
+                terceiroRitoPassagem,
+                (d) => terceiroRitoPassagem = d,
+              ),
+              _buildCampoData(
+                '3º desligamento',
+                dataTerceiroDesligamento,
+                (d) => dataTerceiroDesligamento = d,
+              ),
               _buildDropdown(
                 value: justificativa3Selecionada,
                 label: 'Justificativa do 3º desligamento',
@@ -476,12 +382,31 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
               const SizedBox(height: 16),
 
               // 4º Estágio
-              const Text('4º Estágio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                '4º Estágio',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 8),
-              _buildCampoData('Início do 4º estágio', inicioQuartoEstagio, (d) => inicioQuartoEstagio = d),
-              _buildCampoData('Desistência do 4º estágio', desistenciaQuartoEstagio, (d) => desistenciaQuartoEstagio = d),
-              _buildCampoData('4º rito de passagem', quartoRitoPassagem, (d) => quartoRitoPassagem = d),
-              _buildCampoData('4º desligamento', dataQuartoDesligamento, (d) => dataQuartoDesligamento = d),
+              _buildCampoData(
+                'Início do 4º estágio',
+                inicioQuartoEstagio,
+                (d) => inicioQuartoEstagio = d,
+              ),
+              _buildCampoData(
+                'Desistência do 4º estágio',
+                desistenciaQuartoEstagio,
+                (d) => desistenciaQuartoEstagio = d,
+              ),
+              _buildCampoData(
+                '4º rito de passagem',
+                quartoRitoPassagem,
+                (d) => quartoRitoPassagem = d,
+              ),
+              _buildCampoData(
+                '4º desligamento',
+                dataQuartoDesligamento,
+                (d) => dataQuartoDesligamento = d,
+              ),
               _buildDropdown(
                 value: justificativa4Selecionada,
                 label: 'Justificativa do 4º desligamento',
@@ -493,27 +418,79 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
 
               // FRAME: Histórico Espiritual
               _buildSecaoTitulo('HISTÓRICO ESPIRITUAL'),
-              _buildCampoTextoReadOnly('Data do Batizado', _formatarData(usuarioEncontrado!.dataBatismo)),
-              _buildCampoTextoReadOnly('Padrinho de batismo', usuarioEncontrado!.padrinhoBatismo ?? '-'),
-              _buildCampoTextoReadOnly('Madrinha de batismo', usuarioEncontrado!.madrinhaBatismo ?? '-'),
-              _buildCampoTextoReadOnly('Data do jogo de Orixá', _formatarData(usuarioEncontrado!.dataJogoOrixa)),
-              _buildCampoData('1ª camarinha', primeiraCamarinha, (d) => primeiraCamarinha = d),
-              _buildCampoData('2ª camarinha', segundaCamarinha, (d) => segundaCamarinha = d),
-              _buildCampoData('3ª camarinha', terceiraCamarinha, (d) => terceiraCamarinha = d),
-              _buildCampoData('Data da coroação de sacerdote', dataCoroacaoSacerdote, (d) => dataCoroacaoSacerdote = d),
-              _buildCampoTextoReadOnly('Atividade espiritual', usuarioEncontrado!.atividadeEspiritual ?? '-'),
-              _buildCampoTextoReadOnly('Grupo de trabalho espiritual', usuarioEncontrado!.grupoAtividadeEspiritual ?? '-'),
+              _buildCampoTextoReadOnly(
+                'Data do Batizado',
+                _formatarData(usuarioEncontrado!.dataBatismo),
+              ),
+              _buildCampoTextoReadOnly(
+                'Padrinho de batismo',
+                usuarioEncontrado!.padrinhoBatismo ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                'Madrinha de batismo',
+                usuarioEncontrado!.madrinhaBatismo ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                'Data do jogo de Orixá',
+                _formatarData(usuarioEncontrado!.dataJogoOrixa),
+              ),
+              _buildCampoData(
+                '1ª camarinha',
+                primeiraCamarinha,
+                (d) => primeiraCamarinha = d,
+              ),
+              _buildCampoData(
+                '2ª camarinha',
+                segundaCamarinha,
+                (d) => segundaCamarinha = d,
+              ),
+              _buildCampoData(
+                '3ª camarinha',
+                terceiraCamarinha,
+                (d) => terceiraCamarinha = d,
+              ),
+              _buildCampoData(
+                'Data da coroação de sacerdote',
+                dataCoroacaoSacerdote,
+                (d) => dataCoroacaoSacerdote = d,
+              ),
+              _buildCampoTextoReadOnly(
+                'Atividade espiritual',
+                usuarioEncontrado!.atividadeEspiritual ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                'Grupo de trabalho espiritual',
+                usuarioEncontrado!.grupoAtividadeEspiritual ?? '-',
+              ),
 
               const SizedBox(height: 24),
 
               // FRAME: Orixás
               _buildSecaoTitulo('ORIXÁS'),
-              _buildCampoTextoReadOnly('1º Orixá', usuarioEncontrado!.primeiroOrixa ?? '-'),
-              _buildCampoTextoReadOnly('Adjuntó do 1º Orixá', usuarioEncontrado!.adjuntoPrimeiroOrixa ?? '-'),
-              _buildCampoTextoReadOnly('2º Orixá', usuarioEncontrado!.segundoOrixa ?? '-'),
-              _buildCampoTextoReadOnly('Adjuntó do 2º Orixá', usuarioEncontrado!.adjuntoSegundoOrixa ?? '-'),
-              _buildCampoTextoReadOnly('3º Orixá', usuarioEncontrado!.terceiroOrixa ?? '-'),
-              _buildCampoTextoReadOnly('4º Orixá', usuarioEncontrado!.quartoOrixa ?? '-'),
+              _buildCampoTextoReadOnly(
+                '1º Orixá',
+                usuarioEncontrado!.primeiroOrixa ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                'Adjuntó do 1º Orixá',
+                usuarioEncontrado!.adjuntoPrimeiroOrixa ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                '2º Orixá',
+                usuarioEncontrado!.segundoOrixa ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                'Adjuntó do 2º Orixá',
+                usuarioEncontrado!.adjuntoSegundoOrixa ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                '3º Orixá',
+                usuarioEncontrado!.terceiroOrixa ?? '-',
+              ),
+              _buildCampoTextoReadOnly(
+                '4º Orixá',
+                usuarioEncontrado!.quartoOrixa ?? '-',
+              ),
               TextFormField(
                 controller: observacoesOrixaController,
                 maxLines: 3,
@@ -554,15 +531,37 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
     );
   }
 
-  Widget _buildSecaoTitulo(String titulo) {
+  @override
+  void dispose() {
+    cpfController.dispose();
+    numeroCadastroController.dispose();
+    contato1Controller.dispose();
+    contato2Controller.dispose();
+    observacoesOrixaController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCampoData(
+    String label,
+    DateTime? data,
+    Function(DateTime?) onSelected,
+  ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16, top: 8),
-      child: Text(
-        titulo,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.purple,
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        readOnly: true,
+        controller: TextEditingController(text: _formatarData(data)),
+        onTap: () => _selecionarData(context, onSelected),
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.calendar_today),
+          border: const OutlineInputBorder(),
+          suffixIcon: data != null
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () => setState(() => onSelected(null)),
+                )
+              : null,
         ),
       ),
     );
@@ -610,28 +609,6 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
     );
   }
 
-  Widget _buildCampoData(String label, DateTime? data, Function(DateTime?) onSelected) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        readOnly: true,
-        controller: TextEditingController(text: _formatarData(data)),
-        onTap: () => _selecionarData(context, onSelected),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: const Icon(Icons.calendar_today),
-          border: const OutlineInputBorder(),
-          suffixIcon: data != null
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () => setState(() => onSelected(null)),
-                )
-              : null,
-        ),
-      ),
-    );
-  }
-
   Widget _buildDropdown({
     required String? value,
     required String label,
@@ -642,7 +619,7 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
@@ -674,8 +651,179 @@ class _IncluirMembroPageState extends State<IncluirMembroPage> {
     );
   }
 
+  Widget _buildSecaoTitulo(String titulo) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: 8),
+      child: Text(
+        titulo,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.purple,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _buscarPorCPF() async {
+    final cpfLimpo = cpfController.text.replaceAll(RegExp(r'[^\d]'), '');
+
+    if (cpfLimpo.length != 11) {
+      Get.snackbar('Atenção', 'Digite um CPF válido');
+      return;
+    }
+
+    final usuario = cadastroController.usuarios.firstWhereOrNull(
+      (u) => u.cpf == cpfLimpo,
+    );
+
+    setState(() {
+      cpfBuscado = true;
+      usuarioEncontrado = usuario;
+
+      if (usuario != null) {
+        // Gera número de cadastro automático
+        numeroCadastroController.text = _gerarNumeroCadastro();
+      }
+    });
+
+    if (usuario == null) {
+      Get.snackbar(
+        'CPF não encontrado',
+        'Este CPF não está cadastrado. Faça primeiro o cadastro pessoal.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
+    }
+  }
+
   String _formatarCPF(String cpf) {
     if (cpf.length != 11) return cpf;
     return '${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9)}';
+  }
+
+  String _formatarData(DateTime? data) {
+    if (data == null) return '';
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  String _gerarNumeroCadastro() {
+    return membroController.gerarNumeroCadastro();
+  }
+
+  Future<void> _salvar() async {
+    if (!_formKey.currentState!.validate()) {
+      Get.snackbar('Atenção', 'Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    if (usuarioEncontrado == null) {
+      Get.snackbar('Erro', 'Nenhum cadastro selecionado');
+      return;
+    }
+
+    // Verifica se CPF já tem membro
+    if (membroController.cpfJaTemMembro(usuarioEncontrado!.cpf)) {
+      Get.snackbar(
+        'Atenção',
+        'Já existe um membro cadastrado com este CPF',
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final membro = Membro(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      numeroCadastro: numeroCadastroController.text,
+      cpf: usuarioEncontrado!.cpf,
+      nome: usuarioEncontrado!.nome,
+      nucleo: nucleoSelecionado!,
+      status: statusSelecionado!,
+      funcao: funcaoSelecionada!,
+      classificacao: classificacaoSelecionada!,
+      diaSessao: diaSessaoSelecionado!,
+      primeiroContatoEmergencia: contato1Controller.text.isNotEmpty
+          ? contato1Controller.text
+          : null,
+      segundoContatoEmergencia: contato2Controller.text.isNotEmpty
+          ? contato2Controller.text
+          : null,
+      // Histórico 1º Estágio
+      inicioPrimeiroEstagio: inicioPrimeiroEstagio,
+      desistenciaPrimeiroEstagio: desistenciaPrimeiroEstagio,
+      primeiroRitoPassagem: primeiroRitoPassagem,
+      dataPrimeiroDesligamento: dataPrimeiroDesligamento,
+      justificativaPrimeiroDesligamento: justificativa1Selecionada,
+      condicaoSegundoEstagio: condicao2Selecionada,
+      // Histórico 2º Estágio
+      inicioSegundoEstagio: inicioSegundoEstagio,
+      desistenciaSegundoEstagio: desistenciaSegundoEstagio,
+      segundoRitoPassagem: segundoRitoPassagem,
+      dataSegundoDesligamento: dataSegundoDesligamento,
+      justificativaSegundoDesligamento: justificativa2Selecionada,
+      condicaoTerceiroEstagio: condicao3Selecionada,
+      // Histórico 3º Estágio
+      inicioTerceiroEstagio: inicioTerceiroEstagio,
+      desistenciaTerceiroEstagio: desistenciaTerceiroEstagio,
+      terceiroRitoPassagem: terceiroRitoPassagem,
+      dataTerceiroDesligamento: dataTerceiroDesligamento,
+      justificativaTerceiroDesligamento: justificativa3Selecionada,
+      condicaoQuartoEstagio: condicao4Selecionada,
+      // Histórico 4º Estágio
+      inicioQuartoEstagio: inicioQuartoEstagio,
+      desistenciaQuartoEstagio: desistenciaQuartoEstagio,
+      quartoRitoPassagem: quartoRitoPassagem,
+      dataQuartoDesligamento: dataQuartoDesligamento,
+      justificativaQuartoDesligamento: justificativa4Selecionada,
+      // Histórico Espiritual (preenchidos do cadastro)
+      dataBatizado: usuarioEncontrado!.dataBatismo,
+      padrinhoBatismo: usuarioEncontrado!.padrinhoBatismo,
+      madrinhaBatismo: usuarioEncontrado!.madrinhaBatismo,
+      dataJogoOrixa: usuarioEncontrado!.dataJogoOrixa,
+      primeiraCamarinha: primeiraCamarinha,
+      segundaCamarinha: segundaCamarinha,
+      terceiraCamarinha: terceiraCamarinha,
+      dataCoroacaoSacerdote: dataCoroacaoSacerdote,
+      atividadeEspiritual: usuarioEncontrado!.atividadeEspiritual,
+      grupoTrabalhoEspiritual: usuarioEncontrado!.grupoAtividadeEspiritual,
+      // Orixás (preenchidos do cadastro)
+      primeiroOrixa: usuarioEncontrado!.primeiroOrixa,
+      adjuntoPrimeiroOrixa: usuarioEncontrado!.adjuntoPrimeiroOrixa,
+      segundoOrixa: usuarioEncontrado!.segundoOrixa,
+      adjuntoSegundoOrixa: usuarioEncontrado!.adjuntoSegundoOrixa,
+      terceiroOrixa: usuarioEncontrado!.terceiroOrixa,
+      quartoOrixa: usuarioEncontrado!.quartoOrixa,
+      observacoesOrixa: observacoesOrixaController.text.isNotEmpty
+          ? observacoesOrixaController.text
+          : null,
+      dataCriacao: DateTime.now(),
+      dataUltimaAlteracao: DateTime.now(),
+    );
+
+    try {
+      await membroController.adicionarMembro(membro);
+      Get.back();
+    } catch (e) {
+      // Erro já tratado no controller
+    }
+  }
+
+  Future<void> _selecionarData(
+    BuildContext context,
+    Function(DateTime?) onSelected,
+  ) async {
+    final data = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      locale: const Locale('pt', 'BR'),
+    );
+    if (data != null) {
+      setState(() => onSelected(data));
+    }
   }
 }

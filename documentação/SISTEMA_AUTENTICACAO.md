@@ -7,12 +7,10 @@ Sistema completo de autenticação com controle de permissões por níveis de ac
 ## 👤 Níveis de Acesso
 
 ### Nível 1 - Membros Ativos
-
 - Acesso básico ao sistema
 - Visualização de informações gerais
 
 ### Nível 2 - Membros da Secretaria
-
 - Todas as permissões do Nível 1
 - Gerenciamento de cadastros
 - Gerenciamento de membros
@@ -21,13 +19,11 @@ Sistema completo de autenticação com controle de permissões por níveis de ac
 - Gestão de cursos
 
 ### Nível 3 - Pais e Mães de Terreiro
-
 - Todas as permissões do Nível 2
 - Gerenciamento de sacramentos
 - Exclusão de cadastros
 
 ### Nível 4 - Administrador do Sistema
-
 - Todas as permissões
 - Gerenciamento de usuários do sistema
 - Gestão da organização (núcleos, grupos, etc.)
@@ -44,7 +40,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ## 📋 Estrutura de Menus
 
 ### 1. CADASTROS (Nível 2+)
-
 ```
 ├── Cadastrar
 ├── Pesquisar Cadastro
@@ -53,7 +48,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 2. MEMBROS DA CENTELHA (Nível 2+)
-
 ```
 ├── Incluir Novo Membro
 ├── Pesquisar Dados de Membro
@@ -62,7 +56,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 3. HISTÓRICO DE CONSULTAS (Nível 2+)
-
 ```
 ├── Nova Consulta
 ├── Pesquisar Consulta
@@ -70,28 +63,24 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 4. GRUPOS-TAREFAS (Nível 2+)
-
 ```
 ├── Gerenciar Membros
 └── Gerar Relatórios
 ```
 
 ### 5. GRUPOS DE AÇÕES SOCIAIS (Nível 2+)
-
 ```
 ├── Gerenciar Membros
 └── Gerar Relatórios
 ```
 
 ### 6. GRUPOS DE TRABALHOS ESPIRITUAIS (Nível 2+)
-
 ```
 ├── Gerenciar Membros
 └── Gerar Relatórios
 ```
 
 ### 7. SACRAMENTOS (Nível 3+)
-
 ```
 ├── Batismo
 ├── Casamento
@@ -102,7 +91,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 8. CURSOS E TREINAMENTOS (Nível 2+)
-
 ```
 ├── Criar Novo Curso
 ├── Abrir Nova Turma
@@ -112,7 +100,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 9. USUÁRIOS DO SISTEMA (Nível 4 - Admin)
-
 ```
 ├── Cadastrar Novo Usuário
 ├── Excluir Usuário
@@ -121,7 +108,6 @@ Login: membro     | Senha: 123456 | Nível: Membro Ativo
 ```
 
 ### 10. ORGANIZAÇÃO DA CENTELHA (Nível 4 - Admin)
-
 ```
 ├── Incluir Núcleo
 ├── Excluir Núcleo
@@ -219,21 +205,18 @@ final menuItems = AppMenus.menuItems
 ## 🎨 Componentes UI
 
 ### LoginPage
-
 - Formulário de login com validação
 - Feedback visual de erros
 - Loading state
 - Informações de usuários de teste
 
 ### HomePage
-
 - AppBar com informações do usuário
 - Botão de logout
 - Drawer com menu lateral
 - Dashboard central
 
 ### AppDrawer
-
 - Header com avatar e informações do usuário
 - Menus expansíveis organizados por categoria
 - Ícones para cada item
@@ -266,7 +249,6 @@ final menuItems = AppMenus.menuItems
 ## 🔒 Segurança
 
 ### Implementado
-
 ✅ Login obrigatório para acesso
 ✅ Controle de sessão via BLoC
 ✅ Filtragem de menus por permissão
@@ -274,7 +256,6 @@ final menuItems = AppMenus.menuItems
 ✅ Estado de autenticação persistente na sessão
 
 ### Para Implementar (API Real)
-
 - [ ] JWT Tokens
 - [ ] Refresh token
 - [ ] Timeout de sessão
@@ -286,16 +267,13 @@ final menuItems = AppMenus.menuItems
 ## 🚀 Próximos Passos
 
 ### 1. Implementar Rotas
-
 ```dart
 // Adicionar navegação real em vez de dialogs
 Navigator.pushNamed(context, route);
 ```
 
 ### 2. Criar Páginas para Cada Menu
-
 Estrutura sugerida:
-
 ```
 lib/modules/
 ├── membros/
@@ -312,7 +290,6 @@ lib/modules/
 ```
 
 ### 3. Implementar Middleware de Permissões
-
 ```dart
 class PermissionGuard {
   static bool canAccess(String route, UsuarioSistema usuario) {
@@ -322,18 +299,17 @@ class PermissionGuard {
 ```
 
 ### 4. Conectar com API Real
-
 ```dart
 class AuthDatasourceRemote implements AuthDatasource {
   final Dio dio;
-
+  
   @override
   Future<UsuarioSistemaModel> login(String login, String senha) async {
     final response = await dio.post('/auth/login', data: {
       'login': login,
       'senha': senha,
     });
-
+    
     return UsuarioSistemaModel.fromJson(response.data);
   }
 }
