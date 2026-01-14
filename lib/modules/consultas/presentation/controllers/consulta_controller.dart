@@ -1,38 +1,18 @@
 import 'package:get/get.dart';
-import '../../domain/entities/consulta.dart';
+
 import '../../data/repositories/consulta_repository.dart';
+import '../../domain/entities/consulta.dart';
 
 /// Controller GetX para gerenciar consultas espirituais
 class ConsultaController extends GetxController {
   final ConsultaRepository repository;
 
-  ConsultaController(this.repository);
-
   // Estado reativo
   final RxList<Consulta> consultas = <Consulta>[].obs;
+
   final RxBool isLoading = false.obs;
   final Rx<Consulta?> consultaSelecionada = Rx<Consulta?>(null);
-
-  @override
-  void onInit() {
-    super.onInit();
-    carregarConsultas();
-  }
-
-  /// Carrega todas as consultas
-  Future<void> carregarConsultas() async {
-    isLoading.value = true;
-    try {
-      consultas.value = await repository.getConsultas();
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  /// Gera próximo número de consulta (5 dígitos)
-  Future<String> gerarProximoNumero() async {
-    return await repository.gerarProximoNumero();
-  }
+  ConsultaController(this.repository);
 
   /// Adiciona nova consulta
   Future<void> adicionarConsulta(Consulta consulta) async {
@@ -63,6 +43,32 @@ class ConsultaController extends GetxController {
     return await repository.getConsultaPorNumero(numero);
   }
 
+  /// Carrega todas as consultas
+  Future<void> carregarConsultas() async {
+    isLoading.value = true;
+    try {
+      consultas.value = await repository.getConsultas();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Gera próximo número de consulta (5 dígitos)
+  Future<String> gerarProximoNumero() async {
+    return await repository.gerarProximoNumero();
+  }
+
+  /// Limpa seleção
+  void limparSelecao() {
+    consultaSelecionada.value = null;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    carregarConsultas();
+  }
+
   /// Pesquisa consultas com filtros
   Future<List<Consulta>> pesquisarConsultas({
     String? cadastroConsulente,
@@ -77,10 +83,14 @@ class ConsultaController extends GetxController {
   }
 
   /// Verifica se usuário pode ver consulta (nível 1 só vê as próprias)
-  bool podeVerConsulta(Consulta consulta, String cadastroUsuario, int nivelAcesso) {
+  bool podeVerConsulta(
+    Consulta consulta,
+    String cadastroUsuario,
+    int nivelAcesso,
+  ) {
     // Níveis 2, 3 e 4 podem ver todas
     if (nivelAcesso >= 2) return true;
-    
+
     // Nível 1 só vê consultas onde é o consulente
     return consulta.cadastroConsulente == cadastroUsuario;
   }
@@ -88,10 +98,5 @@ class ConsultaController extends GetxController {
   /// Seleciona uma consulta
   void selecionarConsulta(Consulta? consulta) {
     consultaSelecionada.value = consulta;
-  }
-
-  /// Limpa seleção
-  void limparSelecao() {
-    consultaSelecionada.value = null;
   }
 }

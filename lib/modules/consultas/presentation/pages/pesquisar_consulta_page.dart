@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/consulta.dart';
-import '../controllers/consulta_controller.dart';
+import 'package:get/get.dart';
+
+import '../../../../core/constants/consulta_constants.dart';
 import '../../../../modules/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../modules/auth/presentation/bloc/auth_state.dart';
-import '../../../../core/constants/consulta_constants.dart';
+import '../../domain/entities/consulta.dart';
+import '../controllers/consulta_controller.dart';
 
 /// Página para pesquisar consultas com filtros
 /// Disponível para todos os níveis
@@ -107,14 +108,19 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
                 width: 350,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  border: Border(right: BorderSide(color: Colors.grey.shade300)),
+                  border: Border(
+                    right: BorderSide(color: Colors.grey.shade300),
+                  ),
                 ),
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
                     const Text(
                       'FILTROS',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const Divider(),
 
@@ -152,7 +158,7 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
 
                     // Nome da entidade
                     DropdownButtonFormField<String>(
-                      value: entidadeSelecionada,
+                      initialValue: entidadeSelecionada,
                       decoration: const InputDecoration(
                         labelText: 'Nome da Entidade',
                         border: OutlineInputBorder(),
@@ -212,7 +218,10 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.assessment, color: Colors.purple.shade700),
+                            Icon(
+                              Icons.assessment,
+                              color: Colors.purple.shade700,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'Total de registros: ${resultados.length}',
@@ -239,53 +248,82 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
                     Expanded(
                       child: relatorioGerado
                           ? resultados.isEmpty
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Nenhuma consulta encontrada',
-                                        style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: SingleChildScrollView(
-                                    child: DataTable(
-                                      columns: const [
-                                        DataColumn(label: Text('Nº Consulta')),
-                                        DataColumn(label: Text('Data')),
-                                        DataColumn(label: Text('Consulente')),
-                                        DataColumn(label: Text('Médium')),
-                                        DataColumn(label: Text('Entidade')),
+                                ? Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.search_off,
+                                          size: 64,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'Nenhuma consulta encontrada',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
                                       ],
-                                      rows: resultados.map((consulta) {
-                                        return DataRow(
-                                          cells: [
-                                            DataCell(Text(consulta.numeroConsulta)),
-                                            DataCell(Text(_formatarData(consulta.data))),
-                                            DataCell(Text(consulta.nomeConsulente)),
-                                            DataCell(Text(consulta.nomeMedium)),
-                                            DataCell(Text(consulta.nomeEntidade)),
-                                          ],
-                                        );
-                                      }).toList(),
                                     ),
-                                  ),
-                                )
+                                  )
+                                : SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: SingleChildScrollView(
+                                      child: DataTable(
+                                        columns: const [
+                                          DataColumn(
+                                            label: Text('Nº Consulta'),
+                                          ),
+                                          DataColumn(label: Text('Data')),
+                                          DataColumn(label: Text('Consulente')),
+                                          DataColumn(label: Text('Médium')),
+                                          DataColumn(label: Text('Entidade')),
+                                        ],
+                                        rows: resultados.map((consulta) {
+                                          return DataRow(
+                                            cells: [
+                                              DataCell(
+                                                Text(consulta.numeroConsulta),
+                                              ),
+                                              DataCell(
+                                                Text(
+                                                  _formatarData(consulta.data),
+                                                ),
+                                              ),
+                                              DataCell(
+                                                Text(consulta.nomeConsulente),
+                                              ),
+                                              DataCell(
+                                                Text(consulta.nomeMedium),
+                                              ),
+                                              DataCell(
+                                                Text(consulta.nomeEntidade),
+                                              ),
+                                            ],
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  )
                           : Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.search, size: 64, color: Colors.grey.shade400),
+                                  Icon(
+                                    Icons.search,
+                                    size: 64,
+                                    color: Colors.grey.shade400,
+                                  ),
                                   const SizedBox(height: 16),
                                   Text(
                                     'Selecione os filtros e clique em "Pesquisar"',
-                                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade600,
+                                    ),
                                   ),
                                 ],
                               ),

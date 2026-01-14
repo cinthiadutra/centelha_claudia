@@ -19,6 +19,25 @@ class ConsultaModel extends Consulta {
     super.dataUltimaAlteracao,
   });
 
+  factory ConsultaModel.fromEntity(Consulta consulta) {
+    return ConsultaModel(
+      id: consulta.id,
+      numeroConsulta: consulta.numeroConsulta,
+      data: consulta.data,
+      horaInicio: consulta.horaInicio,
+      cadastroConsulente: consulta.cadastroConsulente,
+      cadastroCambono: consulta.cadastroCambono,
+      cadastroMedium: consulta.cadastroMedium,
+      nomeConsulente: consulta.nomeConsulente,
+      nomeCambono: consulta.nomeCambono,
+      nomeMedium: consulta.nomeMedium,
+      nomeEntidade: consulta.nomeEntidade,
+      descricaoConsulta: consulta.descricaoConsulta,
+      dataCriacao: consulta.dataCriacao,
+      dataUltimaAlteracao: consulta.dataUltimaAlteracao,
+    );
+  }
+
   factory ConsultaModel.fromJson(Map<String, dynamic> json) {
     return ConsultaModel(
       id: json['id'] as String?,
@@ -27,7 +46,9 @@ class ConsultaModel extends Consulta {
           ? DateTime.parse(json['data_consulta'] as String)
           : DateTime.now(),
       horaInicio: json['data_consulta'] != null
-          ? DateTime.parse(json['data_consulta'] as String).toIso8601String().substring(11, 16)
+          ? DateTime.parse(
+              json['data_consulta'] as String,
+            ).toIso8601String().substring(11, 16)
           : '00:00',
       cadastroConsulente: json['cadastro_consulente'] as String? ?? '',
       cadastroCambono: '',
@@ -51,30 +72,13 @@ class ConsultaModel extends Consulta {
       'id': id,
       'numero_consulta': numeroConsulta,
       'data_consulta': data.toIso8601String(),
-      'cadastro_consulente': cadastroConsulente.isEmpty ? null : cadastroConsulente,
+      'cadastro_consulente': cadastroConsulente.isEmpty
+          ? null
+          : cadastroConsulente,
       'nome_consulente': nomeConsulente,
       'atendente': nomeEntidade,
       'descricao': descricaoConsulta,
       'tipo_consulta': 'Consulta Espiritual',
     };
-  }
-
-  factory ConsultaModel.fromEntity(Consulta consulta) {
-    return ConsultaModel(
-      id: consulta.id,
-      numeroConsulta: consulta.numeroConsulta,
-      data: consulta.data,
-      horaInicio: consulta.horaInicio,
-      cadastroConsulente: consulta.cadastroConsulente,
-      cadastroCambono: consulta.cadastroCambono,
-      cadastroMedium: consulta.cadastroMedium,
-      nomeConsulente: consulta.nomeConsulente,
-      nomeCambono: consulta.nomeCambono,
-      nomeMedium: consulta.nomeMedium,
-      nomeEntidade: consulta.nomeEntidade,
-      descricaoConsulta: consulta.descricaoConsulta,
-      dataCriacao: consulta.dataCriacao,
-      dataUltimaAlteracao: consulta.dataUltimaAlteracao,
-    );
   }
 }
