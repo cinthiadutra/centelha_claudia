@@ -4,15 +4,15 @@ import '../models/consulta_model.dart';
 
 /// Repository para operações com consultas
 abstract class ConsultaRepository {
-  List<Consulta> getConsultas();
-  Consulta? getConsultaPorNumero(String numero);
-  List<Consulta> pesquisarConsultas({
+  Future<List<Consulta>> getConsultas();
+  Future<Consulta?> getConsultaPorNumero(String numero);
+  Future<List<Consulta>> pesquisarConsultas({
     String? cadastroConsulente,
     String? cadastroMedium,
     String? nomeEntidade,
   });
-  void adicionarConsulta(Consulta consulta);
-  String gerarProximoNumero();
+  Future<void> adicionarConsulta(Consulta consulta);
+  Future<String> gerarProximoNumero();
 }
 
 /// Implementação do repository
@@ -22,22 +22,22 @@ class ConsultaRepositoryImpl implements ConsultaRepository {
   ConsultaRepositoryImpl(this.datasource);
 
   @override
-  List<Consulta> getConsultas() {
-    return datasource.getConsultas();
+  Future<List<Consulta>> getConsultas() async {
+    return await datasource.getConsultas();
   }
 
   @override
-  Consulta? getConsultaPorNumero(String numero) {
-    return datasource.getConsultaPorNumero(numero);
+  Future<Consulta?> getConsultaPorNumero(String numero) async {
+    return await datasource.getConsultaPorNumero(numero);
   }
 
   @override
-  List<Consulta> pesquisarConsultas({
+  Future<List<Consulta>> pesquisarConsultas({
     String? cadastroConsulente,
     String? cadastroMedium,
     String? nomeEntidade,
-  }) {
-    return datasource.pesquisarConsultas(
+  }) async {
+    return await datasource.pesquisarConsultas(
       cadastroConsulente: cadastroConsulente,
       cadastroMedium: cadastroMedium,
       nomeEntidade: nomeEntidade,
@@ -45,9 +45,9 @@ class ConsultaRepositoryImpl implements ConsultaRepository {
   }
 
   @override
-  void adicionarConsulta(Consulta consulta) {
+  Future<void> adicionarConsulta(Consulta consulta) async {
     final model = ConsultaModel.fromEntity(consulta);
-    datasource.adicionarConsulta(model);
+    await datasource.adicionarConsulta(model);
   }
 
   @override

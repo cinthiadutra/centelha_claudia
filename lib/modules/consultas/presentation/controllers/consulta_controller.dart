@@ -20,25 +20,25 @@ class ConsultaController extends GetxController {
   }
 
   /// Carrega todas as consultas
-  void carregarConsultas() {
+  Future<void> carregarConsultas() async {
     isLoading.value = true;
     try {
-      consultas.value = repository.getConsultas();
+      consultas.value = await repository.getConsultas();
     } finally {
       isLoading.value = false;
     }
   }
 
   /// Gera próximo número de consulta (5 dígitos)
-  String gerarProximoNumero() {
-    return repository.gerarProximoNumero();
+  Future<String> gerarProximoNumero() async {
+    return await repository.gerarProximoNumero();
   }
 
   /// Adiciona nova consulta
   Future<void> adicionarConsulta(Consulta consulta) async {
     isLoading.value = true;
     try {
-      repository.adicionarConsulta(consulta);
+      await repository.adicionarConsulta(consulta);
       consultas.add(consulta);
 
       Get.snackbar(
@@ -59,17 +59,17 @@ class ConsultaController extends GetxController {
   }
 
   /// Busca consulta por número
-  Consulta? buscarPorNumero(String numero) {
-    return repository.getConsultaPorNumero(numero);
+  Future<Consulta?> buscarPorNumero(String numero) async {
+    return await repository.getConsultaPorNumero(numero);
   }
 
   /// Pesquisa consultas com filtros
-  List<Consulta> pesquisarConsultas({
+  Future<List<Consulta>> pesquisarConsultas({
     String? cadastroConsulente,
     String? cadastroMedium,
     String? nomeEntidade,
-  }) {
-    return repository.pesquisarConsultas(
+  }) async {
+    return await repository.pesquisarConsultas(
       cadastroConsulente: cadastroConsulente,
       cadastroMedium: cadastroMedium,
       nomeEntidade: nomeEntidade,

@@ -35,17 +35,23 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
     super.dispose();
   }
 
-  void _gerarRelatorio() {
+  void _gerarRelatorio() async {
     setState(() {
-      resultados = consultaController.pesquisarConsultas(
-        cadastroConsulente: cadastroConsulenteController.text.isNotEmpty
-            ? cadastroConsulenteController.text
-            : null,
-        cadastroMedium: cadastroMediumController.text.isNotEmpty
-            ? cadastroMediumController.text
-            : null,
-        nomeEntidade: entidadeSelecionada,
-      );
+      relatorioGerado = false;
+    });
+
+    final resultado = await consultaController.pesquisarConsultas(
+      cadastroConsulente: cadastroConsulenteController.text.isNotEmpty
+          ? cadastroConsulenteController.text
+          : null,
+      cadastroMedium: cadastroMediumController.text.isNotEmpty
+          ? cadastroMediumController.text
+          : null,
+      nomeEntidade: entidadeSelecionada,
+    );
+
+    setState(() {
+      resultados = resultado;
       relatorioGerado = true;
     });
   }

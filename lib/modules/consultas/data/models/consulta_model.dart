@@ -22,22 +22,26 @@ class ConsultaModel extends Consulta {
   factory ConsultaModel.fromJson(Map<String, dynamic> json) {
     return ConsultaModel(
       id: json['id'] as String?,
-      numeroConsulta: json['numeroConsulta'] as String,
-      data: DateTime.parse(json['data'] as String),
-      horaInicio: json['horaInicio'] as String,
-      cadastroConsulente: json['cadastroConsulente'] as String,
-      cadastroCambono: json['cadastroCambono'] as String,
-      cadastroMedium: json['cadastroMedium'] as String,
-      nomeConsulente: json['nomeConsulente'] as String,
-      nomeCambono: json['nomeCambono'] as String,
-      nomeMedium: json['nomeMedium'] as String,
-      nomeEntidade: json['nomeEntidade'] as String,
-      descricaoConsulta: json['descricaoConsulta'] as String,
-      dataCriacao: json['dataCriacao'] != null
-          ? DateTime.parse(json['dataCriacao'] as String)
+      numeroConsulta: json['numero_consulta'] as String? ?? '',
+      data: json['data_consulta'] != null
+          ? DateTime.parse(json['data_consulta'] as String)
+          : DateTime.now(),
+      horaInicio: json['data_consulta'] != null
+          ? DateTime.parse(json['data_consulta'] as String).toIso8601String().substring(11, 16)
+          : '00:00',
+      cadastroConsulente: json['cadastro_consulente'] as String? ?? '',
+      cadastroCambono: '',
+      cadastroMedium: '',
+      nomeConsulente: json['nome_consulente'] as String? ?? '',
+      nomeCambono: '',
+      nomeMedium: json['atendente'] as String? ?? '',
+      nomeEntidade: json['atendente'] as String? ?? '',
+      descricaoConsulta: json['descricao'] as String? ?? '',
+      dataCriacao: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
           : null,
-      dataUltimaAlteracao: json['dataUltimaAlteracao'] != null
-          ? DateTime.parse(json['dataUltimaAlteracao'] as String)
+      dataUltimaAlteracao: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
           : null,
     );
   }
@@ -45,19 +49,13 @@ class ConsultaModel extends Consulta {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'numeroConsulta': numeroConsulta,
-      'data': data.toIso8601String(),
-      'horaInicio': horaInicio,
-      'cadastroConsulente': cadastroConsulente,
-      'cadastroCambono': cadastroCambono,
-      'cadastroMedium': cadastroMedium,
-      'nomeConsulente': nomeConsulente,
-      'nomeCambono': nomeCambono,
-      'nomeMedium': nomeMedium,
-      'nomeEntidade': nomeEntidade,
-      'descricaoConsulta': descricaoConsulta,
-      'dataCriacao': dataCriacao?.toIso8601String(),
-      'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
+      'numero_consulta': numeroConsulta,
+      'data_consulta': data.toIso8601String(),
+      'cadastro_consulente': cadastroConsulente.isEmpty ? null : cadastroConsulente,
+      'nome_consulente': nomeConsulente,
+      'atendente': nomeEntidade,
+      'descricao': descricaoConsulta,
+      'tipo_consulta': 'Consulta Espiritual',
     };
   }
 
