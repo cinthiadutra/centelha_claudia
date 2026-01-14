@@ -130,17 +130,40 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   @override
   Future<List<UsuarioModel>> getUsuarios() async {
     try {
+      print('🔍 [DATASOURCE] Buscando usuários da tabela "usuarios"...');
+
       final response = await _supabaseService.client
           .from('usuarios')
           .select()
           .order('nome', ascending: true);
 
-      return (response as List)
+      print('📊 [DATASOURCE] Response type: ${response.runtimeType}');
+      print('📊 [DATASOURCE] Response length: ${(response as List).length}');
+
+      if (response.isEmpty) {
+        print('⚠️ [DATASOURCE] Nenhum dado retornado do Supabase!');
+        print('⚠️ [DATASOURCE] Verifique:');
+        print('   1. Se a tabela "usuarios" existe');
+        print('   2. Se há dados na tabela');
+        print('   3. Se as políticas RLS estão configuradas corretamente');
+      }
+
+      final usuarios = (response as List)
           .map((json) => UsuarioModel.fromJson(json))
           .toList();
+
+      print(
+        '✅ [DATASOURCE] ${usuarios.length} usuários convertidos com sucesso',
+      );
+
+      return usuarios;
     } on PostgrestException catch (error) {
+      print('❌ [DATASOURCE] PostgrestException: ${error.message}');
+      print('❌ [DATASOURCE] Code: ${error.code}');
+      print('❌ [DATASOURCE] Details: ${error.details}');
       throw Exception('Erro ao buscar usuários: ${error.message}');
     } catch (error) {
+      print('❌ [DATASOURCE] Erro inesperado: $error');
       throw Exception('Erro inesperado ao buscar usuários: $error');
     }
   }

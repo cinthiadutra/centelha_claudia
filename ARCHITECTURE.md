@@ -99,19 +99,25 @@ centelha_claudia/
 ## 🎯 Princípios Aplicados
 
 ### 1. **Separation of Concerns**
+
 Cada camada tem sua responsabilidade específica:
+
 - **Presentation**: UI e interação com usuário
 - **Domain**: Regras de negócio puras
 - **Data**: Acesso e manipulação de dados
 
 ### 2. **Dependency Rule**
+
 As dependências apontam sempre para dentro:
+
 ```
 Presentation → Domain ← Data
 ```
 
 ### 3. **Dependency Injection**
+
 Uso do GetIt para inversão de controle:
+
 ```dart
 // Registrar
 sl.registerLazySingleton<Repository>(() => RepositoryImpl());
@@ -179,30 +185,37 @@ lib/modules/
 ## 🛠️ Tecnologias por Camada
 
 ### Presentation
+
 - **flutter_bloc**: Gerenciamento de estado
 - **equatable**: Comparação de estados
 
 ### Domain
+
 - **equatable**: Comparação de entidades
 
 ### Data
+
 - **dio**: HTTP client (preparado)
 - **uuid**: Geração de IDs
 
 ### Core
+
 - **get_it**: Injeção de dependências
 
 ## 📝 Convenções de Nomenclatura
 
 ### Arquivos
+
 - `snake_case.dart` para todos os arquivos
 - Sufixos descritivos: `_page.dart`, `_bloc.dart`, `_model.dart`
 
 ### Classes
+
 - `PascalCase` para classes
 - Sufixos: `Page`, `Bloc`, `Event`, `State`, `Model`, `Entity`
 
 ### Variáveis e Funções
+
 - `camelCase` para variáveis e funções
 - Português para domínio de negócio
 - Inglês para código técnico

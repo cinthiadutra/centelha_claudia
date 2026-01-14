@@ -473,15 +473,38 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     required List<String> items,
     required void Function(String?) onChanged,
   }) {
+    // Normaliza o valor para garantir que existe na lista
+    // Remove duplicatas e mantém apenas itens únicos
+    final uniqueItems = items.toSet().toList();
+
+    // Verifica se o valor existe na lista
+    String validValue = value;
+    if (!uniqueItems.contains(value)) {
+      // Tenta encontrar um item similar (normaliza caracteres especiais)
+      final normalized = value.replaceAll('–', '-').replaceAll('—', '-').trim();
+      validValue = uniqueItems.firstWhere(
+        (item) =>
+            item.replaceAll('–', '-').replaceAll('—', '-').trim() == normalized,
+        orElse: () => uniqueItems.first,
+      );
+
+      // Debug: mostra quando há inconsistência
+      debugPrint('⚠️ Valor do dropdown não encontrado na lista.');
+      debugPrint('   Campo: $label');
+      debugPrint('   Valor original: "$value"');
+      debugPrint('   Valor usado: "$validValue"');
+      debugPrint('   Lista disponível: $uniqueItems');
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        initialValue: value,
+        initialValue: validValue,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        items: items.map((item) {
+        items: uniqueItems.map((item) {
           return DropdownMenuItem(value: item, child: Text(item));
         }).toList(),
         onChanged: onChanged,

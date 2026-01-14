@@ -47,16 +47,19 @@ lib/
 ## 🎯 Camadas da Arquitetura
 
 ### 1. **Domain (Domínio)**
+
 - Contém as regras de negócio puras
 - Independente de frameworks e tecnologias
 - Define as entidades e interfaces dos repositórios
 
 ### 2. **Data (Dados)**
+
 - Implementa os repositórios definidos no domínio
 - Gerencia as fontes de dados (datasources)
 - Converte models para entidades
 
 ### 3. **Presentation (Apresentação)**
+
 - Gerencia a UI e interações do usuário
 - Usa BLoC para gerenciamento de estado
 - Reage aos estados emitidos pelo BLoC
@@ -124,9 +127,9 @@ Atualmente, o datasource está **mockado** com dados em memória. Para conectar 
 
 class UsuarioDatasourceRemote implements UsuarioDatasource {
   final Dio dio;
-  
+
   UsuarioDatasourceRemote({required this.dio});
-  
+
   @override
   Future<List<UsuarioModel>> getUsuarios() async {
     final response = await dio.get('/api/usuarios');
@@ -134,7 +137,7 @@ class UsuarioDatasourceRemote implements UsuarioDatasource {
         .map((json) => UsuarioModel.fromJson(json))
         .toList();
   }
-  
+
   // Implementar outros métodos...
 }
 ```

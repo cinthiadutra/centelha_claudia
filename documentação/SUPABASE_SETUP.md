@@ -43,7 +43,6 @@ final client = supabaseService.client;
 #### Operações de Banco de Dados
 
 **Consultar dados:**
-
 ```dart
 final response = await supabaseService.client
     .from('membros')
@@ -51,7 +50,6 @@ final response = await supabaseService.client
 ```
 
 **Inserir dados:**
-
 ```dart
 await supabaseService.client
     .from('membros')
@@ -62,7 +60,6 @@ await supabaseService.client
 ```
 
 **Atualizar dados:**
-
 ```dart
 await supabaseService.client
     .from('membros')
@@ -71,7 +68,6 @@ await supabaseService.client
 ```
 
 **Deletar dados:**
-
 ```dart
 await supabaseService.client
     .from('membros')
@@ -82,7 +78,6 @@ await supabaseService.client
 #### Autenticação
 
 **Fazer login:**
-
 ```dart
 final response = await supabaseService.client.auth.signInWithPassword(
   email: 'user@example.com',
@@ -91,7 +86,6 @@ final response = await supabaseService.client.auth.signInWithPassword(
 ```
 
 **Registrar novo usuário:**
-
 ```dart
 final response = await supabaseService.client.auth.signUp(
   email: 'user@example.com',
@@ -100,20 +94,17 @@ final response = await supabaseService.client.auth.signUp(
 ```
 
 **Fazer logout:**
-
 ```dart
 await supabaseService.client.auth.signOut();
 ```
 
 **Verificar usuário autenticado:**
-
 ```dart
 final isAuthenticated = supabaseService.isAuthenticated;
 final currentUser = supabaseService.currentUser;
 ```
 
 **Monitorar mudanças de autenticação:**
-
 ```dart
 supabaseService.authStateChanges.listen((AuthState state) {
   // Reagir a mudanças de autenticação
@@ -169,7 +160,7 @@ class MembroDatasourceSupabase implements MembroDatasource {
     final response = await _supabaseService.client
         .from('membros')
         .select();
-
+    
     return (response as List)
         .map((json) => Membro.fromJson(json))
         .toList();

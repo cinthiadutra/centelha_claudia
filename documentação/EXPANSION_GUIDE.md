@@ -273,7 +273,7 @@ class VendaDatasourceMock implements VendaDatasource {
   @override
   Future<VendaModel> createVenda(VendaModel venda) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final novaVenda = VendaModel(
       id: (_vendas.length + 1).toString(),
       clienteId: venda.clienteId,
@@ -282,7 +282,7 @@ class VendaDatasourceMock implements VendaDatasource {
       dataVenda: venda.dataVenda,
       status: venda.status,
     );
-    
+
     _vendas.add(novaVenda);
     return novaVenda;
   }
@@ -290,12 +290,12 @@ class VendaDatasourceMock implements VendaDatasource {
   @override
   Future<VendaModel> updateVenda(VendaModel venda) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final index = _vendas.indexWhere((v) => v.id == venda.id);
     if (index == -1) {
       throw Exception('Venda não encontrada');
     }
-    
+
     _vendas[index] = venda;
     return venda;
   }
@@ -351,7 +351,7 @@ class VendaRepositoryImpl implements VendaRepository {
       if (venda.itens.isEmpty) {
         return const Either.left(ValidationFailure('A venda deve ter pelo menos um item'));
       }
-      
+
       final model = VendaModel.fromEntity(venda);
       final resultado = await datasource.createVenda(model);
       return Either.right(resultado);
@@ -461,6 +461,7 @@ Future<void> init() async {
 ## 8️⃣ Criar BLoC (Presentation)
 
 Copie e adapte os arquivos de BLoC do módulo de cadastro:
+
 - `venda_event.dart`
 - `venda_state.dart`
 - `venda_bloc.dart`
@@ -468,6 +469,7 @@ Copie e adapte os arquivos de BLoC do módulo de cadastro:
 ## 9️⃣ Criar Pages (Presentation)
 
 Adapte as páginas do módulo de cadastro para vendas:
+
 - `venda_list_page.dart`
 - `venda_form_page.dart`
 
@@ -622,11 +624,13 @@ class _ModuleCard extends StatelessWidget {
 ## 🎯 Próximos Módulos Sugeridos
 
 1. **Produtos/Estoque**
+
    - Cadastro de produtos
    - Controle de estoque
    - Categorias
 
 2. **Relatórios**
+
    - Vendas por período
    - Produtos mais vendidos
    - Gráficos e dashboards

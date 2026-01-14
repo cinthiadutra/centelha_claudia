@@ -2,8 +2,8 @@
 class MembroConstants {
   // Núcleos
   static const List<String> nucleoOpcoes = [
-    '001 – Casa do Caboclo Ubirajara',
-    '002 – Casa de Pai Oxalá',
+    '001 - Casa do Caboclo Ubirajara',
+    '002 - Casa de Pai Oxalá',
   ];
 
   // Status

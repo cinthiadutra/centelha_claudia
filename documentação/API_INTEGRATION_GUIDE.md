@@ -12,19 +12,20 @@ Base URL: https://api.centelha.com/v1
 
 #### Usuários
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/usuarios` | Lista todos os usuários |
-| GET | `/usuarios/{id}` | Busca usuário por ID |
-| POST | `/usuarios` | Cria novo usuário |
-| PUT | `/usuarios/{id}` | Atualiza usuário |
-| DELETE | `/usuarios/{id}` | Remove usuário |
+| Método | Endpoint         | Descrição               |
+| ------ | ---------------- | ----------------------- |
+| GET    | `/usuarios`      | Lista todos os usuários |
+| GET    | `/usuarios/{id}` | Busca usuário por ID    |
+| POST   | `/usuarios`      | Cria novo usuário       |
+| PUT    | `/usuarios/{id}` | Atualiza usuário        |
+| DELETE | `/usuarios/{id}` | Remove usuário          |
 
 ### Formato dos Dados
 
 #### Usuario
 
 **Request (POST/PUT):**
+
 ```json
 {
   "nome": "João Silva",
@@ -36,6 +37,7 @@ Base URL: https://api.centelha.com/v1
 ```
 
 **Response:**
+
 ```json
 {
   "id": "uuid-gerado-pelo-backend",
@@ -49,6 +51,7 @@ Base URL: https://api.centelha.com/v1
 ```
 
 **Response (Lista):**
+
 ```json
 {
   "data": [
@@ -91,10 +94,10 @@ class UsuarioDatasourceRemote implements UsuarioDatasource {
   Future<List<UsuarioModel>> getUsuarios() async {
     try {
       final response = await dio.get('/usuarios');
-      
+
       // Se a API retorna { data: [...], total: 10 }
       final List<dynamic> data = response.data['data'] ?? response.data;
-      
+
       return data.map((json) => UsuarioModel.fromJson(json)).toList();
     } on DioException catch (e) {
       throw _handleError(e);
@@ -152,11 +155,11 @@ class UsuarioDatasourceRemote implements UsuarioDatasource {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.sendTimeout:
         return Exception('Timeout na conexão com o servidor');
-      
+
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
         final message = e.response?.data['message'] ?? 'Erro no servidor';
-        
+
         switch (statusCode) {
           case 400:
             return Exception('Requisição inválida: $message');
@@ -171,10 +174,10 @@ class UsuarioDatasourceRemote implements UsuarioDatasource {
           default:
             return Exception('Erro: $message');
         }
-      
+
       case DioExceptionType.connectionError:
         return Exception('Sem conexão com a internet');
-      
+
       default:
         return Exception('Erro desconhecido: ${e.message}');
     }
@@ -269,7 +272,7 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // ============ CORE ============
-  
+
   // Dio Client
   sl.registerLazySingleton<Dio>(
     () => DioClient.create(
@@ -279,7 +282,7 @@ Future<void> init() async {
   );
 
   // ============ CADASTRO ============
-  
+
   // Bloc
   sl.registerFactory(
     () => UsuarioBloc(repository: sl()),
@@ -376,13 +379,13 @@ class AuthInterceptor extends Interceptor {
     // Buscar token do storage
     // final prefs = await SharedPreferences.getInstance();
     // final token = prefs.getString('auth_token');
-    
+
     final token = 'seu-token-aqui'; // Temporário
-    
+
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
-    
+
     return handler.next(options);
   }
 
@@ -395,7 +398,7 @@ class AuthInterceptor extends Interceptor {
       //   return handler.resolve(await _retry(err.requestOptions));
       // }
     }
-    
+
     return handler.next(err);
   }
 }
