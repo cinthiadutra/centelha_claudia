@@ -121,109 +121,116 @@ class MembroModel extends Membro {
 
   factory MembroModel.fromJson(Map<String, dynamic> json) {
     return MembroModel(
-      id: json['id'] as String,
-      numeroCadastro: json['numeroCadastro'] as String,
-      cpf: json['cpf'] as String,
-      nome: json['nome'] as String,
-      nucleo: json['nucleo'] as String,
-      status: json['status'] as String,
-      funcao: json['funcao'] as String,
-      classificacao: json['classificacao'] as String,
-      diaSessao: json['diaSessao'] as String,
-      primeiroContatoEmergencia: json['primeiroContatoEmergencia'] as String?,
-      segundoContatoEmergencia: json['segundoContatoEmergencia'] as String?,
-      inicioPrimeiroEstagio: json['inicioPrimeiroEstagio'] != null
-          ? DateTime.parse(json['inicioPrimeiroEstagio'] as String)
+      id:
+          json['id']?.toString() ??
+          '', // Converte UUID para string, ou vazio se null
+      numeroCadastro:
+          json['cadastro']?.toString() ?? '', // Mapeia 'cadastro' do Supabase
+      cpf: json['cpf']?.toString() ?? '',
+      nome: json['nome']?.toString() ?? '',
+      nucleo: json['nucleo']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
+      funcao: json['funcao']?.toString() ?? '',
+      classificacao: json['classificacao']?.toString() ?? '',
+      diaSessao:
+          json['dia_sessao']?.toString() ??
+          '', // Mapeia 'dia_sessao' do Supabase
+      primeiroContatoEmergencia: json['primeiro_contato_emergencia'] as String?,
+      segundoContatoEmergencia: json['segundo_contato_emergencia'] as String?,
+      inicioPrimeiroEstagio: json['inicio_estagio'] != null
+          ? DateTime.parse(json['inicio_estagio'] as String)
           : null,
-      desistenciaPrimeiroEstagio: json['desistenciaPrimeiroEstagio'] != null
-          ? DateTime.parse(json['desistenciaPrimeiroEstagio'] as String)
+      desistenciaPrimeiroEstagio: json['desistencia_estagio'] != null
+          ? DateTime.parse(json['desistencia_estagio'] as String)
           : null,
-      primeiroRitoPassagem: json['primeiroRitoPassagem'] != null
-          ? DateTime.parse(json['primeiroRitoPassagem'] as String)
+      primeiroRitoPassagem: json['primeiro_rito_passagem'] != null
+          ? DateTime.parse(json['primeiro_rito_passagem'] as String)
           : null,
-      dataPrimeiroDesligamento: json['dataPrimeiroDesligamento'] != null
-          ? DateTime.parse(json['dataPrimeiroDesligamento'] as String)
+      dataPrimeiroDesligamento: json['primeiro_desligamento'] != null
+          ? DateTime.parse(json['primeiro_desligamento'] as String)
           : null,
       justificativaPrimeiroDesligamento:
-          json['justificativaPrimeiroDesligamento'] as String?,
-      condicaoSegundoEstagio: json['condicaoSegundoEstagio'] as String?,
-      inicioSegundoEstagio: json['inicioSegundoEstagio'] != null
-          ? DateTime.parse(json['inicioSegundoEstagio'] as String)
+          json['primeiro_desligamento_justificativa'] as String?,
+      condicaoSegundoEstagio: json['condicao_segundo_estagio'] as String?,
+      inicioSegundoEstagio: json['inicio_segundo_estagio'] != null
+          ? DateTime.parse(json['inicio_segundo_estagio'] as String)
           : null,
-      desistenciaSegundoEstagio: json['desistenciaSegundoEstagio'] != null
-          ? DateTime.parse(json['desistenciaSegundoEstagio'] as String)
+      desistenciaSegundoEstagio: json['desistencia_segundo_estagio'] != null
+          ? DateTime.parse(json['desistencia_segundo_estagio'] as String)
           : null,
-      segundoRitoPassagem: json['segundoRitoPassagem'] != null
-          ? DateTime.parse(json['segundoRitoPassagem'] as String)
+      segundoRitoPassagem: json['segundo_rito_passagem'] != null
+          ? DateTime.parse(json['segundo_rito_passagem'] as String)
           : null,
-      dataSegundoDesligamento: json['dataSegundoDesligamento'] != null
-          ? DateTime.parse(json['dataSegundoDesligamento'] as String)
+      dataSegundoDesligamento: json['segundo_desligamento'] != null
+          ? DateTime.parse(json['segundo_desligamento'] as String)
           : null,
       justificativaSegundoDesligamento:
-          json['justificativaSegundoDesligamento'] as String?,
-      condicaoTerceiroEstagio: json['condicaoTerceiroEstagio'] as String?,
-      inicioTerceiroEstagio: json['inicioTerceiroEstagio'] != null
-          ? DateTime.parse(json['inicioTerceiroEstagio'] as String)
+          json['segundo_desligamento_justificativa'] as String?,
+      condicaoTerceiroEstagio: json['condicao_terceiro_estagio'] as String?,
+      inicioTerceiroEstagio: json['inicio_terceiro_estagio'] != null
+          ? DateTime.parse(json['inicio_terceiro_estagio'] as String)
           : null,
-      desistenciaTerceiroEstagio: json['desistenciaTerceiroEstagio'] != null
-          ? DateTime.parse(json['desistenciaTerceiroEstagio'] as String)
+      desistenciaTerceiroEstagio: json['desistencia_terceiro_estagio'] != null
+          ? DateTime.parse(json['desistencia_terceiro_estagio'] as String)
           : null,
-      terceiroRitoPassagem: json['terceiroRitoPassagem'] != null
-          ? DateTime.parse(json['terceiroRitoPassagem'] as String)
+      terceiroRitoPassagem: json['terceiro_rito_passagem'] != null
+          ? DateTime.parse(json['terceiro_rito_passagem'] as String)
           : null,
-      dataTerceiroDesligamento: json['dataTerceiroDesligamento'] != null
-          ? DateTime.parse(json['dataTerceiroDesligamento'] as String)
+      dataTerceiroDesligamento: json['terceiro_desligamento'] != null
+          ? DateTime.parse(json['terceiro_desligamento'] as String)
           : null,
       justificativaTerceiroDesligamento:
-          json['justificativaTerceiroDesligamento'] as String?,
-      condicaoQuartoEstagio: json['condicaoQuartoEstagio'] as String?,
-      inicioQuartoEstagio: json['inicioQuartoEstagio'] != null
-          ? DateTime.parse(json['inicioQuartoEstagio'] as String)
+          json['terceiro_desligamento_justificativa'] as String?,
+      condicaoQuartoEstagio: json['condicao_quarto_estagio'] as String?,
+      inicioQuartoEstagio: json['inicio_quarto_estagio'] != null
+          ? DateTime.parse(json['inicio_quarto_estagio'] as String)
           : null,
-      desistenciaQuartoEstagio: json['desistenciaQuartoEstagio'] != null
-          ? DateTime.parse(json['desistenciaQuartoEstagio'] as String)
+      desistenciaQuartoEstagio: json['desistencia_quarto_estagio'] != null
+          ? DateTime.parse(json['desistencia_quarto_estagio'] as String)
           : null,
-      quartoRitoPassagem: json['quartoRitoPassagem'] != null
-          ? DateTime.parse(json['quartoRitoPassagem'] as String)
+      quartoRitoPassagem: json['quarto_rito_passagem'] != null
+          ? DateTime.parse(json['quarto_rito_passagem'] as String)
           : null,
-      dataQuartoDesligamento: json['dataQuartoDesligamento'] != null
-          ? DateTime.parse(json['dataQuartoDesligamento'] as String)
+      dataQuartoDesligamento: json['quarto_desligamento'] != null
+          ? DateTime.parse(json['quarto_desligamento'] as String)
           : null,
       justificativaQuartoDesligamento:
-          json['justificativaQuartoDesligamento'] as String?,
-      dataBatizado: json['dataBatizado'] != null
-          ? DateTime.parse(json['dataBatizado'] as String)
+          json['quarto_desligamento_justificativa'] as String?,
+      dataBatizado: json['ritual_batismo'] != null
+          ? DateTime.parse(json['ritual_batismo'] as String)
           : null,
-      padrinhoBatismo: json['padrinhoBatismo'] as String?,
-      madrinhaBatismo: json['madrinhaBatismo'] as String?,
-      dataJogoOrixa: json['dataJogoOrixa'] != null
-          ? DateTime.parse(json['dataJogoOrixa'] as String)
+      padrinhoBatismo: json['padrinho_batismo'] as String?,
+      madrinhaBatismo: json['madrinha_batismo'] as String?,
+      dataJogoOrixa: json['jogo_orixa'] != null
+          ? DateTime.parse(json['jogo_orixa'] as String)
           : null,
-      primeiraCamarinha: json['primeiraCamarinha'] != null
-          ? DateTime.parse(json['primeiraCamarinha'] as String)
+      primeiraCamarinha: json['primeira_camarinha'] != null
+          ? DateTime.parse(json['primeira_camarinha'] as String)
           : null,
-      segundaCamarinha: json['segundaCamarinha'] != null
-          ? DateTime.parse(json['segundaCamarinha'] as String)
+      segundaCamarinha: json['segunda_camarinha'] != null
+          ? DateTime.parse(json['segunda_camarinha'] as String)
           : null,
-      terceiraCamarinha: json['terceiraCamarinha'] != null
-          ? DateTime.parse(json['terceiraCamarinha'] as String)
+      terceiraCamarinha: json['terceira_camarinha'] != null
+          ? DateTime.parse(json['terceira_camarinha'] as String)
           : null,
-      dataCoroacaoSacerdote: json['dataCoroacaoSacerdote'] != null
-          ? DateTime.parse(json['dataCoroacaoSacerdote'] as String)
+      dataCoroacaoSacerdote: json['coroacao_sacerdote'] != null
+          ? DateTime.parse(json['coroacao_sacerdote'] as String)
           : null,
-      atividadeEspiritual: json['atividadeEspiritual'] as String?,
-      grupoTrabalhoEspiritual: json['grupoTrabalhoEspiritual'] as String?,
-      primeiroOrixa: json['primeiroOrixa'] as String?,
-      adjuntoPrimeiroOrixa: json['adjuntoPrimeiroOrixa'] as String?,
-      segundoOrixa: json['segundoOrixa'] as String?,
-      adjuntoSegundoOrixa: json['adjuntoSegundoOrixa'] as String?,
-      terceiroOrixa: json['terceiroOrixa'] as String?,
-      quartoOrixa: json['quartoOrixa'] as String?,
-      observacoesOrixa: json['observacoesOrixa'] as String?,
-      dataCriacao: DateTime.parse(json['dataCriacao'] as String),
-      dataUltimaAlteracao: DateTime.parse(
-        json['dataUltimaAlteracao'] as String,
-      ),
+      atividadeEspiritual: json['atividade_espiritual'] as String?,
+      grupoTrabalhoEspiritual: json['grupo_trabalho_espiritual'] as String?,
+      primeiroOrixa: json['primeiro_orixa'] as String?,
+      adjuntoPrimeiroOrixa: json['adjunto_primeiro_orixa'] as String?,
+      segundoOrixa: json['segundo_orixa'] as String?,
+      adjuntoSegundoOrixa: json['adjunto_segundo_orixa'] as String?,
+      terceiroOrixa: json['terceiro_quarto_orixa'] as String?,
+      quartoOrixa: json['quarto_orixa'] as String?,
+      observacoesOrixa: json['observacoes'] as String?,
+      dataCriacao: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.now(),
+      dataUltimaAlteracao: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(),
     );
   }
 

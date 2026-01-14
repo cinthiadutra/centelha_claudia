@@ -113,6 +113,7 @@ class MembroSupabaseDatasource implements MembroDatasource {
     if (_cacheCarregado) return;
 
     try {
+      print('🔍 [MEMBROS DATASOURCE] Consultando tabela membros_historico...');
       final response = await _supabaseService.client
           .from('membros_historico')
           .select()
@@ -123,7 +124,11 @@ class MembroSupabaseDatasource implements MembroDatasource {
         (response as List).map((json) => MembroModel.fromJson(json)).toList(),
       );
       _cacheCarregado = true;
+      print(
+        '✅ [MEMBROS DATASOURCE] ${_cache.length} membros carregados do Supabase',
+      );
     } catch (e) {
+      print('❌ [MEMBROS DATASOURCE] Erro ao carregar: $e');
       // Cache não carregado, retornará lista vazia
     }
   }
