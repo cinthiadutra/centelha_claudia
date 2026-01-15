@@ -9,16 +9,17 @@ class Membro extends Equatable {
   final String numeroCadastro; // Número único do membro
   final String cpf; // Referência ao cadastro de Usuario
   final String nome; // Preenchido automaticamente do Usuario
-  
+
   // Informações Organizacionais (obrigatórias)
-  final String nucleo; // 001 - Casa do Caboclo Ubirajara, 002 - Casa de Pai Oxalá
+  final String
+  nucleo; // 001 - Casa do Caboclo Ubirajara, 002 - Casa de Pai Oxalá
   final String status; // Estagiário, Membro ativo, Excluído
   final String funcao; // Médium, Cambono, Curimbeiro, Tarefeiro
   final String classificacao; // Grau vermelho, coral, amarelo, etc.
   final String diaSessao; // Terça-feira, Quarta-feira, Sábado, etc.
   final String? primeiroContatoEmergencia;
   final String? segundoContatoEmergencia;
-  
+
   // Histórico - 1º Estágio
   final DateTime? inicioPrimeiroEstagio;
   final DateTime? desistenciaPrimeiroEstagio;
@@ -26,7 +27,7 @@ class Membro extends Equatable {
   final DateTime? dataPrimeiroDesligamento;
   final String? justificativaPrimeiroDesligamento;
   final String? condicaoSegundoEstagio;
-  
+
   // Histórico - 2º Estágio
   final DateTime? inicioSegundoEstagio;
   final DateTime? desistenciaSegundoEstagio;
@@ -34,7 +35,7 @@ class Membro extends Equatable {
   final DateTime? dataSegundoDesligamento;
   final String? justificativaSegundoDesligamento;
   final String? condicaoTerceiroEstagio;
-  
+
   // Histórico - 3º Estágio
   final DateTime? inicioTerceiroEstagio;
   final DateTime? desistenciaTerceiroEstagio;
@@ -42,14 +43,14 @@ class Membro extends Equatable {
   final DateTime? dataTerceiroDesligamento;
   final String? justificativaTerceiroDesligamento;
   final String? condicaoQuartoEstagio;
-  
+
   // Histórico - 4º Estágio
   final DateTime? inicioQuartoEstagio;
   final DateTime? desistenciaQuartoEstagio;
   final DateTime? quartoRitoPassagem;
   final DateTime? dataQuartoDesligamento;
   final String? justificativaQuartoDesligamento;
-  
+
   // Histórico Espiritual
   final DateTime? dataBatizado; // Preenchido automaticamente
   final String? padrinhoBatismo; // Preenchido automaticamente
@@ -61,7 +62,12 @@ class Membro extends Equatable {
   final DateTime? dataCoroacaoSacerdote;
   final String? atividadeEspiritual; // Preenchido automaticamente
   final String? grupoTrabalhoEspiritual; // Preenchido automaticamente
-  
+
+  // Grupos e Atividades
+  final String? grupoTarefa; // Grupo-Tarefa (usado para Nota C)
+  final String? acaoSocial; // Grupo de Ação Social (usado para Nota D)
+  final String? cargoLideranca; // Cargo de Liderança (usado para Nota L)
+
   // Orixás (preenchidos automaticamente)
   final String? primeiroOrixa;
   final String? adjuntoPrimeiroOrixa;
@@ -70,7 +76,16 @@ class Membro extends Equatable {
   final String? terceiroOrixa;
   final String? quartoOrixa;
   final String? observacoesOrixa;
-  
+
+  // Nomes dos Guias Espirituais
+  final String? nomePr; // Preto-Velho
+  final String? nomeBai; // Baiano
+  final String? nomeCab; // Caboclo
+  final String? nomeMar; // Marinheiro
+  final String? nomeMal; // Malandro
+  final String? nomeCig; // Cigano
+  final String? nomePv; // Pomba-Gira
+
   // Metadados
   final DateTime? dataCriacao;
   final DateTime? dataUltimaAlteracao;
@@ -120,6 +135,9 @@ class Membro extends Equatable {
     this.dataCoroacaoSacerdote,
     this.atividadeEspiritual,
     this.grupoTrabalhoEspiritual,
+    this.grupoTarefa,
+    this.acaoSocial,
+    this.cargoLideranca,
     this.primeiroOrixa,
     this.adjuntoPrimeiroOrixa,
     this.segundoOrixa,
@@ -127,66 +145,83 @@ class Membro extends Equatable {
     this.terceiroOrixa,
     this.quartoOrixa,
     this.observacoesOrixa,
+    this.nomePr,
+    this.nomeBai,
+    this.nomeCab,
+    this.nomeMar,
+    this.nomeMal,
+    this.nomeCig,
+    this.nomePv,
     this.dataCriacao,
     this.dataUltimaAlteracao,
   });
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        cpf,
-        nome,
-        nucleo,
-        status,
-        funcao,
-        classificacao,
-        diaSessao,
-        primeiroContatoEmergencia,
-        segundoContatoEmergencia,
-        inicioPrimeiroEstagio,
-        desistenciaPrimeiroEstagio,
-        primeiroRitoPassagem,
-        dataPrimeiroDesligamento,
-        justificativaPrimeiroDesligamento,
-        condicaoSegundoEstagio,
-        inicioSegundoEstagio,
-        desistenciaSegundoEstagio,
-        segundoRitoPassagem,
-        dataSegundoDesligamento,
-        justificativaSegundoDesligamento,
-        condicaoTerceiroEstagio,
-        inicioTerceiroEstagio,
-        desistenciaTerceiroEstagio,
-        terceiroRitoPassagem,
-        dataTerceiroDesligamento,
-        justificativaTerceiroDesligamento,
-        condicaoQuartoEstagio,
-        inicioQuartoEstagio,
-        desistenciaQuartoEstagio,
-        quartoRitoPassagem,
-        dataQuartoDesligamento,
-        justificativaQuartoDesligamento,
-        dataBatizado,
-        padrinhoBatismo,
-        madrinhaBatismo,
-        dataJogoOrixa,
-        primeiraCamarinha,
-        segundaCamarinha,
-        terceiraCamarinha,
-        dataCoroacaoSacerdote,
-        atividadeEspiritual,
-        grupoTrabalhoEspiritual,
-        primeiroOrixa,
-        adjuntoPrimeiroOrixa,
-        segundoOrixa,
-        adjuntoSegundoOrixa,
-        terceiroOrixa,
-        quartoOrixa,
-        observacoesOrixa,
-        dataCriacao,
-        dataUltimaAlteracao,
-      ];
+    id,
+    numeroCadastro,
+    cpf,
+    nome,
+    nucleo,
+    status,
+    funcao,
+    classificacao,
+    diaSessao,
+    primeiroContatoEmergencia,
+    segundoContatoEmergencia,
+    inicioPrimeiroEstagio,
+    desistenciaPrimeiroEstagio,
+    primeiroRitoPassagem,
+    dataPrimeiroDesligamento,
+    justificativaPrimeiroDesligamento,
+    condicaoSegundoEstagio,
+    inicioSegundoEstagio,
+    desistenciaSegundoEstagio,
+    segundoRitoPassagem,
+    dataSegundoDesligamento,
+    justificativaSegundoDesligamento,
+    condicaoTerceiroEstagio,
+    inicioTerceiroEstagio,
+    desistenciaTerceiroEstagio,
+    terceiroRitoPassagem,
+    dataTerceiroDesligamento,
+    justificativaTerceiroDesligamento,
+    condicaoQuartoEstagio,
+    inicioQuartoEstagio,
+    desistenciaQuartoEstagio,
+    quartoRitoPassagem,
+    dataQuartoDesligamento,
+    justificativaQuartoDesligamento,
+    dataBatizado,
+    padrinhoBatismo,
+    madrinhaBatismo,
+    dataJogoOrixa,
+    primeiraCamarinha,
+    segundaCamarinha,
+    terceiraCamarinha,
+    dataCoroacaoSacerdote,
+    atividadeEspiritual,
+    grupoTrabalhoEspiritual,
+    grupoTarefa,
+    acaoSocial,
+    cargoLideranca,
+    primeiroOrixa,
+    adjuntoPrimeiroOrixa,
+    segundoOrixa,
+    adjuntoSegundoOrixa,
+    terceiroOrixa,
+    quartoOrixa,
+    observacoesOrixa,
+    nomePr,
+    nomeBai,
+    nomeCab,
+    nomeMar,
+    nomeMal,
+    nomeCig,
+    nomePv,
+    dataCriacao,
+    dataUltimaAlteracao,
+  ];
 
   Membro copyWith({
     String? id,
@@ -233,6 +268,9 @@ class Membro extends Equatable {
     DateTime? dataCoroacaoSacerdote,
     String? atividadeEspiritual,
     String? grupoTrabalhoEspiritual,
+    String? grupoTarefa,
+    String? acaoSocial,
+    String? cargoLideranca,
     String? primeiroOrixa,
     String? adjuntoPrimeiroOrixa,
     String? segundoOrixa,
@@ -240,6 +278,13 @@ class Membro extends Equatable {
     String? terceiroOrixa,
     String? quartoOrixa,
     String? observacoesOrixa,
+    String? nomePr,
+    String? nomeBai,
+    String? nomeCab,
+    String? nomeMar,
+    String? nomeMal,
+    String? nomeCig,
+    String? nomePv,
     DateTime? dataCriacao,
     DateTime? dataUltimaAlteracao,
   }) {
@@ -253,31 +298,54 @@ class Membro extends Equatable {
       funcao: funcao ?? this.funcao,
       classificacao: classificacao ?? this.classificacao,
       diaSessao: diaSessao ?? this.diaSessao,
-      primeiroContatoEmergencia: primeiroContatoEmergencia ?? this.primeiroContatoEmergencia,
-      segundoContatoEmergencia: segundoContatoEmergencia ?? this.segundoContatoEmergencia,
-      inicioPrimeiroEstagio: inicioPrimeiroEstagio ?? this.inicioPrimeiroEstagio,
-      desistenciaPrimeiroEstagio: desistenciaPrimeiroEstagio ?? this.desistenciaPrimeiroEstagio,
+      primeiroContatoEmergencia:
+          primeiroContatoEmergencia ?? this.primeiroContatoEmergencia,
+      segundoContatoEmergencia:
+          segundoContatoEmergencia ?? this.segundoContatoEmergencia,
+      inicioPrimeiroEstagio:
+          inicioPrimeiroEstagio ?? this.inicioPrimeiroEstagio,
+      desistenciaPrimeiroEstagio:
+          desistenciaPrimeiroEstagio ?? this.desistenciaPrimeiroEstagio,
       primeiroRitoPassagem: primeiroRitoPassagem ?? this.primeiroRitoPassagem,
-      dataPrimeiroDesligamento: dataPrimeiroDesligamento ?? this.dataPrimeiroDesligamento,
-      justificativaPrimeiroDesligamento: justificativaPrimeiroDesligamento ?? this.justificativaPrimeiroDesligamento,
-      condicaoSegundoEstagio: condicaoSegundoEstagio ?? this.condicaoSegundoEstagio,
+      dataPrimeiroDesligamento:
+          dataPrimeiroDesligamento ?? this.dataPrimeiroDesligamento,
+      justificativaPrimeiroDesligamento:
+          justificativaPrimeiroDesligamento ??
+          this.justificativaPrimeiroDesligamento,
+      condicaoSegundoEstagio:
+          condicaoSegundoEstagio ?? this.condicaoSegundoEstagio,
       inicioSegundoEstagio: inicioSegundoEstagio ?? this.inicioSegundoEstagio,
-      desistenciaSegundoEstagio: desistenciaSegundoEstagio ?? this.desistenciaSegundoEstagio,
+      desistenciaSegundoEstagio:
+          desistenciaSegundoEstagio ?? this.desistenciaSegundoEstagio,
       segundoRitoPassagem: segundoRitoPassagem ?? this.segundoRitoPassagem,
-      dataSegundoDesligamento: dataSegundoDesligamento ?? this.dataSegundoDesligamento,
-      justificativaSegundoDesligamento: justificativaSegundoDesligamento ?? this.justificativaSegundoDesligamento,
-      condicaoTerceiroEstagio: condicaoTerceiroEstagio ?? this.condicaoTerceiroEstagio,
-      inicioTerceiroEstagio: inicioTerceiroEstagio ?? this.inicioTerceiroEstagio,
-      desistenciaTerceiroEstagio: desistenciaTerceiroEstagio ?? this.desistenciaTerceiroEstagio,
+      dataSegundoDesligamento:
+          dataSegundoDesligamento ?? this.dataSegundoDesligamento,
+      justificativaSegundoDesligamento:
+          justificativaSegundoDesligamento ??
+          this.justificativaSegundoDesligamento,
+      condicaoTerceiroEstagio:
+          condicaoTerceiroEstagio ?? this.condicaoTerceiroEstagio,
+      inicioTerceiroEstagio:
+          inicioTerceiroEstagio ?? this.inicioTerceiroEstagio,
+      desistenciaTerceiroEstagio:
+          desistenciaTerceiroEstagio ?? this.desistenciaTerceiroEstagio,
       terceiroRitoPassagem: terceiroRitoPassagem ?? this.terceiroRitoPassagem,
-      dataTerceiroDesligamento: dataTerceiroDesligamento ?? this.dataTerceiroDesligamento,
-      justificativaTerceiroDesligamento: justificativaTerceiroDesligamento ?? this.justificativaTerceiroDesligamento,
-      condicaoQuartoEstagio: condicaoQuartoEstagio ?? this.condicaoQuartoEstagio,
+      dataTerceiroDesligamento:
+          dataTerceiroDesligamento ?? this.dataTerceiroDesligamento,
+      justificativaTerceiroDesligamento:
+          justificativaTerceiroDesligamento ??
+          this.justificativaTerceiroDesligamento,
+      condicaoQuartoEstagio:
+          condicaoQuartoEstagio ?? this.condicaoQuartoEstagio,
       inicioQuartoEstagio: inicioQuartoEstagio ?? this.inicioQuartoEstagio,
-      desistenciaQuartoEstagio: desistenciaQuartoEstagio ?? this.desistenciaQuartoEstagio,
+      desistenciaQuartoEstagio:
+          desistenciaQuartoEstagio ?? this.desistenciaQuartoEstagio,
       quartoRitoPassagem: quartoRitoPassagem ?? this.quartoRitoPassagem,
-      dataQuartoDesligamento: dataQuartoDesligamento ?? this.dataQuartoDesligamento,
-      justificativaQuartoDesligamento: justificativaQuartoDesligamento ?? this.justificativaQuartoDesligamento,
+      dataQuartoDesligamento:
+          dataQuartoDesligamento ?? this.dataQuartoDesligamento,
+      justificativaQuartoDesligamento:
+          justificativaQuartoDesligamento ??
+          this.justificativaQuartoDesligamento,
       dataBatizado: dataBatizado ?? this.dataBatizado,
       padrinhoBatismo: padrinhoBatismo ?? this.padrinhoBatismo,
       madrinhaBatismo: madrinhaBatismo ?? this.madrinhaBatismo,
@@ -285,9 +353,14 @@ class Membro extends Equatable {
       primeiraCamarinha: primeiraCamarinha ?? this.primeiraCamarinha,
       segundaCamarinha: segundaCamarinha ?? this.segundaCamarinha,
       terceiraCamarinha: terceiraCamarinha ?? this.terceiraCamarinha,
-      dataCoroacaoSacerdote: dataCoroacaoSacerdote ?? this.dataCoroacaoSacerdote,
+      dataCoroacaoSacerdote:
+          dataCoroacaoSacerdote ?? this.dataCoroacaoSacerdote,
       atividadeEspiritual: atividadeEspiritual ?? this.atividadeEspiritual,
-      grupoTrabalhoEspiritual: grupoTrabalhoEspiritual ?? this.grupoTrabalhoEspiritual,
+      grupoTrabalhoEspiritual:
+          grupoTrabalhoEspiritual ?? this.grupoTrabalhoEspiritual,
+      grupoTarefa: grupoTarefa ?? this.grupoTarefa,
+      acaoSocial: acaoSocial ?? this.acaoSocial,
+      cargoLideranca: cargoLideranca ?? this.cargoLideranca,
       primeiroOrixa: primeiroOrixa ?? this.primeiroOrixa,
       adjuntoPrimeiroOrixa: adjuntoPrimeiroOrixa ?? this.adjuntoPrimeiroOrixa,
       segundoOrixa: segundoOrixa ?? this.segundoOrixa,
@@ -295,6 +368,13 @@ class Membro extends Equatable {
       terceiroOrixa: terceiroOrixa ?? this.terceiroOrixa,
       quartoOrixa: quartoOrixa ?? this.quartoOrixa,
       observacoesOrixa: observacoesOrixa ?? this.observacoesOrixa,
+      nomePr: nomePr ?? this.nomePr,
+      nomeBai: nomeBai ?? this.nomeBai,
+      nomeCab: nomeCab ?? this.nomeCab,
+      nomeMar: nomeMar ?? this.nomeMar,
+      nomeMal: nomeMal ?? this.nomeMal,
+      nomeCig: nomeCig ?? this.nomeCig,
+      nomePv: nomePv ?? this.nomePv,
       dataCriacao: dataCriacao ?? this.dataCriacao,
       dataUltimaAlteracao: dataUltimaAlteracao ?? this.dataUltimaAlteracao,
     );

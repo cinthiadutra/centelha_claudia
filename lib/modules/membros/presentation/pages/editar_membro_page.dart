@@ -258,6 +258,16 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
   late final TextEditingController contato1Controller;
   late final TextEditingController contato2Controller;
   late final TextEditingController observacoesOrixaController;
+  late final TextEditingController grupoTarefaController;
+  late final TextEditingController acaoSocialController;
+  late final TextEditingController cargoLiderancaController;
+  late final TextEditingController nomePrController;
+  late final TextEditingController nomeBaiController;
+  late final TextEditingController nomeCabController;
+  late final TextEditingController nomeMarController;
+  late final TextEditingController nomeMalController;
+  late final TextEditingController nomeCigController;
+  late final TextEditingController nomePvController;
 
   late String nucleoSelecionado;
   late String statusSelecionado;
@@ -326,6 +336,24 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
             ),
 
             const SizedBox(height: 24),
+            _buildSecaoTitulo('GRUPOS E ATIVIDADES'),
+            _buildCampoTexto(
+              controller: grupoTarefaController,
+              label: 'Grupo-Tarefa (Nota C)',
+              icon: Icons.group_work,
+            ),
+            _buildCampoTexto(
+              controller: acaoSocialController,
+              label: 'Grupo de Ação Social (Nota D)',
+              icon: Icons.volunteer_activism,
+            ),
+            _buildCampoTexto(
+              controller: cargoLiderancaController,
+              label: 'Cargo de Liderança (Nota L)',
+              icon: Icons.workspace_premium,
+            ),
+
+            const SizedBox(height: 24),
             _buildSecaoTitulo('HISTÓRICO ESPIRITUAL'),
             _buildCampoData(
               '1ª camarinha',
@@ -357,6 +385,44 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
                 labelText: 'Observações sobre Orixás',
                 border: OutlineInputBorder(),
               ),
+            ),
+
+            const SizedBox(height: 24),
+            _buildSecaoTitulo('NOMES DOS GUIAS ESPIRITUAIS'),
+            _buildCampoTexto(
+              controller: nomePrController,
+              label: 'Nome do Preto-Velho',
+              icon: Icons.elderly,
+            ),
+            _buildCampoTexto(
+              controller: nomeBaiController,
+              label: 'Nome do Baiano',
+              icon: Icons.person,
+            ),
+            _buildCampoTexto(
+              controller: nomeCabController,
+              label: 'Nome do Caboclo',
+              icon: Icons.person,
+            ),
+            _buildCampoTexto(
+              controller: nomeMarController,
+              label: 'Nome do Marinheiro',
+              icon: Icons.sailing,
+            ),
+            _buildCampoTexto(
+              controller: nomeMalController,
+              label: 'Nome do Malandro',
+              icon: Icons.person,
+            ),
+            _buildCampoTexto(
+              controller: nomeCigController,
+              label: 'Nome do Cigano',
+              icon: Icons.person,
+            ),
+            _buildCampoTexto(
+              controller: nomePvController,
+              label: 'Nome da Pomba-Gira',
+              icon: Icons.person,
             ),
 
             const SizedBox(height: 32),
@@ -393,6 +459,16 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     contato1Controller.dispose();
     contato2Controller.dispose();
     observacoesOrixaController.dispose();
+    grupoTarefaController.dispose();
+    acaoSocialController.dispose();
+    cargoLiderancaController.dispose();
+    nomePrController.dispose();
+    nomeBaiController.dispose();
+    nomeCabController.dispose();
+    nomeMarController.dispose();
+    nomeMalController.dispose();
+    nomeCigController.dispose();
+    nomePvController.dispose();
     super.dispose();
   }
 
@@ -410,6 +486,16 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
     observacoesOrixaController = TextEditingController(
       text: m.observacoesOrixa,
     );
+    grupoTarefaController = TextEditingController(text: m.grupoTarefa);
+    acaoSocialController = TextEditingController(text: m.acaoSocial);
+    cargoLiderancaController = TextEditingController(text: m.cargoLideranca);
+    nomePrController = TextEditingController(text: m.nomePr);
+    nomeBaiController = TextEditingController(text: m.nomeBai);
+    nomeCabController = TextEditingController(text: m.nomeCab);
+    nomeMarController = TextEditingController(text: m.nomeMar);
+    nomeMalController = TextEditingController(text: m.nomeMal);
+    nomeCigController = TextEditingController(text: m.nomeCig);
+    nomePvController = TextEditingController(text: m.nomePv);
 
     nucleoSelecionado = m.nucleo;
     statusSelecionado = m.status;
@@ -577,6 +663,32 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
       observacoesOrixa: observacoesOrixaController.text.isNotEmpty
           ? observacoesOrixaController.text
           : null,
+      grupoTarefa: grupoTarefaController.text.isNotEmpty
+          ? grupoTarefaController.text
+          : null,
+      acaoSocial: acaoSocialController.text.isNotEmpty
+          ? acaoSocialController.text
+          : null,
+      cargoLideranca: cargoLiderancaController.text.isNotEmpty
+          ? cargoLiderancaController.text
+          : null,
+      nomePr: nomePrController.text.isNotEmpty ? nomePrController.text : null,
+      nomeBai: nomeBaiController.text.isNotEmpty
+          ? nomeBaiController.text
+          : null,
+      nomeCab: nomeCabController.text.isNotEmpty
+          ? nomeCabController.text
+          : null,
+      nomeMar: nomeMarController.text.isNotEmpty
+          ? nomeMarController.text
+          : null,
+      nomeMal: nomeMalController.text.isNotEmpty
+          ? nomeMalController.text
+          : null,
+      nomeCig: nomeCigController.text.isNotEmpty
+          ? nomeCigController.text
+          : null,
+      nomePv: nomePvController.text.isNotEmpty ? nomePvController.text : null,
     );
 
     try {

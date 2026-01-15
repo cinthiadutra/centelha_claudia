@@ -29,7 +29,9 @@ import '../../modules/membros/data/datasources/membro_supabase_datasource.dart';
 import '../../modules/membros/data/repositories/membro_repository.dart';
 import '../../modules/membros/presentation/controllers/membro_controller.dart';
 import '../../modules/usuarios_sistema/data/datasources/usuario_sistema_datasource.dart';
+import '../../modules/usuarios_sistema/data/datasources/usuario_sistema_supabase_datasource.dart';
 import '../../modules/usuarios_sistema/data/repositories/usuario_sistema_repository.dart';
+import '../../modules/usuarios_sistema/data/repositories/usuario_sistema_repository_imp.dart';
 import '../../modules/usuarios_sistema/presentation/controllers/usuario_sistema_controller.dart';
 import '../services/supabase_service.dart';
 
@@ -132,9 +134,9 @@ Future<void> init() async {
     () => UsuarioSistemaRepositoryImpl(sl()),
   );
 
-  // Datasource
+  // Datasource - SUPABASE (substituiu Mock)
   sl.registerLazySingleton<UsuarioSistemaDatasource>(
-    () => UsuarioSistemaDatasourceImpl(),
+    () => UsuarioSistemaSupabaseDatasource(sl()),
   );
 
   // ============ GETX CONTROLLERS ============

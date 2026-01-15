@@ -120,6 +120,21 @@ class _DetalheMembroDialog extends StatelessWidget {
                   ),
 
                   const Divider(height: 32),
+                  _buildSecao('GRUPOS E ATIVIDADES'),
+                  _buildInfo(
+                    'Grupo-Tarefa (Nota C)',
+                    membro.grupoTarefa ?? '-',
+                  ),
+                  _buildInfo(
+                    'Grupo de Ação Social (Nota D)',
+                    membro.acaoSocial ?? '-',
+                  ),
+                  _buildInfo(
+                    'Cargo de Liderança (Nota L)',
+                    membro.cargoLideranca ?? '-',
+                  ),
+
+                  const Divider(height: 32),
                   _buildSecao('ORIXÁS'),
                   _buildInfo('1º Orixá', membro.primeiroOrixa ?? '-'),
                   _buildInfo(
@@ -135,6 +150,16 @@ class _DetalheMembroDialog extends StatelessWidget {
                   _buildInfo('4º Orixá', membro.quartoOrixa ?? '-'),
                   if (membro.observacoesOrixa != null)
                     _buildInfo('Observações', membro.observacoesOrixa!),
+
+                  const Divider(height: 32),
+                  _buildSecao('NOMES DOS GUIAS ESPIRITUAIS'),
+                  _buildInfo('Preto-Velho', membro.nomePr ?? '-'),
+                  _buildInfo('Baiano', membro.nomeBai ?? '-'),
+                  _buildInfo('Caboclo', membro.nomeCab ?? '-'),
+                  _buildInfo('Marinheiro', membro.nomeMar ?? '-'),
+                  _buildInfo('Malandro', membro.nomeMal ?? '-'),
+                  _buildInfo('Cigano', membro.nomeCig ?? '-'),
+                  _buildInfo('Pomba-Gira', membro.nomePv ?? '-'),
                 ],
               ),
             ),

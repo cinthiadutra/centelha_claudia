@@ -222,6 +222,11 @@ class AppMenus {
           route: '/sistema-ponto/importar-calendario',
         ),
         const MenuItem(
+          title: 'Importar Presenças',
+          icon: 'upload_file',
+          route: '/sistema-ponto/importar-presencas',
+        ),
+        const MenuItem(
           title: 'Avaliações Mensais',
           icon: 'assessment',
           route: '/sistema-ponto/avaliacoes',
@@ -235,6 +240,43 @@ class AppMenus {
           title: 'Relatórios',
           icon: 'description',
           route: '/sistema-ponto/relatorios',
+        ),
+      ],
+    ),
+    MenuItem(
+      title: 'ORGANIZAÇÃO DA CENTELHA',
+      icon: 'corporate_fare',
+      nivelRequerido: NivelAcesso.nivel2,
+      subItems: [
+        const MenuItem(
+          title: 'Gerenciar Núcleos',
+          icon: 'location_city',
+          route: '/organizacao/nucleos',
+        ),
+        const MenuItem(
+          title: 'Gerenciar Dias de Sessão',
+          icon: 'calendar_today',
+          route: '/organizacao/dias-sessao',
+        ),
+        const MenuItem(
+          title: 'Gerenciar Grupos-Tarefa',
+          icon: 'groups',
+          route: '/organizacao/grupos-tarefa',
+        ),
+        const MenuItem(
+          title: 'Gerenciar Grupos de Ação Social',
+          icon: 'volunteer_activism',
+          route: '/organizacao/grupos-acao-social',
+        ),
+        const MenuItem(
+          title: 'Gerenciar Grupos de Trabalho Espiritual',
+          icon: 'spa',
+          route: '/organizacao/grupos-trabalho-espiritual',
+        ),
+        const MenuItem(
+          title: 'Classificações Mediúnicas',
+          icon: 'auto_awesome',
+          route: '/organizacao/classificacoes-mediunicas',
         ),
       ],
     ),

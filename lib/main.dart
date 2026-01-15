@@ -32,7 +32,12 @@ import 'modules/membros/presentation/pages/importar_membros_antigos_page.dart';
 import 'modules/membros/presentation/pages/incluir_membro_page.dart';
 import 'modules/membros/presentation/pages/pesquisar_membro_page.dart';
 import 'modules/membros/presentation/pages/relatorios_membro_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_classificacoes_mediunicas_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_dias_sessao_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_grupos_page.dart';
+import 'modules/organizacao/presentation/pages/gerenciar_nucleos_page.dart';
 import 'modules/organizacao/presentation/pages/gerenciar_organizacao_page.dart';
+import 'modules/organizacao/presentation/pages/organizacao_centelha_page.dart';
 import 'modules/usuarios_sistema/presentation/pages/gerenciar_usuario_sistema_page.dart';
 
 void main() async {
@@ -148,6 +153,14 @@ class MyApp extends StatelessWidget {
             name: '/sistema-ponto/importar-calendario',
             page: () => const ImportarCalendarioPage(),
           ),
+          GetPage(
+            name: '/sistema-ponto/importar-presencas',
+            page: () => const ImportarPresencaPage(),
+          ),
+          GetPage(
+            name: '/sistema-ponto/rankings',
+            page: () => const RankingMensalPage(),
+          ),
 
           // Usuários Sistema
           GetPage(
@@ -163,6 +176,34 @@ class MyApp extends StatelessWidget {
           GetPage(
             name: '/organizacao/gerenciar',
             page: () => const GerenciarOrganizacaoPage(),
+          ),
+          GetPage(
+            name: '/organizacao',
+            page: () => const OrganizacaoCentelhaPage(),
+          ),
+          GetPage(
+            name: '/organizacao/nucleos',
+            page: () => const GerenciarNucleosPage(),
+          ),
+          GetPage(
+            name: '/organizacao/dias-sessao',
+            page: () => const GerenciarDiasSessaoPage(),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-tarefa',
+            page: () => const GerenciarGruposPage(tipo: 'grupo_tarefa'),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-acao-social',
+            page: () => const GerenciarGruposPage(tipo: 'acao_social'),
+          ),
+          GetPage(
+            name: '/organizacao/grupos-trabalho-espiritual',
+            page: () => const GerenciarGruposPage(tipo: 'trabalho_espiritual'),
+          ),
+          GetPage(
+            name: '/organizacao/classificacoes-mediunicas',
+            page: () => const GerenciarClassificacoesMediunicasPage(),
           ),
         ],
       ),

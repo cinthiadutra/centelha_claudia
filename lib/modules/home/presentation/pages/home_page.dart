@@ -517,6 +517,8 @@ class _AppDrawer extends StatelessWidget {
       // Sistema de Ponto
       '/sistema-ponto/importar-calendario':
           '/sistema-ponto/importar-calendario',
+      '/sistema-ponto/importar-presencas': '/sistema-ponto/importar-presencas',
+      '/sistema-ponto/rankings': '/sistema-ponto/rankings',
 
       // Usuários Sistema
       '/usuarios-sistema/cadastrar': '/usuarios-sistema/cadastrar',

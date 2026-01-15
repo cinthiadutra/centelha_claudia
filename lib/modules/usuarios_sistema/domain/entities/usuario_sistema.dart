@@ -6,6 +6,7 @@ class UsuarioSistema extends Equatable {
   final String id;
   final String numeroCadastro; // Link com cadastro de membro
   final String nome;
+  final String? username; // Nome de usuário para login (alternativa ao email)
   final String email;
   final String senha; // Em produção, deve ser hash
   final int nivelPermissao; // 1, 2, 3 ou 4
@@ -18,6 +19,7 @@ class UsuarioSistema extends Equatable {
     required this.id,
     required this.numeroCadastro,
     required this.nome,
+    this.username,
     required this.email,
     required this.senha,
     required this.nivelPermissao,
@@ -44,22 +46,24 @@ class UsuarioSistema extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        numeroCadastro,
-        nome,
-        email,
-        senha,
-        nivelPermissao,
-        ativo,
-        dataCriacao,
-        dataUltimaAlteracao,
-        observacoes,
-      ];
+    id,
+    numeroCadastro,
+    nome,
+    username,
+    email,
+    senha,
+    nivelPermissao,
+    ativo,
+    dataCriacao,
+    dataUltimaAlteracao,
+    observacoes,
+  ];
 
   UsuarioSistema copyWith({
     String? id,
     String? numeroCadastro,
     String? nome,
+    String? username,
     String? email,
     String? senha,
     int? nivelPermissao,
@@ -72,6 +76,7 @@ class UsuarioSistema extends Equatable {
       id: id ?? this.id,
       numeroCadastro: numeroCadastro ?? this.numeroCadastro,
       nome: nome ?? this.nome,
+      username: username ?? this.username,
       email: email ?? this.email,
       senha: senha ?? this.senha,
       nivelPermissao: nivelPermissao ?? this.nivelPermissao,

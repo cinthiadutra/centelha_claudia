@@ -23,6 +23,7 @@ class _GerenciarUsuarioSistemaPageState
   final _formKey = GlobalKey<FormState>();
   final _numeroCadastroController = TextEditingController();
   final _nomeController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _observacoesController = TextEditingController();
@@ -113,6 +114,24 @@ class _GerenciarUsuarioSistemaPageState
                         ),
                         validator: (v) =>
                             v?.isEmpty == true ? 'Campo obrigatório' : null,
+                      ),
+                      const SizedBox(height: 16),
+
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Username (para login)',
+                          hintText: 'Ex: secretaria, joao.silva',
+                          border: OutlineInputBorder(),
+                          helperText:
+                              'Deixe em branco para usar apenas email no login',
+                        ),
+                        validator: (v) {
+                          if (v?.isNotEmpty == true && v!.length < 3) {
+                            return 'Mínimo 3 caracteres';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
 
@@ -361,6 +380,7 @@ class _GerenciarUsuarioSistemaPageState
   void dispose() {
     _numeroCadastroController.dispose();
     _nomeController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _senhaController.dispose();
     _observacoesController.dispose();
@@ -392,6 +412,7 @@ class _GerenciarUsuarioSistemaPageState
       usuarioEditando = usuario;
       _numeroCadastroController.text = usuario.numeroCadastro;
       _nomeController.text = usuario.nome;
+      _usernameController.text = usuario.username ?? '';
       _emailController.text = usuario.email;
       _senhaController.text = usuario.senha;
       _observacoesController.text = usuario.observacoes ?? '';
@@ -447,6 +468,7 @@ class _GerenciarUsuarioSistemaPageState
       usuarioEditando = null;
       _numeroCadastroController.clear();
       _nomeController.clear();
+      _usernameController.clear();
       _emailController.clear();
       _senhaController.clear();
       _observacoesController.clear();
@@ -473,6 +495,9 @@ class _GerenciarUsuarioSistemaPageState
       id: usuarioEditando?.id ?? '',
       numeroCadastro: _numeroCadastroController.text.trim(),
       nome: _nomeController.text.trim(),
+      username: _usernameController.text.trim().isEmpty
+          ? null
+          : _usernameController.text.trim(),
       email: _emailController.text.trim(),
       senha: _senhaController.text.trim(),
       nivelPermissao: nivelPermissaoSelecionado!,
