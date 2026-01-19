@@ -35,16 +35,16 @@ class UsuarioSistemaModel extends UsuarioSistema {
   factory UsuarioSistemaModel.fromJson(Map<String, dynamic> json) {
     return UsuarioSistemaModel(
       id: json['id'] as String,
-      numeroCadastro: json['numeroCadastro'] as String,
+      numeroCadastro: json['numero_cadastro'] as String,
       nome: json['nome'] as String,
       username: json['username'] as String?,
       email: json['email'] as String,
-      senha: json['senha'] as String,
-      nivelPermissao: json['nivelPermissao'] as int,
+      senha: json['senha_hash'] as String,
+      nivelPermissao: json['nivel_permissao'] as int,
       ativo: json['ativo'] as bool,
-      dataCriacao: DateTime.parse(json['dataCriacao'] as String),
-      dataUltimaAlteracao: json['dataUltimaAlteracao'] != null
-          ? DateTime.parse(json['dataUltimaAlteracao'] as String)
+      dataCriacao: DateTime.parse(json['created_at'] as String),
+      dataUltimaAlteracao: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
           : null,
       observacoes: json['observacoes'] as String?,
     );
@@ -53,15 +53,15 @@ class UsuarioSistemaModel extends UsuarioSistema {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'numeroCadastro': numeroCadastro,
+      'numero_cadastro': numeroCadastro,
       'nome': nome,
       'username': username,
       'email': email,
-      'senha': senha,
-      'nivelPermissao': nivelPermissao,
+      'senha_hash': senha,
+      'nivel_permissao': nivelPermissao,
       'ativo': ativo,
-      'dataCriacao': dataCriacao.toIso8601String(),
-      'dataUltimaAlteracao': dataUltimaAlteracao?.toIso8601String(),
+      'created_at': dataCriacao.toIso8601String(),
+      'updated_at': dataUltimaAlteracao?.toIso8601String(),
       'observacoes': observacoes,
     };
   }
