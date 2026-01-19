@@ -21,8 +21,22 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       data.remove('created_at');
       data.remove('updated_at');
       
-      // Remove numero_cadastro se estiver vazio (usuários administrativos)
-      if (data['numero_cadastro'] == null || data['numero_cadastro'] == '') {
+      // Validar se numero_cadastro existe na tabela usuarios
+      if (data['numero_cadastro'] != null && data['numero_cadastro'] != '') {
+        final cadastroExiste = await _supabaseService.client
+            .from('cadastro')
+            .select('numero_cadastro')
+            .eq('numero_cadastro', data['numero_cadastro'])
+            .maybeSingle();
+        
+        if (cadastroExiste == null) {
+          throw ServerException(
+            'Número de cadastro ${data['numero_cadastro']} não encontrado. '
+            'Deixe em branco para usuários administrativos ou use um cadastro existente.'
+          );
+        }
+      } else {
+        // Remove numero_cadastro se estiver vazio (usuários administrativos)
         data.remove('numero_cadastro');
       }
       
@@ -50,6 +64,9 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       print('❌ [USUARIO_SISTEMA] Details: ${error.details}');
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
+      }
+      if (error.code == '23503') {
+        throw ServerException('Número de cadastro inválido. Verifique se o cadastro existe.');
       }
       throw ServerException('Erro ao adicionar usuário: ${error.message}');
     } catch (error) {
