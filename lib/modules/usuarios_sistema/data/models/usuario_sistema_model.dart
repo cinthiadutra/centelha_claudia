@@ -35,13 +35,13 @@ class UsuarioSistemaModel extends UsuarioSistema {
   factory UsuarioSistemaModel.fromJson(Map<String, dynamic> json) {
     return UsuarioSistemaModel(
       id: json['id'] as String,
-      numeroCadastro: json['numero_cadastro'] as String,
+      numeroCadastro: (json['numero_cadastro'] as String?) ?? '',
       nome: json['nome'] as String,
       username: json['username'] as String?,
       email: json['email'] as String,
-      senha: json['senha_hash'] as String,
+      senha: (json['senha_hash'] as String?) ?? '',
       nivelPermissao: json['nivel_permissao'] as int,
-      ativo: json['ativo'] as bool,
+      ativo: json['ativo'] as bool? ?? true,
       dataCriacao: DateTime.parse(json['created_at'] as String),
       dataUltimaAlteracao: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
