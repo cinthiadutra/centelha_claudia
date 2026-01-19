@@ -60700,7 +60700,7 @@ break
 case 6:k=$.ci().b
 k===$&&A.a()
 s=9
-return A.l(k.c8("cadastro").tA(0,"numero_cadastro").dK("numero_cadastro",J.a4(o,"numero_cadastro")).og(),$async$bE)
+return A.l(k.c8("usuarios").tA(0,"numero_cadastro").dK("numero_cadastro",J.a4(o,"numero_cadastro")).og(),$async$bE)
 case 9:n=c
 if(n==null){k=A.cb("N\xfamero de cadastro "+A.i(J.a4(o,"numero_cadastro"))+" n\xe3o encontrado. Deixe em branco para usu\xe1rios administrativos ou use um cadastro existente.")
 throw A.c(k)}s=7
