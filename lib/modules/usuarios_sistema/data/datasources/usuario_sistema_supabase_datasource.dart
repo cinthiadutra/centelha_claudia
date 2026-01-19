@@ -18,16 +18,33 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       data.remove('id'); // Remove ID para gerar automaticamente
       data.remove('created_at');
       data.remove('updated_at');
+      
+      // Remove numero_cadastro se estiver vazio (usuários administrativos)
+      if (data['numero_cadastro'] == null || data['numero_cadastro'] == '') {
+        data.remove('numero_cadastro');
+      }
+      
+      // Remove senha_hash se estiver vazio
+      if (data['senha_hash'] == null || data['senha_hash'] == '') {
+        data.remove('senha_hash');
+      }
+
+      print('🔍 [USUARIO_SISTEMA] Dados a serem inseridos: $data');
 
       await _supabaseService.client
           .from('usuarios_sistema')
           .insert(data);
+      
+      print('✅ [USUARIO_SISTEMA] Usuário adicionado com sucesso');
     } on PostgrestException catch (error) {
+      print('❌ [USUARIO_SISTEMA] Erro PostgrestException: ${error.code} - ${error.message}');
+      print('❌ [USUARIO_SISTEMA] Details: ${error.details}');
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
       }
       throw ServerException('Erro ao adicionar usuário: ${error.message}');
     } catch (error) {
+      print('❌ [USUARIO_SISTEMA] Erro inesperado: $error');
       throw ServerException('Erro inesperado: $error');
     }
   }

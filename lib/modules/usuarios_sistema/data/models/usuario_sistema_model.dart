@@ -53,7 +53,7 @@ class UsuarioSistemaModel extends UsuarioSistema {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'numero_cadastro': numeroCadastro,
+      'numero_cadastro': numeroCadastro.isEmpty ? null : numeroCadastro,
       'nome': nome,
       'username': username,
       'email': email,
