@@ -15,7 +15,9 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   Future<void> adicionar(UsuarioSistemaModel usuario) async {
     try {
       final data = usuario.toJson();
-      data.remove('id'); // Remove ID para gerar automaticamente
+      
+      // Remove campos que são gerenciados pelo Supabase
+      data.remove('id');
       data.remove('created_at');
       data.remove('updated_at');
       
@@ -28,8 +30,15 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       if (data['senha_hash'] == null || data['senha_hash'] == '') {
         data.remove('senha_hash');
       }
+      
+      // Remove qualquer campo com nome em camelCase que não deveria existir
+      data.removeWhere((key, value) => 
+        key.contains(RegExp(r'[A-Z]')) || // Remove qualquer campo com letra maiúscula
+        value == null
+      );
 
-      print('🔍 [USUARIO_SISTEMA] Dados a serem inseridos: $data');
+      print('🔍 [USUARIO_SISTEMA] Dados finais a serem inseridos: $data');
+      print('🔍 [USUARIO_SISTEMA] Chaves: ${data.keys.toList()}');
 
       await _supabaseService.client
           .from('usuarios_sistema')
