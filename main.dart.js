@@ -10102,7 +10102,7 @@ auN:function auN(){},
 Cn:function Cn(a){this.a=a},
 aEm:function aEm(){},
 bbK(a,b,c,d,e,f,g,h,i,j,k){return new A.pS(e,h,g,k,d,j,f,a,b,c,i)},
-aEl(a){var s="dataUltimaAlteracao",r=J.aQ(a),q=A.az(r.i(a,"id")),p=A.az(r.i(a,"numeroCadastro")),o=A.az(r.i(a,"nome")),n=A.be(r.i(a,"username")),m=A.az(r.i(a,"email")),l=A.az(r.i(a,"senha")),k=A.dV(r.i(a,"nivelPermissao")),j=A.tK(r.i(a,"ativo")),i=A.cw(A.az(r.i(a,"dataCriacao"))),h=r.i(a,s)!=null?A.cw(A.az(r.i(a,s))):null
+aEl(a){var s="updated_at",r=J.aQ(a),q=A.az(r.i(a,"id")),p=A.az(r.i(a,"numero_cadastro")),o=A.az(r.i(a,"nome")),n=A.be(r.i(a,"username")),m=A.az(r.i(a,"email")),l=A.az(r.i(a,"senha_hash")),k=A.dV(r.i(a,"nivel_permissao")),j=A.tK(r.i(a,"ativo")),i=A.cw(A.az(r.i(a,"created_at"))),h=r.i(a,s)!=null?A.cw(A.az(r.i(a,s))):null
 return A.bbK(j,i,h,m,q,k,o,p,A.be(r.i(a,"observacoes")),l,n)},
 pS:function pS(a,b,c,d,e,f,g,h,i,j,k){var _=this
 _.a=a
@@ -60876,7 +60876,7 @@ $S:583}
 A.pS.prototype={
 bY(){var s=this,r=s.x.aM(),q=s.y
 q=q==null?null:q.aM()
-return A.ah(["id",s.a,"numeroCadastro",s.b,"nome",s.c,"username",s.d,"email",s.e,"senha",s.f,"nivelPermissao",s.r,"ativo",s.w,"dataCriacao",r,"dataUltimaAlteracao",q,"observacoes",s.z],t.N,t.z)}}
+return A.ah(["id",s.a,"numero_cadastro",s.b,"nome",s.c,"username",s.d,"email",s.e,"senha_hash",s.f,"nivel_permissao",s.r,"ativo",s.w,"created_at",r,"updated_at",q,"observacoes",s.z],t.N,t.z)}}
 A.Cm.prototype={
 de(a){return this.a9v(a)},
 a9v(a){var s=0,r=A.r(t.Kp),q,p=this
