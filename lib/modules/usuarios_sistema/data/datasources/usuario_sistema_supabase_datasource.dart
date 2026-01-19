@@ -24,7 +24,7 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       // Validar se numero_cadastro existe na tabela usuarios
       if (data['numero_cadastro'] != null && data['numero_cadastro'] != '') {
         final cadastroExiste = await _supabaseService.client
-            .from('cadastro')
+            .from('usuarios')
             .select('numero_cadastro')
             .eq('numero_cadastro', data['numero_cadastro'])
             .maybeSingle();
