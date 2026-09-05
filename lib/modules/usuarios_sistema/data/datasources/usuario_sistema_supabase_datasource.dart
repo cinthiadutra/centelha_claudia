@@ -86,6 +86,7 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   Future<void> atualizar(UsuarioSistemaModel usuario) async {
     try {
       final data = usuario.toJson();
+      data.remove('id'); // O ID já é usado no filtro da atualização
       data.remove('created_at'); // Não atualizar data de criação
 
       await _supabaseService.client
@@ -94,7 +95,14 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
           .eq('id', usuario.id);
     } on PostgrestException catch (error) {
       if (error.code == '23505') {
-        throw ServerException('Email já cadastrado');
+        throw ServerException(
+          'Email ou nome de usuário já cadastrado. Use outro valor.',
+        );
+      }
+      if (error.code == '23503') {
+        throw ServerException(
+          'Número de cadastro inválido. Verifique se o cadastro existe.',
+        );
       }
       throw ServerException('Erro ao atualizar usuário: ${error.message}');
     } catch (error) {

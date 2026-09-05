@@ -1,3 +1,4 @@
+import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/usuario_sistema.dart';
 import '../datasources/usuario_sistema_datasource.dart';
 import '../models/usuario_sistema_model.dart';
@@ -20,11 +21,6 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
   }
 
   @override
-  Future<UsuarioSistema?> getPorUsername(String username) async {
-    return await datasource.getPorUsername(username);
-  }
-
-  @override
   Future<UsuarioSistema?> getPorEmailOuUsername(String emailOuUsername) async {
     return await datasource.getPorEmailOuUsername(emailOuUsername);
   }
@@ -32,6 +28,11 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
   @override
   Future<UsuarioSistema?> getPorId(String id) async {
     return await datasource.getPorId(id);
+  }
+
+  @override
+  Future<UsuarioSistema?> getPorUsername(String username) async {
+    return await datasource.getPorUsername(username);
   }
 
   @override
@@ -52,11 +53,13 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
       await datasource.adicionar(model);
     } else {
       final existe = await datasource.getPorId(usuario.id);
-      if (existe != null) {
-        await datasource.atualizar(model);
-      } else {
-        await datasource.adicionar(model);
+      if (existe == null) {
+        throw ServerException(
+          'O usuário que você está editando não foi encontrado. '
+          'Atualize a lista e tente novamente.',
+        );
       }
+      await datasource.atualizar(model);
     }
   }
 }

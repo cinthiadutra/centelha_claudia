@@ -369,7 +369,7 @@ CREATE INDEX idx_inscricoes_cadastro ON inscricoes_cursos(numero_cadastro);
 -- ================================================
 CREATE TABLE IF NOT EXISTS usuarios_sistema (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  numero_cadastro VARCHAR(10) UNIQUE REFERENCES usuarios(numero_cadastro),
+  numero_cadastro VARCHAR(10) UNIQUE,
   nome VARCHAR(255),
   email VARCHAR(255) UNIQUE NOT NULL,
   senha_hash VARCHAR(255),
