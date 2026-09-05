@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -348,7 +349,7 @@ class _ImportarPresencaPageState extends State<ImportarPresencaPage> {
             await _presencaRepo.salvar(presenca);
             salvos++;
           } catch (e) {
-            print('Erro ao salvar registro: $e');
+            log('Erro ao salvar registro: $e');
           }
         }
       }

@@ -172,8 +172,8 @@ final dados = DadosCalculoAvaliacao(
 final useCase = CalcularAvaliacaoMensalUseCase();
 final avaliacao = useCase.calcular(dados);
 
-print('Nota Real: ${avaliacao.notaReal}');
-print('Nota Final: ${avaliacao.notaFinal}');
+log('Nota Real: ${avaliacao.notaReal}');
+log('Nota Final: ${avaliacao.notaFinal}');
 ```
 
 ### Normalização de Notas

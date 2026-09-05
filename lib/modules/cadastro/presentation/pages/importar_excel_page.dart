@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
@@ -262,7 +265,7 @@ class _ImportarExcelPageState extends State<ImportarExcelPage> {
             _sucessos++;
           });
         } catch (e) {
-          print('Erro linha $i: $e');
+          log('Erro linha $i: $e');
           setState(() {
             _erros++;
           });

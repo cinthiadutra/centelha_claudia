@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/consulta_constants.dart';
+import '../../../../core/utils/excel_exporter.dart';
 import '../../../../modules/auth/presentation/bloc/auth_bloc.dart';
 import '../../../../modules/auth/presentation/bloc/auth_state.dart';
 import '../../domain/entities/consulta.dart';
@@ -28,58 +29,6 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
   bool relatorioGerado = false;
   int? nivelUsuario;
   String? cadastroUsuario;
-
-  @override
-  void dispose() {
-    cadastroConsulenteController.dispose();
-    cadastroMediumController.dispose();
-    super.dispose();
-  }
-
-  void _gerarRelatorio() async {
-    setState(() {
-      relatorioGerado = false;
-    });
-
-    final resultado = await consultaController.pesquisarConsultas(
-      cadastroConsulente: cadastroConsulenteController.text.isNotEmpty
-          ? cadastroConsulenteController.text
-          : null,
-      cadastroMedium: cadastroMediumController.text.isNotEmpty
-          ? cadastroMediumController.text
-          : null,
-      nomeEntidade: entidadeSelecionada,
-    );
-
-    setState(() {
-      resultados = resultado;
-      relatorioGerado = true;
-    });
-  }
-
-  void _limpar() {
-    setState(() {
-      cadastroConsulenteController.clear();
-      cadastroMediumController.clear();
-      entidadeSelecionada = null;
-      resultados = [];
-      relatorioGerado = false;
-    });
-  }
-
-  void _exportarExcel() {
-    Get.snackbar(
-      'Exportação',
-      'Exportando ${resultados.length} registros para Excel...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-    );
-  }
-
-  String _formatarData(DateTime data) {
-    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -337,5 +286,79 @@ class _PesquisarConsultaPageState extends State<PesquisarConsultaPage> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    cadastroConsulenteController.dispose();
+    cadastroMediumController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _exportarExcel() async {
+    try {
+      final salvo = await exportarParaExcel(
+        nomeArquivo: 'relatorio_consultas',
+        nomePlanilha: 'Consultas',
+        cabecalhos: const [
+          'Nº Consulta',
+          'Data',
+          'Consulente',
+          'Médium',
+          'Entidade',
+        ],
+        linhas: resultados
+            .map(
+              (consulta) => [
+                consulta.numeroConsulta,
+                _formatarData(consulta.data),
+                consulta.nomeConsulente,
+                consulta.nomeMedium,
+                consulta.nomeEntidade,
+              ],
+            )
+            .toList(),
+      );
+      if (salvo) {
+        Get.snackbar('Sucesso', 'Relatório exportado com sucesso!');
+      }
+    } catch (error) {
+      Get.snackbar('Erro', 'Não foi possível exportar o relatório: $error');
+    }
+  }
+
+  String _formatarData(DateTime data) {
+    return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
+  }
+
+  void _gerarRelatorio() async {
+    setState(() {
+      relatorioGerado = false;
+    });
+
+    final resultado = await consultaController.pesquisarConsultas(
+      cadastroConsulente: cadastroConsulenteController.text.isNotEmpty
+          ? cadastroConsulenteController.text
+          : null,
+      cadastroMedium: cadastroMediumController.text.isNotEmpty
+          ? cadastroMediumController.text
+          : null,
+      nomeEntidade: entidadeSelecionada,
+    );
+
+    setState(() {
+      resultados = resultado;
+      relatorioGerado = true;
+    });
+  }
+
+  void _limpar() {
+    setState(() {
+      cadastroConsulenteController.clear();
+      cadastroMediumController.clear();
+      entidadeSelecionada = null;
+      resultados = [];
+      relatorioGerado = false;
+    });
   }
 }

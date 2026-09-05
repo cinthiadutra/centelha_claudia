@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:csv/csv.dart';
 
@@ -77,7 +78,7 @@ class PresencaImportService {
           registros.add(registro);
         } catch (e) {
           // Log erro mas continua processando
-          print('⚠️ Erro na linha ${i + 1}: $e');
+          log('⚠️ Erro na linha ${i + 1}: $e');
         }
       }
 

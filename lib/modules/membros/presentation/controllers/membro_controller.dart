@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 
 import '../../data/repositories/membro_repository.dart';
@@ -89,13 +91,13 @@ class MembroController extends GetxController {
   Future<void> carregarMembros() async {
     isLoading.value = true;
     try {
-      print('🔍 [MEMBROS] Carregando membros do Supabase...');
+      log('🔍 [MEMBROS] Carregando membros do Supabase...');
       // Garante que dados estão carregados do Supabase
       await repository.garantirDadosCarregados();
       membros.value = repository.getMembros();
-      print('✅ [MEMBROS] ${membros.length} membros carregados do Supabase');
+      log('✅ [MEMBROS] ${membros.length} membros carregados do Supabase');
     } catch (e) {
-      print('❌ [MEMBROS] Erro ao carregar: $e');
+      log('❌ [MEMBROS] Erro ao carregar: $e');
     } finally {
       isLoading.value = false;
     }

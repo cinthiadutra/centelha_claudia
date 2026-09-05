@@ -210,13 +210,13 @@ try {
   // Processar resposta
 } on PostgrestException catch (error) {
   // Erro do banco de dados
-  print('Erro do banco: ${error.message}');
+  log('Erro do banco: ${error.message}');
 } on AuthException catch (error) {
   // Erro de autenticação
-  print('Erro de autenticação: ${error.message}');
+  log('Erro de autenticação: ${error.message}');
 } catch (error) {
   // Outro erro
-  print('Erro: $error');
+  log('Erro: $error');
 }
 ```
 

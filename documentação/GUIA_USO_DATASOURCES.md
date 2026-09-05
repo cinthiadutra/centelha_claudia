@@ -175,9 +175,9 @@ class _LoginExampleState extends State<LoginExample> {
       );
 
       // Login bem sucedido
-      print('Token: ${response.token}');
-      print('Usuário: ${response.usuario.nome}');
-      print('Nível: ${response.usuario.nivelPermissao}');
+      log('Token: ${response.token}');
+      log('Usuário: ${response.usuario.nome}');
+      log('Nível: ${response.usuario.nivelPermissao}');
 
       // Navegar para home
       Navigator.pushReplacementNamed(context, '/home');
@@ -305,9 +305,9 @@ Future<void> criarNovoUsuario() async {
 
   try {
     final usuarioCriado = await datasource.createUsuario(novoUsuario);
-    print('Usuário criado com número: ${usuarioCriado.numeroCadastro}');
+    log('Usuário criado com número: ${usuarioCriado.numeroCadastro}');
   } catch (error) {
-    print('Erro: $error');
+    log('Erro: $error');
   }
 }
 ```
@@ -352,9 +352,9 @@ Future<void> atualizarUsuario(UsuarioModel usuario) async {
 
   try {
     await datasource.updateUsuario(usuarioAtualizado);
-    print('Usuário atualizado com sucesso');
+    log('Usuário atualizado com sucesso');
   } catch (error) {
-    print('Erro: $error');
+    log('Erro: $error');
   }
 }
 ```
@@ -367,9 +367,9 @@ Future<void> deletarUsuario(String numeroCadastro) async {
 
   try {
     await datasource.deleteUsuario(numeroCadastro);
-    print('Usuário deletado com sucesso');
+    log('Usuário deletado com sucesso');
   } catch (error) {
-    print('Erro: $error');
+    log('Erro: $error');
   }
 }
 ```

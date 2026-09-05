@@ -183,7 +183,7 @@ final membroId = 'temp_${registro.codigo}';
 // Por:
 final membro = await buscarMembroPorCodigo(registro.codigo);
 if (membro == null) {
-  print('⚠️ Membro não encontrado: ${registro.codigoNome}');
+  log('⚠️ Membro não encontrado: ${registro.codigoNome}');
   continue;
 }
 final membroId = membro.id;

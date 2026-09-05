@@ -79,7 +79,7 @@ final nome = normalizarParaBusca("José da Silva"); // "jose da silva"
 
 // Verificar se contém
 if (nome.contains(termo)) {
-  print("Encontrado!"); // ✅ Encontrado!
+  log("Encontrado!"); // ✅ Encontrado!
 }
 ```
 

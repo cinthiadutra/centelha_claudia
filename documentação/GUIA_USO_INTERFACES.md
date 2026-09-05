@@ -318,7 +318,7 @@ Future<List<Map<String, dynamic>>> _obterMembrosPorGrupo(String grupoId) async {
 
     return List<Map<String, dynamic>>.from(response);
   } catch (e) {
-    print('Erro ao buscar membros do grupo: $e');
+    log('Erro ao buscar membros do grupo: $e');
     return [];
   }
 }

@@ -5,29 +5,7 @@ import 'usuario_sistema_datasource.dart';
 
 /// Implementação mock do datasource
 class UsuarioSistemaDatasourceImpl implements UsuarioSistemaDatasource {
-  final List<UsuarioSistemaModel> _usuarios = [
-    UsuarioSistemaModel(
-      id: '1',
-      numeroCadastro: '00001',
-      nome: 'Admin Sistema',
-      email: 'admin@centelha.org',
-      senha: 'admin123', // Em produção usar hash
-      nivelPermissao: 4,
-      ativo: true,
-      dataCriacao: DateTime(2025, 1, 1),
-      observacoes: 'Administrador principal do sistema',
-    ),
-    UsuarioSistemaModel(
-      id: '2',
-      numeroCadastro: '00002',
-      nome: 'Secretaria',
-      email: 'secretaria@centelha.org',
-      senha: 'sec123',
-      nivelPermissao: 2,
-      ativo: true,
-      dataCriacao: DateTime(2025, 1, 15),
-    ),
-  ];
+  final List<UsuarioSistemaModel> _usuarios = [];
 
   @override
   Future<void> adicionar(UsuarioSistemaModel usuario) async {

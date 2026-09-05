@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/supabase_service.dart';
 import '../../../../core/utils/string_utils.dart';
@@ -75,24 +77,24 @@ class MembroSupabaseDatasource implements MembroDatasource {
 
   @override
   MembroModel? getMembroPorNumero(String numero) {
-    print('🔍 [MEMBROS DATASOURCE] Buscando membro por número: "$numero"');
-    print('📊 [MEMBROS DATASOURCE] Cache tem ${_cache.length} membros');
+    log('🔍 [MEMBROS DATASOURCE] Buscando membro por número: "$numero"');
+    log('📊 [MEMBROS DATASOURCE] Cache tem ${_cache.length} membros');
 
     final resultado = _cache.cast<MembroModel?>().firstWhere(
       (m) {
         final match = m?.numeroCadastro == numero;
         if (match) {
-          print(
+          log(
             '✅ [MEMBROS DATASOURCE] Encontrado: ${m?.nome} (${m?.numeroCadastro})',
           );
         }
         return match;
       },
       orElse: () {
-        print('⚠️ [MEMBROS DATASOURCE] Membro não encontrado no cache');
-        print('   Exemplos de números no cache:');
+        log('⚠️ [MEMBROS DATASOURCE] Membro não encontrado no cache');
+        log('   Exemplos de números no cache:');
         _cache.take(5).forEach((m) {
-          print('   - ${m.numeroCadastro} (${m.nome})');
+          log('   - ${m.numeroCadastro} (${m.nome})');
         });
         return null;
       },
@@ -133,7 +135,7 @@ class MembroSupabaseDatasource implements MembroDatasource {
     if (_cacheCarregado) return;
 
     try {
-      print('🔍 [MEMBROS DATASOURCE] Consultando tabela membros_historico...');
+      log('🔍 [MEMBROS DATASOURCE] Consultando tabela membros_historico...');
       final response = await _supabaseService.client
           .from('membros_historico')
           .select()
@@ -144,11 +146,11 @@ class MembroSupabaseDatasource implements MembroDatasource {
         (response as List).map((json) => MembroModel.fromJson(json)).toList(),
       );
       _cacheCarregado = true;
-      print(
+      log(
         '✅ [MEMBROS DATASOURCE] ${_cache.length} membros carregados do Supabase',
       );
     } catch (e) {
-      print('❌ [MEMBROS DATASOURCE] Erro ao carregar: $e');
+      log('❌ [MEMBROS DATASOURCE] Erro ao carregar: $e');
       // Cache não carregado, retornará lista vazia
     }
   }

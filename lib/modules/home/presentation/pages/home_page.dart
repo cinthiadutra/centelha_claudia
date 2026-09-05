@@ -268,44 +268,49 @@ class _AppDrawer extends StatelessWidget {
     return Container(
       width: 280,
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
         border: Border(
           right: BorderSide(color: Colors.grey.shade300, width: 1),
         ),
       ),
-      child: Column(
-        children: [
-          // Logo header
-          Container(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/images/centelha_new.png',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.contain,
-                ),
-              ],
+      child: Material(
+        color: Colors.grey.shade100,
+        child: Column(
+          children: [
+            // Logo header
+            Container(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/images/centelha_new.png',
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.contain,
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Menu items
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              children: [
-                _buildSimpleMenuItem(
-                  context,
-                  icon: Icons.home,
-                  title: 'Início',
-                  isSelected: true,
-                  onTap: () {},
+            // Menu items
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
-                ...menuItems.map((item) => _buildMenuItem(context, item)),
-              ],
+                children: [
+                  _buildSimpleMenuItem(
+                    context,
+                    icon: Icons.home,
+                    title: 'Início',
+                    isSelected: true,
+                    onTap: () {},
+                  ),
+                  ...menuItems.map((item) => _buildMenuItem(context, item)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

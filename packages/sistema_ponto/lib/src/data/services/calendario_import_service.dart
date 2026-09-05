@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 
@@ -47,7 +48,7 @@ class CalendarioImportModel {
         realizada: true, // Será atualizado conforme acontece
       );
     } catch (e) {
-      print('Erro ao converter atividade: $e');
+      log('Erro ao converter atividade: $e');
       return null;
     }
   }

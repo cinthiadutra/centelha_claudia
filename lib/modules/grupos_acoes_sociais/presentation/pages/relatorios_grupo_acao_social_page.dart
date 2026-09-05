@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/grupo_acao_social_constants.dart';
+import '../../../../core/utils/excel_exporter.dart';
 import '../../domain/entities/grupo_acao_social_membro.dart';
 import '../controllers/grupo_acao_social_controller.dart';
 
@@ -297,26 +298,38 @@ class _RelatoriosGrupoAcaoSocialPageState
     );
   }
 
-  void _exportarParaExcel() {
-    // TODO: Implementar exportação real para Excel
-    Get.snackbar(
-      'Exportação',
-      'Exportando ${resultados.length} registros para Excel...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
-
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.snackbar(
-        'Sucesso',
-        'Relatório exportado com sucesso!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+  Future<void> _exportarParaExcel() async {
+    try {
+      final salvo = await exportarParaExcel(
+        nomeArquivo: 'relatorio_grupo_acao_social',
+        nomePlanilha: 'Ação Social',
+        cabecalhos: const [
+          'Nº Cadastro',
+          'Nome',
+          'Status',
+          'Grupo de Ação Social',
+          'Função',
+          'Última Alteração',
+        ],
+        linhas: resultados
+            .map(
+              (membro) => [
+                membro.numeroCadastro,
+                membro.nome,
+                membro.status,
+                membro.grupoAcaoSocial,
+                membro.funcao,
+                _formatarData(membro.dataUltimaAlteracao),
+              ],
+            )
+            .toList(),
       );
-    });
+      if (salvo) {
+        Get.snackbar('Sucesso', 'Relatório exportado com sucesso!');
+      }
+    } catch (error) {
+      Get.snackbar('Erro', 'Não foi possível exportar o relatório: $error');
+    }
   }
 
   String _formatarData(DateTime? data) {

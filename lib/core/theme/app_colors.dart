@@ -7,7 +7,7 @@ class AppColors {
   static const Color background = Color(0xFFF8F5F1); // Bege claro
 
   static const Color foreground = Color(0xFF262220); // Marrom escuro
-  static const Color card = Color(0xfffffffff); // Branco
+  static const Color card = Color(0xFFfffffff); // Branco
 
   static const Color cardForeground = Color(0xFF262220);
   static const Color primary = Color(0xFF75B87A); // Verde Umbanda

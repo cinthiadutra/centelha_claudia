@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
@@ -130,40 +132,38 @@ class UsuarioSupabaseDatasource implements UsuarioDatasource {
   @override
   Future<List<UsuarioModel>> getUsuarios() async {
     try {
-      print('🔍 [DATASOURCE] Buscando usuários da tabela "cadastro"...');
+      log('🔍 [DATASOURCE] Buscando usuários da tabela "cadastro"...');
 
       final response = await _supabaseService.client
           .from('cadastro')
           .select()
           .order('NOME', ascending: true); // Usar nome da coluna em MAIÚSCULA
 
-      print('📊 [DATASOURCE] Response type: ${response.runtimeType}');
-      print('📊 [DATASOURCE] Response length: ${(response as List).length}');
+      log('📊 [DATASOURCE] Response type: ${response.runtimeType}');
+      log('📊 [DATASOURCE] Response length: ${(response as List).length}');
 
       if (response.isEmpty) {
-        print('⚠️ [DATASOURCE] Nenhum dado retornado do Supabase!');
-        print('⚠️ [DATASOURCE] Verifique:');
-        print('   1. Se a tabela "cadastro" existe');
-        print('   2. Se há dados na tabela');
-        print('   3. Se as políticas RLS estão configuradas corretamente');
+        log('⚠️ [DATASOURCE] Nenhum dado retornado do Supabase!');
+        log('⚠️ [DATASOURCE] Verifique:');
+        log('   1. Se a tabela "cadastro" existe');
+        log('   2. Se há dados na tabela');
+        log('   3. Se as políticas RLS estão configuradas corretamente');
       }
 
       final usuarios = (response as List)
           .map((json) => UsuarioModel.fromJson(json))
           .toList();
 
-      print(
-        '✅ [DATASOURCE] ${usuarios.length} usuários convertidos com sucesso',
-      );
+      log('✅ [DATASOURCE] ${usuarios.length} usuários convertidos com sucesso');
 
       return usuarios;
     } on PostgrestException catch (error) {
-      print('❌ [DATASOURCE] PostgrestException: ${error.message}');
-      print('❌ [DATASOURCE] Code: ${error.code}');
-      print('❌ [DATASOURCE] Details: ${error.details}');
+      log('❌ [DATASOURCE] PostgrestException: ${error.message}');
+      log('❌ [DATASOURCE] Code: ${error.code}');
+      log('❌ [DATASOURCE] Details: ${error.details}');
       throw Exception('Erro ao buscar usuários: ${error.message}');
     } catch (error) {
-      print('❌ [DATASOURCE] Erro inesperado: $error');
+      log('❌ [DATASOURCE] Erro inesperado: $error');
       throw Exception('Erro inesperado ao buscar usuários: $error');
     }
   }

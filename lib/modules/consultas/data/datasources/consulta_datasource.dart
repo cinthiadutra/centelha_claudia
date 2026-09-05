@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../../../core/services/supabase_service.dart';
 import '../models/consulta_model.dart';
 
@@ -23,7 +25,7 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
     try {
       await supabase.from('consultas').insert(consulta.toJson());
     } catch (e) {
-      print('Erro ao adicionar consulta: $e');
+      log('Erro ao adicionar consulta: $e');
       rethrow;
     }
   }
@@ -44,7 +46,7 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
           int.tryParse(response['numero_consulta'] ?? '0') ?? 0;
       return (ultimoNumero + 1).toString();
     } catch (e) {
-      print('Erro ao gerar próximo número: $e');
+      log('Erro ao gerar próximo número: $e');
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
@@ -61,7 +63,7 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
       if (response == null) return null;
       return ConsultaModel.fromJson(response);
     } catch (e) {
-      print('Erro ao buscar consulta: $e');
+      log('Erro ao buscar consulta: $e');
       return null;
     }
   }
@@ -78,7 +80,7 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
           .map((json) => ConsultaModel.fromJson(json))
           .toList();
     } catch (e) {
-      print('Erro ao carregar consultas: $e');
+      log('Erro ao carregar consultas: $e');
       return [];
     }
   }
@@ -106,7 +108,7 @@ class ConsultaDatasourceImpl implements ConsultaDatasource {
           .map((json) => ConsultaModel.fromJson(json))
           .toList();
     } catch (e) {
-      print('Erro ao pesquisar consultas: $e');
+      log('Erro ao pesquisar consultas: $e');
       return [];
     }
   }

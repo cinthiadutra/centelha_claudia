@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -592,12 +594,12 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
       validValue = uniqueItems.first;
 
       // Debug: mostra quando há inconsistência
-      debugPrint('⚠️ Valor do dropdown não encontrado na lista.');
-      debugPrint('   Campo: $label');
-      debugPrint('   Valor original: "$value"');
-      debugPrint('   Valor normalizado: "$valorNormalizado"');
-      debugPrint('   Valor usado: "$validValue"');
-      debugPrint('   Lista disponível: $uniqueItems');
+      log('⚠️ Valor do dropdown não encontrado na lista.');
+      log('   Campo: $label');
+      log('   Valor original: "$value"');
+      log('   Valor normalizado: "$valorNormalizado"');
+      log('   Valor usado: "$validValue"');
+      log('   Lista disponível: $uniqueItems');
     } else {
       validValue = itemEncontrado;
     }

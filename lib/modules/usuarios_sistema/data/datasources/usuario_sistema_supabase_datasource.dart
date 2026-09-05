@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
@@ -54,17 +56,17 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
             value == null,
       );
 
-      print('🔍 [USUARIO_SISTEMA] Dados finais a serem inseridos: $data');
-      print('🔍 [USUARIO_SISTEMA] Chaves: ${data.keys.toList()}');
+      log('🔍 [USUARIO_SISTEMA] Dados finais a serem inseridos: $data');
+      log('🔍 [USUARIO_SISTEMA] Chaves: ${data.keys.toList()}');
 
       await _supabaseService.client.from('usuarios_sistema').insert(data);
 
-      print('✅ [USUARIO_SISTEMA] Usuário adicionado com sucesso');
+      log('✅ [USUARIO_SISTEMA] Usuário adicionado com sucesso');
     } on PostgrestException catch (error) {
-      print(
+      log(
         '❌ [USUARIO_SISTEMA] Erro PostgrestException: ${error.code} - ${error.message}',
       );
-      print('❌ [USUARIO_SISTEMA] Details: ${error.details}');
+      log('❌ [USUARIO_SISTEMA] Details: ${error.details}');
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
       }
@@ -77,7 +79,7 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
     } on ServerException {
       rethrow;
     } catch (error) {
-      print('❌ [USUARIO_SISTEMA] Erro inesperado: $error');
+      log('❌ [USUARIO_SISTEMA] Erro inesperado: $error');
       throw ServerException('Erro inesperado: $error');
     }
   }

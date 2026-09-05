@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 
 import '../../../../core/utils/string_utils.dart';
@@ -184,13 +186,13 @@ class CadastroController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      print('🔍 [CADASTRO] Carregando usuários do Supabase...');
+      log('🔍 [CADASTRO] Carregando usuários do Supabase...');
       final data = await _datasource.getUsuarios();
       usuarios.value = data;
-      print('✅ [CADASTRO] ${data.length} usuários carregados do Supabase');
+      log('✅ [CADASTRO] ${data.length} usuários carregados do Supabase');
     } catch (e) {
       errorMessage.value = 'Erro ao carregar usuários: $e';
-      print('❌ [CADASTRO] Erro ao carregar: $e');
+      log('❌ [CADASTRO] Erro ao carregar: $e');
     } finally {
       isLoading.value = false;
     }

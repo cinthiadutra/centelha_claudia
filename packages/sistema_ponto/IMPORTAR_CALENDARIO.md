@@ -80,15 +80,15 @@ final atividades = await importService.carregarDeJson(
   'packages/sistema_ponto/assets/programacao_2026.json'
 );
 
-print('Total de atividades: ${atividades.length}');
+log('Total de atividades: ${atividades.length}');
 
 // Filtrar apenas janeiro/2026
 final atividadesJaneiro = importService.filtrarPorMes(atividades, 1, 2026);
 
 // Contar por tipo
 final contagem = importService.contarPorTipo(atividadesJaneiro);
-print('Sessões Mediúnicas: ${contagem[TipoAtividadeCalendario.sessaoMedianica]}');
-print('Atendimentos Públicos: ${contagem[TipoAtividadeCalendario.atendimentoPublico]}');
+log('Sessões Mediúnicas: ${contagem[TipoAtividadeCalendario.sessaoMedianica]}');
+log('Atendimentos Públicos: ${contagem[TipoAtividadeCalendario.atendimentoPublico]}');
 ```
 
 ## 📊 Tipos de Atividades Reconhecidos
@@ -128,15 +128,15 @@ Future<void> inicializarCalendario() async {
       await repository.salvar(atividade);
     }
 
-    print('✅ ${atividades.length} atividades importadas!');
+    log('✅ ${atividades.length} atividades importadas!');
 
     // Gerar relatório
     final contagem = importService.contarPorTipo(atividades);
     contagem.forEach((tipo, count) {
-      print('$tipo: $count');
+      log('$tipo: $count');
     });
   } catch (e) {
-    print('❌ Erro ao importar: $e');
+    log('❌ Erro ao importar: $e');
   }
 }
 ```
