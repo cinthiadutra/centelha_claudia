@@ -94,7 +94,7 @@ class UsuarioSistemaController extends GetxController {
     }
   }
 
-  Future<void> salvar(UsuarioSistema usuario) async {
+  Future<bool> salvar(UsuarioSistema usuario) async {
     try {
       // Validar email único
       final emailValido = await validarEmailUnico(usuario.email, idExcluir: usuario.id);
@@ -106,7 +106,7 @@ class UsuarioSistemaController extends GetxController {
           backgroundColor: Get.theme.colorScheme.error,
           colorText: Get.theme.colorScheme.onError,
         );
-        return;
+        return false;
       }
 
       // Validar cadastro único
@@ -119,7 +119,7 @@ class UsuarioSistemaController extends GetxController {
           backgroundColor: Get.theme.colorScheme.error,
           colorText: Get.theme.colorScheme.onError,
         );
-        return;
+        return false;
       }
 
       isLoading.value = true;
@@ -130,12 +130,14 @@ class UsuarioSistemaController extends GetxController {
         'Usuário do sistema salvo com sucesso!',
         snackPosition: SnackPosition.BOTTOM,
       );
+      return true;
     } catch (e) {
       Get.snackbar(
         'Erro',
         'Erro ao salvar usuário: $e',
         snackPosition: SnackPosition.BOTTOM,
       );
+      return false;
     } finally {
       isLoading.value = false;
     }

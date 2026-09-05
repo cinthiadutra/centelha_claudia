@@ -375,25 +375,31 @@ class _AppDrawer extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      child: ListTile(
-        leading: Icon(
-          _getIconData(item.icon),
-          size: 20,
-          color: Colors.grey.shade700,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+        child: ListTile(
+          leading: Icon(
+            _getIconData(item.icon),
+            size: 20,
+            color: Colors.grey.shade700,
+          ),
+          title: Text(
+            item.title,
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
+          ),
+          dense: true,
+          visualDensity: VisualDensity.compact,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
+          ),
+          onTap: () {
+            if (item.route != null) {
+              _navigateToRoute(context, item.route!);
+            }
+          },
         ),
-        title: Text(
-          item.title,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade800),
-        ),
-        dense: true,
-        visualDensity: VisualDensity.compact,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        onTap: () {
-          if (item.route != null) {
-            _navigateToRoute(context, item.route!);
-          }
-        },
       ),
     );
   }
@@ -407,28 +413,31 @@ class _AppDrawer extends StatelessWidget {
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
-      decoration: BoxDecoration(
+      child: Material(
         color: isSelected ? Colors.green.shade600 : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          size: 20,
-          color: isSelected ? Colors.white : Colors.grey.shade700,
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 14,
-            color: isSelected ? Colors.white : Colors.grey.shade800,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        child: ListTile(
+          leading: Icon(
+            icon,
+            size: 20,
+            color: isSelected ? Colors.white : Colors.grey.shade700,
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              color: isSelected ? Colors.white : Colors.grey.shade800,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+          onTap: onTap,
+          dense: true,
+          visualDensity: VisualDensity.compact,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 4,
           ),
         ),
-        onTap: onTap,
-        dense: true,
-        visualDensity: VisualDensity.compact,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       ),
     );
   }

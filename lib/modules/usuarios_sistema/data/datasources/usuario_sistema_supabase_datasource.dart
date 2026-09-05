@@ -15,60 +15,67 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   Future<void> adicionar(UsuarioSistemaModel usuario) async {
     try {
       final data = usuario.toJson();
-      
+
       // Remove campos que são gerenciados pelo Supabase
       data.remove('id');
       data.remove('created_at');
       data.remove('updated_at');
-      
-      // Validar se numero_cadastro existe na tabela usuarios
+
+      // Validar se o cadastro existe na tabela de membros.
       if (data['numero_cadastro'] != null && data['numero_cadastro'] != '') {
         final cadastroExiste = await _supabaseService.client
-            .from('usuarios')
-            .select('numero_cadastro')
-            .eq('numero_cadastro', data['numero_cadastro'])
+            .from('membros_historico')
+            .select('cadastro')
+            .eq('cadastro', data['numero_cadastro'])
             .maybeSingle();
-        
+
         if (cadastroExiste == null) {
           throw ServerException(
             'Número de cadastro ${data['numero_cadastro']} não encontrado. '
-            'Deixe em branco para usuários administrativos ou use um cadastro existente.'
+            'Deixe em branco para usuários administrativos ou use um cadastro existente.',
           );
         }
       } else {
         // Remove numero_cadastro se estiver vazio (usuários administrativos)
         data.remove('numero_cadastro');
       }
-      
+
       // Remove senha_hash se estiver vazio
       if (data['senha_hash'] == null || data['senha_hash'] == '') {
         data.remove('senha_hash');
       }
-      
+
       // Remove qualquer campo com nome em camelCase que não deveria existir
-      data.removeWhere((key, value) => 
-        key.contains(RegExp(r'[A-Z]')) || // Remove qualquer campo com letra maiúscula
-        value == null
+      data.removeWhere(
+        (key, value) =>
+            key.contains(
+              RegExp(r'[A-Z]'),
+            ) || // Remove qualquer campo com letra maiúscula
+            value == null,
       );
 
       print('🔍 [USUARIO_SISTEMA] Dados finais a serem inseridos: $data');
       print('🔍 [USUARIO_SISTEMA] Chaves: ${data.keys.toList()}');
 
-      await _supabaseService.client
-          .from('usuarios_sistema')
-          .insert(data);
-      
+      await _supabaseService.client.from('usuarios_sistema').insert(data);
+
       print('✅ [USUARIO_SISTEMA] Usuário adicionado com sucesso');
     } on PostgrestException catch (error) {
-      print('❌ [USUARIO_SISTEMA] Erro PostgrestException: ${error.code} - ${error.message}');
+      print(
+        '❌ [USUARIO_SISTEMA] Erro PostgrestException: ${error.code} - ${error.message}',
+      );
       print('❌ [USUARIO_SISTEMA] Details: ${error.details}');
       if (error.code == '23505') {
         throw ServerException('Email já cadastrado');
       }
       if (error.code == '23503') {
-        throw ServerException('Número de cadastro inválido. Verifique se o cadastro existe.');
+        throw ServerException(
+          'Número de cadastro inválido. Verifique se o cadastro existe.',
+        );
       }
       throw ServerException('Erro ao adicionar usuário: ${error.message}');
+    } on ServerException {
+      rethrow;
     } catch (error) {
       print('❌ [USUARIO_SISTEMA] Erro inesperado: $error');
       throw ServerException('Erro inesperado: $error');
@@ -132,7 +139,9 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   }
 
   @override
-  Future<UsuarioSistemaModel?> getPorEmailOuUsername(String emailOuUsername) async {
+  Future<UsuarioSistemaModel?> getPorEmailOuUsername(
+    String emailOuUsername,
+  ) async {
     try {
       final response = await _supabaseService.client
           .from('usuarios_sistema')

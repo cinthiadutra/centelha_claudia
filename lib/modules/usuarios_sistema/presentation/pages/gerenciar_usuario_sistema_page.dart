@@ -509,7 +509,9 @@ class _GerenciarUsuarioSistemaPageState
           : _observacoesController.text.trim(),
     );
 
-    await usuarioSistemaController.salvar(usuario);
-    _novoUsuario();
+    final salvo = await usuarioSistemaController.salvar(usuario);
+    if (salvo && mounted) {
+      _novoUsuario();
+    }
   }
 }
