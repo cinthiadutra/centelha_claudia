@@ -97,7 +97,10 @@ class UsuarioSistemaController extends GetxController {
   Future<bool> salvar(UsuarioSistema usuario) async {
     try {
       // Validar email único
-      final emailValido = await validarEmailUnico(usuario.email, idExcluir: usuario.id);
+      final emailValido = await validarEmailUnico(
+        usuario.email,
+        idExcluir: usuario.id,
+      );
       if (!emailValido) {
         Get.snackbar(
           'Erro de Validação',
@@ -110,7 +113,10 @@ class UsuarioSistemaController extends GetxController {
       }
 
       // Validar cadastro único
-      final cadastroValido = await validarCadastroUnico(usuario.numeroCadastro, idExcluir: usuario.id);
+      final cadastroValido = await validarCadastroUnico(
+        usuario.numeroCadastro,
+        idExcluir: usuario.id,
+      );
       if (!cadastroValido) {
         Get.snackbar(
           'Erro de Validação',
@@ -143,7 +149,10 @@ class UsuarioSistemaController extends GetxController {
     }
   }
 
-  Future<bool> validarCadastroUnico(String numeroCadastro, {String? idExcluir}) async {
+  Future<bool> validarCadastroUnico(
+    String numeroCadastro, {
+    String? idExcluir,
+  }) async {
     final usuarioExistente = await buscarPorCadastro(numeroCadastro);
     if (usuarioExistente == null) return true;
     if (idExcluir != null && usuarioExistente.id == idExcluir) return true;
