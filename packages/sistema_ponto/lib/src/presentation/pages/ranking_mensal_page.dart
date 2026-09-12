@@ -7,6 +7,7 @@ import '../../data/repositories/presenca_repository.dart';
 import '../../domain/entities/avaliacao_mensal.dart';
 import '../../domain/entities/calendario.dart';
 import '../../domain/entities/membro_avaliacao.dart';
+import '../../domain/entities/presenca_registro.dart';
 import '../../domain/usecases/calcular_avaliacao_mensal_usecase.dart';
 
 /// Página para gerar e visualizar ranking mensal
@@ -348,19 +349,51 @@ class _RankingMensalPageState extends State<RankingMensalPage> {
     );
   }
 
-  // TODO: Implementar conversão real das entidades
-  List<AtividadeCalendario> _converterAtividades(List<dynamic> atividades) {
-    // Placeholder - retornar lista vazia por enquanto
-    return [];
+  List<AtividadeCalendario> _converterAtividades(
+    List<AtividadeCalendario2026> atividades,
+  ) {
+    return atividades
+        .map(
+          (atividade) => AtividadeCalendario(
+            id: atividade.id,
+            data: atividade.dataAsDateTime ?? DateTime(2000),
+            tipo: _tipoAtividade(atividade.atividade),
+            descricao: atividade.atividade ?? '',
+            diaSessao: atividade.diaSemana ?? atividade.nucleo,
+            grupoRelacionado: atividade.gruposTrabalho,
+          ),
+        )
+        .toList();
   }
 
-  RegistroPresenca _converterPresenca(dynamic presenca) {
-    // Placeholder
-    return const RegistroPresenca(
-      membroId: '',
-      atividadeId: '',
-      presente: true,
+  RegistroPresenca _converterPresenca(PresencaRegistro presenca) {
+    return RegistroPresenca(
+      id: presenca.id,
+      membroId: presenca.membroId,
+      atividadeId: presenca.atividadeId,
+      presente: presenca.presente,
+      justificativa: presenca.justificativa,
     );
+  }
+
+  TipoAtividadeCalendario _tipoAtividade(String? descricao) {
+    final texto = (descricao ?? '').toLowerCase();
+    if (texto.contains('cambon')) return TipoAtividadeCalendario.cambonagem;
+    if (texto.contains('arruma')) return TipoAtividadeCalendario.arrumacao;
+    if (texto.contains('desarruma'))
+      return TipoAtividadeCalendario.desarrumacao;
+    if (texto.contains('ramatis'))
+      return TipoAtividadeCalendario.encontroRamatis;
+    if (texto.contains('corrente') || texto.contains('oração')) {
+      return TipoAtividadeCalendario.correnteOracaoRenovacao;
+    }
+    if (texto.contains('grupo') || texto.contains('trabalho')) {
+      return TipoAtividadeCalendario.grupoTrabalhoEspiritual;
+    }
+    if (texto.contains('sessão') || texto.contains('sessao')) {
+      return TipoAtividadeCalendario.sessaoMedianica;
+    }
+    return TipoAtividadeCalendario.outra;
   }
 
   Future<void> _gerarRanking() async {
@@ -370,9 +403,7 @@ class _RankingMensalPageState extends State<RankingMensalPage> {
     });
 
     try {
-      // TODO: Buscar membros reais do banco de dados
-      // Por enquanto, usar dados mockados para teste
-      final membros = _getMembrosExemplo();
+      final membros = await _buscarMembrosReais();
 
       // Buscar atividades do mês
       final atividades = await _calendarioRepo.buscarPorMes(
@@ -433,46 +464,96 @@ class _RankingMensalPageState extends State<RankingMensalPage> {
     }
   }
 
-  // Membros de exemplo para teste
-  List<MembroAvaliacao> _getMembrosExemplo() {
-    return [
-      MembroAvaliacao(
-        id: '1',
-        nomeCompleto: 'João Silva',
-        classificacao: ClassificacaoMedinica.grauVerde,
-        diaSessao: DiaSessao.tercaCCU,
-        nucleo: Nucleo.ccu,
-        grupoTrabalhoEspiritual: GrupoTrabalhoEspiritual.grupoPaz,
-        gruposTarefa: [GrupoTarefa.vendas],
-        gruposAcaoSocial: [],
-        cargosLideranca: [],
-        mensalidadeEmDia: true,
-      ),
-      MembroAvaliacao(
-        id: '2',
-        nomeCompleto: 'Maria Santos',
-        classificacao: ClassificacaoMedinica.grauAzul,
-        diaSessao: DiaSessao.quartaCCU,
-        nucleo: Nucleo.ccu,
-        grupoTrabalhoEspiritual: GrupoTrabalhoEspiritual.grupoLuz,
-        gruposTarefa: [GrupoTarefa.comunicacaoMarketing],
-        gruposAcaoSocial: [GrupoAcaoSocial.projetoSimiromba],
-        cargosLideranca: [CargoLideranca.liderGrupoTarefa],
-        mensalidadeEmDia: true,
-      ),
-      MembroAvaliacao(
-        id: '3',
-        nomeCompleto: 'Pedro Oliveira',
-        classificacao: ClassificacaoMedinica.grauAmarelo,
-        diaSessao: DiaSessao.sextaCCU,
-        nucleo: Nucleo.ccu,
-        grupoTrabalhoEspiritual: null,
-        gruposTarefa: [],
-        gruposAcaoSocial: [],
-        cargosLideranca: [],
-        mensalidadeEmDia: false,
-      ),
-    ];
+  Future<List<MembroAvaliacao>> _buscarMembrosReais() async {
+    final response = await Supabase.instance.client
+        .from('membros_historico')
+        .select()
+        .order('nome', ascending: true);
+
+    return (response as List)
+        .map((json) => _membroFromJson(Map<String, dynamic>.from(json)))
+        .where((membro) => membro.ativo)
+        .toList();
+  }
+
+  MembroAvaliacao _membroFromJson(Map<String, dynamic> json) {
+    final status = (json['status']?.toString() ?? '').toLowerCase();
+    final cadastro = json['cadastro']?.toString();
+    final id = cadastro?.isNotEmpty == true ? cadastro : json['id']?.toString();
+
+    return MembroAvaliacao(
+      id: id,
+      nomeCompleto: json['nome']?.toString() ?? 'Sem nome',
+      classificacao: _classificacao(json['classificacao']),
+      nucleo: _nucleo(json['nucleo']),
+      diaSessao: _diaSessao(json['dia_sessao']),
+      grupoTrabalhoEspiritual:
+          _grupoTrabalho(json['grupo_trabalho_espiritual']),
+      gruposTarefa: _gruposTarefa(json['grupo_tarefa']),
+      gruposAcaoSocial: _gruposAcaoSocial(json['acao_social']),
+      mensalidadeEmDia: true,
+      ativo: status != 'excluído' && status != 'excluido',
+      dataCadastro: _data(json['created_at'] ?? json['data_importacao']),
+    );
+  }
+
+  ClassificacaoMedinica _classificacao(Object? valor) {
+    final texto = (valor?.toString() ?? '').toLowerCase();
+    if (texto.contains('cambono')) return ClassificacaoMedinica.cambono;
+    if (texto.contains('curimbe')) return ClassificacaoMedinica.curimbeiro;
+    if (texto.contains('vermelh')) return ClassificacaoMedinica.grauVermelho;
+    if (texto.contains('coral')) return ClassificacaoMedinica.grauCoral;
+    if (texto.contains('amarel')) return ClassificacaoMedinica.grauAmarelo;
+    if (texto.contains('azul')) return ClassificacaoMedinica.grauAzul;
+    if (texto.contains('índigo') || texto.contains('indigo')) {
+      return ClassificacaoMedinica.grauIndigo;
+    }
+    if (texto.contains('lilás') || texto.contains('lilas')) {
+      return ClassificacaoMedinica.grauLilas;
+    }
+    if (texto.contains('dirigent')) return ClassificacaoMedinica.dirigente;
+    return ClassificacaoMedinica.grauVerde;
+  }
+
+  Nucleo _nucleo(Object? valor) {
+    return (valor?.toString().toLowerCase().contains('cpo') ?? false)
+        ? Nucleo.cpo
+        : Nucleo.ccu;
+  }
+
+  DiaSessao _diaSessao(Object? valor) {
+    final texto = (valor?.toString() ?? '').toLowerCase();
+    if (texto.contains('terça') || texto.contains('terca')) {
+      return texto.contains('oju') ? DiaSessao.tercaCCUOju : DiaSessao.tercaCCU;
+    }
+    if (texto.contains('quarta')) return DiaSessao.quartaCCU;
+    if (texto.contains('sexta')) return DiaSessao.sextaCCU;
+    return texto.contains('cpo') ? DiaSessao.sabadoCPO : DiaSessao.sabadoCCU;
+  }
+
+  GrupoTrabalhoEspiritual? _grupoTrabalho(Object? valor) {
+    final texto = (valor?.toString() ?? '').toLowerCase();
+    if (texto.contains('paz')) return GrupoTrabalhoEspiritual.grupoPaz;
+    if (texto.contains('luz')) return GrupoTrabalhoEspiritual.grupoLuz;
+    if (texto.contains('fé') || texto.contains('fe'))
+      return GrupoTrabalhoEspiritual.grupoFe;
+    if (texto.contains('amor')) return GrupoTrabalhoEspiritual.grupoAmor;
+    if (texto.contains('força') || texto.contains('forca'))
+      return GrupoTrabalhoEspiritual.grupoForca;
+    if (texto.contains('esperança') || texto.contains('esperanca'))
+      return GrupoTrabalhoEspiritual.grupoEsperanca;
+    if (texto.contains('união') || texto.contains('uniao'))
+      return GrupoTrabalhoEspiritual.grupoUniao;
+    return null;
+  }
+
+  List<GrupoTarefa> _gruposTarefa(Object? valor) => [];
+
+  List<GrupoAcaoSocial> _gruposAcaoSocial(Object? valor) => [];
+
+  DateTime? _data(Object? valor) {
+    if (valor == null) return null;
+    return DateTime.tryParse(valor.toString());
   }
 
   void _mostrarDetalhes(AvaliacaoMensal avaliacao) {

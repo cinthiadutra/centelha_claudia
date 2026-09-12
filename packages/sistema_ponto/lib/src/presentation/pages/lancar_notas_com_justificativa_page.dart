@@ -5,25 +5,28 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Página unificada para lançar notas que requerem justificativa (F, G, H, I, J)
 /// Permite buscar um membro e adicionar nota + justificativa
 class LancarNotasComJustificativaPage extends StatefulWidget {
-  final String tipoNota; // 'cambonagem', 'arrumacao', 'mensalidade', 'pais_maes', 'tata'
-  
+  final String
+      tipoNota; // 'cambonagem', 'arrumacao', 'mensalidade', 'pais_maes', 'tata'
+
   const LancarNotasComJustificativaPage({
     super.key,
     required this.tipoNota,
   });
 
   @override
-  State<LancarNotasComJustificativaPage> createState() => _LancarNotasComJustificativaPageState();
+  State<LancarNotasComJustificativaPage> createState() =>
+      _LancarNotasComJustificativaPageState();
 }
 
-class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustificativaPage> {
+class _LancarNotasComJustificativaPageState
+    extends State<LancarNotasComJustificativaPage> {
   final _supabase = Supabase.instance.client;
   final _buscaController = TextEditingController();
   final _observacaoController = TextEditingController();
 
   int _mesSelecionado = DateTime.now().month;
   int _anoSelecionado = DateTime.now().year;
-  
+
   List<Map<String, dynamic>> _todosMembrosFiltrados = [];
   List<Map<String, dynamic>> _notasLancadas = [];
   Map<String, dynamic>? _membroSelecionado;
@@ -33,33 +36,49 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
   Color get _corTema {
     switch (widget.tipoNota) {
       case 'cambonagem':
-      case 'arrumacao': return Colors.deepPurple;
-      case 'mensalidade': return Colors.green[700]!;
+      case 'arrumacao':
+        return Colors.deepPurple;
+      case 'mensalidade':
+        return Colors.green[700]!;
       case 'pais_maes':
-      case 'tata': return Colors.purple[700]!;
-      default: return Colors.deepPurple;
+      case 'tata':
+        return Colors.purple[700]!;
+      default:
+        return Colors.deepPurple;
     }
   }
 
   String get _tabelaNome {
     switch (widget.tipoNota) {
-      case 'cambonagem': return 'escalas_cambonagem';
-      case 'arrumacao': return 'escalas_arrumacao';
-      case 'mensalidade': return 'status_mensalidade';
-      case 'pais_maes': return 'conceitos_pais_maes';
-      case 'tata': return 'bonus_tata';
-      default: return '';
+      case 'cambonagem':
+        return 'escalas_cambonagem';
+      case 'arrumacao':
+        return 'escalas_arrumacao';
+      case 'mensalidade':
+        return 'status_mensalidade';
+      case 'pais_maes':
+        return 'conceitos_pais_maes';
+      case 'tata':
+        return 'bonus_tata';
+      default:
+        return '';
     }
   }
 
   String get _titulo {
     switch (widget.tipoNota) {
-      case 'cambonagem': return 'Escalas de Cambonagem (Nota F)';
-      case 'arrumacao': return 'Escalas de Arrumação (Nota G)';
-      case 'mensalidade': return 'Mensalidades (Nota H)';
-      case 'pais_maes': return 'Conceitos Pais/Mães (Nota I)';
-      case 'tata': return 'Bônus Tata (Nota J)';
-      default: return 'Lançar Notas';
+      case 'cambonagem':
+        return 'Escalas de Cambonagem (Nota F)';
+      case 'arrumacao':
+        return 'Escalas de Arrumação (Nota G)';
+      case 'mensalidade':
+        return 'Mensalidades (Nota H)';
+      case 'pais_maes':
+        return 'Conceitos Pais/Mães (Nota I)';
+      case 'tata':
+        return 'Bônus Tata (Nota J)';
+      default:
+        return 'Lançar Notas';
     }
   }
 
@@ -234,14 +253,16 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                                 CircleAvatar(
                                   backgroundColor: _corTema,
                                   child: Text(
-                                    _membroSelecionado!['nome'][0].toUpperCase(),
+                                    _membroSelecionado!['nome'][0]
+                                        .toUpperCase(),
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         _membroSelecionado!['nome'],
@@ -250,7 +271,8 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text('Núcleo: ${_membroSelecionado!['nucleo']}'),
+                                      Text(
+                                          'Núcleo: ${_membroSelecionado!['nucleo']}'),
                                     ],
                                   ),
                                 ),
@@ -279,7 +301,9 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                             // Slider
                             Row(
                               children: [
-                                const Text('Nota:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Text('Nota:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
                                 Expanded(
                                   child: Slider(
                                     value: _notaSelecionada,
@@ -302,7 +326,8 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                               controller: _observacaoController,
                               decoration: const InputDecoration(
                                 labelText: 'Justificativa (opcional)',
-                                hintText: 'Adicione observações ou justificativa...',
+                                hintText:
+                                    'Adicione observações ou justificativa...',
                                 border: OutlineInputBorder(),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -343,11 +368,13 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.inbox, size: 64, color: Colors.grey[400]),
+                            Icon(Icons.inbox,
+                                size: 64, color: Colors.grey[400]),
                             const SizedBox(height: 16),
                             Text(
                               'Nenhuma nota lançada para este mês',
-                              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                              style: TextStyle(
+                                  fontSize: 16, color: Colors.grey[600]),
                             ),
                           ],
                         ),
@@ -361,7 +388,8 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                             margin: const EdgeInsets.only(bottom: 12),
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundColor: _getNotaColor(nota['nota']?.toDouble() ?? 0),
+                                backgroundColor: _getNotaColor(
+                                    nota['nota']?.toDouble() ?? 0),
                                 child: Text(
                                   nota['nota']?.toStringAsFixed(1) ?? '0.0',
                                   style: const TextStyle(
@@ -372,13 +400,15 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                               ),
                               title: Text(
                                 nota['membro_nome'],
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('Núcleo: ${nota['nucleo']}'),
-                                  if (nota['observacao'] != null && nota['observacao'].toString().isNotEmpty)
+                                  if (nota['observacao'] != null &&
+                                      nota['observacao'].toString().isNotEmpty)
                                     Text(
                                       nota['observacao'],
                                       style: const TextStyle(
@@ -389,7 +419,8 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
                                 ],
                               ),
                               trailing: IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                icon: const Icon(Icons.delete_outline,
+                                    color: Colors.red),
                                 onPressed: () => _deletarNota(nota['id']),
                               ),
                             ),
@@ -415,31 +446,42 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
     _carregarNotasLancadas();
   }
 
-  void _buscarMembros(String query) {
+  Future<void> _buscarMembros(String query) async {
     if (query.trim().isEmpty) {
       setState(() => _todosMembrosFiltrados = []);
       return;
     }
 
-    // TODO: Buscar membros reais do banco de dados
-    final membrosMock = [
-      {'id': '1', 'nome': 'João Silva', 'nucleo': 'CCU'},
-      {'id': '2', 'nome': 'Maria Santos', 'nucleo': 'CCM'},
-      {'id': '3', 'nome': 'Ana Costa', 'nucleo': 'CCU'},
-      {'id': '4', 'nome': 'Pedro Oliveira', 'nucleo': 'EST'},
-      {'id': '5', 'nome': 'Julia Ferreira', 'nucleo': 'CCM'},
-      {'id': '6', 'nome': 'Carlos Mendes', 'nucleo': 'CCU'},
-      {'id': '7', 'nome': 'Beatriz Lima', 'nucleo': 'EST'},
-      {'id': '8', 'nome': 'Rafael Souza', 'nucleo': 'CCM'},
-      {'id': '9', 'nome': 'Fernanda Alves', 'nucleo': 'CCU'},
-      {'id': '10', 'nome': 'Lucas Martins', 'nucleo': 'EST'},
-    ];
+    try {
+      final termo = query.trim();
+      final response = await _supabase
+          .from('membros_historico')
+          .select('id, cadastro, nome, nucleo, status')
+          .or('nome.ilike.%$termo%,cadastro.ilike.%$termo%')
+          .order('nome', ascending: true)
+          .limit(30);
 
-    final filtrados = membrosMock
-        .where((m) => m['nome']!.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+      if (!mounted || _buscaController.text.trim() != termo) return;
 
-    setState(() => _todosMembrosFiltrados = filtrados);
+      setState(() {
+        _todosMembrosFiltrados = List<Map<String, dynamic>>.from(response)
+            .where((membro) => membro['status']?.toString() != 'Excluído')
+            .map(
+              (membro) => {
+                'id': membro['id']?.toString() ?? membro['cadastro'].toString(),
+                'cadastro': membro['cadastro']?.toString() ?? '',
+                'nome': membro['nome']?.toString() ?? '',
+                'nucleo': membro['nucleo']?.toString() ?? '',
+              },
+            )
+            .toList();
+      });
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao buscar membros: $error')),
+      );
+    }
   }
 
   Future<void> _carregarNotasLancadas() async {
@@ -534,8 +576,8 @@ class _LancarNotasComJustificativaPageState extends State<LancarNotasComJustific
         'membro_nome': _membroSelecionado!['nome'],
         'nucleo': _membroSelecionado!['nucleo'],
         'nota': _notaSelecionada,
-        'observacao': _observacaoController.text.trim().isEmpty 
-            ? null 
+        'observacao': _observacaoController.text.trim().isEmpty
+            ? null
             : _observacaoController.text.trim(),
       };
 
