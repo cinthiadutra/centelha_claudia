@@ -393,7 +393,7 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
             _buildSecaoTitulo('NOMES DOS GUIAS ESPIRITUAIS'),
             _buildCampoTexto(
               controller: nomePrController,
-              label: 'Nome do Preto-Velho',
+              label: 'Nome de Exu/Pomba-Gira',
               icon: Icons.elderly,
             ),
             _buildCampoTexto(
@@ -423,7 +423,7 @@ class _FormularioEdicaoPageState extends State<_FormularioEdicaoPage> {
             ),
             _buildCampoTexto(
               controller: nomePvController,
-              label: 'Nome da Pomba-Gira',
+              label: 'Nome do Preto-Velho',
               icon: Icons.person,
             ),
 

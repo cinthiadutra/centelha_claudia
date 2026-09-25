@@ -78,13 +78,13 @@ class Membro extends Equatable {
   final String? observacoesOrixa;
 
   // Nomes dos Guias Espirituais
-  final String? nomePr; // Preto-Velho
+  final String? nomePr; // Exu/Pomba-Gira
   final String? nomeBai; // Baiano
   final String? nomeCab; // Caboclo
   final String? nomeMar; // Marinheiro
   final String? nomeMal; // Malandro
   final String? nomeCig; // Cigano
-  final String? nomePv; // Pomba-Gira
+  final String? nomePv; // Preto-Velho
 
   // Metadados
   final DateTime? dataCriacao;

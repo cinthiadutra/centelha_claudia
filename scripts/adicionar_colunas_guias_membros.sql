@@ -25,13 +25,13 @@ ALTER TABLE public.membros_historico
 ADD COLUMN IF NOT EXISTS nome_pv CHARACTER VARYING(255) NULL;
 
 -- Adicionar comentários nas colunas
-COMMENT ON COLUMN public.membros_historico.nome_pr IS 'Nome do Preto-Velho (guia espiritual)';
+COMMENT ON COLUMN public.membros_historico.nome_pr IS 'Nome de Exu/Pomba-Gira (guia espiritual)';
 COMMENT ON COLUMN public.membros_historico.nome_bai IS 'Nome do Baiano (guia espiritual)';
 COMMENT ON COLUMN public.membros_historico.nome_cab IS 'Nome do Caboclo (guia espiritual)';
 COMMENT ON COLUMN public.membros_historico.nome_mar IS 'Nome do Marinheiro (guia espiritual)';
 COMMENT ON COLUMN public.membros_historico.nome_mal IS 'Nome do Malandro (guia espiritual)';
 COMMENT ON COLUMN public.membros_historico.nome_cig IS 'Nome do Cigano (guia espiritual)';
-COMMENT ON COLUMN public.membros_historico.nome_pv IS 'Nome da Pomba-Gira (guia espiritual)';
+COMMENT ON COLUMN public.membros_historico.nome_pv IS 'Nome do Preto-Velho (guia espiritual)';
 
 -- Criar índices (opcional, para melhorar busca por nomes de guias)
 CREATE INDEX IF NOT EXISTS idx_membros_historico_nome_pr 

@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS public.dados_mediunicos (
     nome TEXT NOT NULL,
     funcao TEXT,
     grau TEXT,
-    nome_pr TEXT, -- Preto-Velho
+    nome_pr TEXT, -- Exu/Pomba-Gira
     nome_bai TEXT, -- Baiano
     nome_cab TEXT, -- Caboclo
     nome_mar TEXT, -- Marinheiro
     nome_mal TEXT, -- Malandro
     nome_cig TEXT, -- Cigano
-    nome_pv TEXT, -- Pomba-Gira
+    nome_pv TEXT, -- Preto-Velho
     observacoes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -40,13 +40,13 @@ CREATE TRIGGER atualizar_dados_mediunicos_updated_at
 
 -- Comentários
 COMMENT ON TABLE public.dados_mediunicos IS 'Dados mediúnicos dos membros e nomes de seus guias espirituais';
-COMMENT ON COLUMN public.dados_mediunicos.nome_pr IS 'Nome do Preto-Velho';
+COMMENT ON COLUMN public.dados_mediunicos.nome_pr IS 'Nome de Exu/Pomba-Gira';
 COMMENT ON COLUMN public.dados_mediunicos.nome_bai IS 'Nome do Baiano';
 COMMENT ON COLUMN public.dados_mediunicos.nome_cab IS 'Nome do Caboclo';
 COMMENT ON COLUMN public.dados_mediunicos.nome_mar IS 'Nome do Marinheiro';
 COMMENT ON COLUMN public.dados_mediunicos.nome_mal IS 'Nome do Malandro';
 COMMENT ON COLUMN public.dados_mediunicos.nome_cig IS 'Nome do Cigano';
-COMMENT ON COLUMN public.dados_mediunicos.nome_pv IS 'Nome da Pomba-Gira';
+COMMENT ON COLUMN public.dados_mediunicos.nome_pv IS 'Nome do Preto-Velho';
 
 -- ============================================================================
 -- TABELA NOTAS DE CONSULTAS
