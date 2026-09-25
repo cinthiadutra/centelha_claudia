@@ -1,62 +1,24 @@
 # Deploy no GitHub Pages
 
-## Passo 1: Build do projeto Flutter Web
+O deploy é feito pelo workflow `.github/workflows/deploy.yml`, usando as ações
+oficiais do GitHub Pages. Um push na branch `main` inicia o build e a publicação;
+também é possível iniciar o workflow manualmente pela aba **Actions**.
+
+## Configuração necessária no GitHub
+
+No repositório, acesse **Settings > Pages > Build and deployment** e selecione
+**GitHub Actions** como fonte. Essa mudança é necessária porque o deploy deixou
+de publicar os arquivos diretamente na branch `gh-pages`.
+
+## Build local
+
+O projeto usa Flutter `3.47.5` no workflow e fixa as dependências pelo
+`pubspec.lock`:
 
 ```bash
-# Gerar build de produção
+flutter pub get --enforce-lockfile
 flutter build web --release --base-href /centelha_claudia/
 ```
 
-**Importante**: Substitua `/centelha_claudia/` pelo nome do seu repositório GitHub.
-
-## Passo 2: Configurar repositório Git
-
-```bash
-# Se ainda não iniciou o git
-git init
-git add .
-git commit -m "Initial commit"
-
-# Criar repositório no GitHub primeiro, depois:
-git remote add origin https://github.com/SEU_USUARIO/centelha_claudia.git
-git branch -M main
-git push -u origin main
-```
-
-## Passo 3: Deploy automático com GitHub Actions
-
-Crie o arquivo `.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.19.0"
-          channel: "stable"
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build web
-        run: flutter build web --release --base-href /centelha_claudia/
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-```
+O `base-href` corresponde ao nome deste repositório. Se o repositório for
+renomeado, atualize esse caminho no workflow e no comando acima.

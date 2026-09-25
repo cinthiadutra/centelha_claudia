@@ -1,0 +1,4 @@
+project_id = "centelha_claudia"
+
+[functions.claudia-assistant]
+verify_jwt = true

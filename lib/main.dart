@@ -7,6 +7,7 @@ import 'core/di/auth_bloc_binding.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
+import 'modules/assistente/presentation/pages/assistente_page.dart';
 import 'modules/auth/presentation/bloc/auth_bloc.dart';
 import 'modules/auth/presentation/bloc/auth_event.dart';
 import 'modules/auth/presentation/bloc/auth_state.dart';
@@ -61,6 +62,48 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         title: 'CLAUDIA',
         debugShowCheckedModeBanner: false,
+        builder: (context, child) {
+          final size = MediaQuery.sizeOf(context);
+          final chatWidth = size.width < 520 ? size.width - 24 : 420.0;
+          final chatHeight = size.height < 720 ? size.height * 0.86 : 640.0;
+
+          return BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  child ?? const SizedBox.shrink(),
+                  if (state is AuthAuthenticated)
+                    Positioned(
+                      right: 20,
+                      bottom: 20,
+                      child: SafeArea(
+                        child: FloatingActionButton(
+                          tooltip: 'Abrir assistente Claudia',
+                          onPressed: () {
+                            Get.dialog<void>(
+                              Dialog(
+                                insetPadding: const EdgeInsets.all(12),
+                                clipBehavior: Clip.antiAlias,
+                                child: SizedBox(
+                                  width: chatWidth,
+                                  height: chatHeight,
+                                  child: const AssistentePage(),
+                                ),
+                              ),
+                              barrierDismissible: true,
+                              useSafeArea: true,
+                            );
+                          },
+                          child: const Icon(Icons.chat_bubble_outline),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          );
+        },
         theme: AppTheme.lightTheme,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
@@ -72,6 +115,7 @@ class MyApp extends StatelessWidget {
         ),
         // Rotas GetX
         getPages: [
+          GetPage(name: '/assistente', page: () => const AssistentePage()),
           GetPage(name: '/cadastrar', page: () => const CadastrarPage()),
           GetPage(name: '/pesquisar', page: () => const PesquisarPage()),
           GetPage(name: '/editar', page: () => const EditarPage()),
