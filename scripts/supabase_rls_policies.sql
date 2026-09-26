@@ -50,6 +50,43 @@ RETURNS VARCHAR AS $$
   LIMIT 1;
 $$ LANGUAGE SQL SECURITY DEFINER;
 
+-- Remove only policies managed by this script so it can be safely rerun.
+DO $$
+DECLARE
+  existing_policy record;
+BEGIN
+  FOR existing_policy IN
+    SELECT schemaname, tablename, policyname
+    FROM pg_catalog.pg_policies
+    WHERE schemaname = 'public'
+      AND (
+        (tablename = 'usuarios' AND policyname LIKE 'usuarios_nivel%')
+        OR (tablename = 'membros' AND policyname LIKE 'membros_%')
+        OR (tablename = 'consultas' AND policyname LIKE 'consultas_%')
+        OR (tablename = 'grupos_tarefas' AND policyname LIKE 'grupos_tarefas_%')
+        OR (tablename = 'grupos_acoes_sociais' AND policyname LIKE 'grupos_acoes_%')
+        OR (tablename = 'grupos_trabalhos_espirituais' AND policyname LIKE 'grupos_trabalhos_%')
+        OR (tablename = 'batismos' AND policyname LIKE 'batismos_%')
+        OR (tablename = 'casamentos' AND policyname LIKE 'casamentos_%')
+        OR (tablename = 'jogos_orixa' AND policyname LIKE 'jogos_orixa_%')
+        OR (tablename = 'camarinhas' AND policyname LIKE 'camarinhas_%')
+        OR (tablename = 'coroacao_sacerdotal' AND policyname LIKE 'coroacao_%')
+        OR (tablename = 'cursos' AND policyname LIKE 'cursos_%')
+        OR (tablename = 'inscricoes_cursos' AND policyname LIKE 'inscricoes_%')
+        OR (tablename = 'usuarios_sistema' AND policyname LIKE 'usuarios_sistema_%')
+        OR (tablename = 'organizacao' AND policyname LIKE 'organizacao_%')
+      )
+  LOOP
+    EXECUTE format(
+      'DROP POLICY %I ON %I.%I',
+      existing_policy.policyname,
+      existing_policy.schemaname,
+      existing_policy.tablename
+    );
+  END LOOP;
+END;
+$$;
+
 -- ================================================
 -- POLÍTICAS PARA USUARIOS
 -- ================================================
