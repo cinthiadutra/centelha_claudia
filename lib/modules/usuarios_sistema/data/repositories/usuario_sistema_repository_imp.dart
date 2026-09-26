@@ -46,11 +46,14 @@ class UsuarioSistemaRepositoryImpl implements UsuarioSistemaRepository {
   }
 
   @override
-  Future<void> salvar(UsuarioSistema usuario) async {
+  Future<void> salvar(UsuarioSistema usuario, {String? password}) async {
     final model = UsuarioSistemaModel.fromEntity(usuario);
 
     if (usuario.id.isEmpty) {
-      await datasource.adicionar(model);
+      if (password == null || password.length < 6) {
+        throw ServerException('A senha precisa ter pelo menos 6 caracteres.');
+      }
+      await datasource.adicionar(model, password: password);
     } else {
       final existe = await datasource.getPorId(usuario.id);
       if (existe == null) {

@@ -9,5 +9,5 @@ abstract class UsuarioSistemaRepository {
   Future<UsuarioSistema?> getPorUsername(String username);
   Future<List<UsuarioSistema>> getTodos();
   Future<void> remover(String id);
-  Future<void> salvar(UsuarioSistema usuario);
+  Future<void> salvar(UsuarioSistema usuario, {String? password});
 }

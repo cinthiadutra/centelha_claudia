@@ -178,41 +178,6 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          // Informações de teste
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.blue.shade100),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Usuários de teste:',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade900,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'admin / 123456 (Perfil: Administrador)\n'
-                                  'pai / 123456 (Perfil: Sacerdote)\n'
-                                  'secretaria / 123456 (Perfil: Secretaria)\n'
-                                  'membro / 123456 (Perfil: Membro)',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.blue.shade800,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),

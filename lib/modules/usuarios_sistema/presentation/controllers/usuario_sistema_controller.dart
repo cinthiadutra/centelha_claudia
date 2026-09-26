@@ -94,8 +94,17 @@ class UsuarioSistemaController extends GetxController {
     }
   }
 
-  Future<bool> salvar(UsuarioSistema usuario) async {
+  Future<bool> salvar(UsuarioSistema usuario, {String? password}) async {
     try {
+      if (usuario.id.isEmpty && (password == null || password.length < 6)) {
+        Get.snackbar(
+          'Erro de Validação',
+          'A senha precisa ter pelo menos 6 caracteres',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return false;
+      }
+
       // Validar email único
       final emailValido = await validarEmailUnico(
         usuario.email,
@@ -113,23 +122,25 @@ class UsuarioSistemaController extends GetxController {
       }
 
       // Validar cadastro único
-      final cadastroValido = await validarCadastroUnico(
-        usuario.numeroCadastro,
-        idExcluir: usuario.id,
-      );
-      if (!cadastroValido) {
-        Get.snackbar(
-          'Erro de Validação',
-          'Este número de cadastro já possui acesso ao sistema',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.colorScheme.error,
-          colorText: Get.theme.colorScheme.onError,
+      if (usuario.numeroCadastro.isNotEmpty) {
+        final cadastroValido = await validarCadastroUnico(
+          usuario.numeroCadastro,
+          idExcluir: usuario.id,
         );
-        return false;
+        if (!cadastroValido) {
+          Get.snackbar(
+            'Erro de Validação',
+            'Este número de cadastro já possui acesso ao sistema',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.theme.colorScheme.error,
+            colorText: Get.theme.colorScheme.onError,
+          );
+          return false;
+        }
       }
 
       isLoading.value = true;
-      await repository.salvar(usuario);
+      await repository.salvar(usuario, password: password);
       await carregarTodos();
       Get.snackbar(
         'Sucesso',

@@ -372,10 +372,12 @@ CREATE TABLE IF NOT EXISTS usuarios_sistema (
   numero_cadastro VARCHAR(10) UNIQUE,
   nome VARCHAR(255),
   email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(50),
   senha_hash VARCHAR(255),
   nivel_permissao INTEGER CHECK (nivel_permissao IN (1, 2, 3, 4)),
   ativo BOOLEAN DEFAULT TRUE,
   ultimo_acesso TIMESTAMP WITH TIME ZONE,
+  observacoes TEXT,
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -383,6 +385,9 @@ CREATE TABLE IF NOT EXISTS usuarios_sistema (
 
 CREATE INDEX idx_usuarios_sistema_email ON usuarios_sistema(email);
 CREATE INDEX idx_usuarios_sistema_cadastro ON usuarios_sistema(numero_cadastro);
+CREATE UNIQUE INDEX idx_usuarios_sistema_username_lower_unique
+  ON usuarios_sistema (lower(btrim(username)))
+  WHERE username IS NOT NULL AND btrim(username) <> '';
 
 -- ================================================
 -- 10. ORGANIZAÇÃO (Registro único)

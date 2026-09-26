@@ -8,7 +8,10 @@ class UsuarioSistemaDatasourceImpl implements UsuarioSistemaDatasource {
   final List<UsuarioSistemaModel> _usuarios = [];
 
   @override
-  Future<void> adicionar(UsuarioSistemaModel usuario) async {
+  Future<void> adicionar(
+    UsuarioSistemaModel usuario, {
+    required String password,
+  }) async {
     _usuarios.add(usuario);
   }
 

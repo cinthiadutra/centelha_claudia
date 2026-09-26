@@ -8,7 +8,6 @@ class UsuarioSistema extends Equatable {
   final String nome;
   final String? username; // Nome de usuário para login (alternativa ao email)
   final String email;
-  final String senha; // Em produção, deve ser hash
   final int nivelPermissao; // 1, 2, 3 ou 4
   final bool ativo;
   final DateTime dataCriacao;
@@ -21,7 +20,6 @@ class UsuarioSistema extends Equatable {
     required this.nome,
     this.username,
     required this.email,
-    required this.senha,
     required this.nivelPermissao,
     required this.ativo,
     required this.dataCriacao,
@@ -51,7 +49,6 @@ class UsuarioSistema extends Equatable {
     nome,
     username,
     email,
-    senha,
     nivelPermissao,
     ativo,
     dataCriacao,
@@ -65,7 +62,6 @@ class UsuarioSistema extends Equatable {
     String? nome,
     String? username,
     String? email,
-    String? senha,
     int? nivelPermissao,
     bool? ativo,
     DateTime? dataCriacao,
@@ -78,7 +74,6 @@ class UsuarioSistema extends Equatable {
       nome: nome ?? this.nome,
       username: username ?? this.username,
       email: email ?? this.email,
-      senha: senha ?? this.senha,
       nivelPermissao: nivelPermissao ?? this.nivelPermissao,
       ativo: ativo ?? this.ativo,
       dataCriacao: dataCriacao ?? this.dataCriacao,

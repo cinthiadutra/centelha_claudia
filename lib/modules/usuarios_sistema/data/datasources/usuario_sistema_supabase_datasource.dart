@@ -14,73 +14,36 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   UsuarioSistemaSupabaseDatasource(this._supabaseService);
 
   @override
-  Future<void> adicionar(UsuarioSistemaModel usuario) async {
+  Future<void> adicionar(
+    UsuarioSistemaModel usuario, {
+    required String password,
+  }) async {
     try {
-      final data = usuario.toJson();
-
-      // Remove campos que são gerenciados pelo Supabase
-      data.remove('id');
-      data.remove('created_at');
-      data.remove('updated_at');
-
-      // Validar se o cadastro existe na tabela de membros.
-      if (data['numero_cadastro'] != null && data['numero_cadastro'] != '') {
-        final cadastroExiste = await _supabaseService.client
-            .from('membros_historico')
-            .select('cadastro')
-            .eq('cadastro', data['numero_cadastro'])
-            .maybeSingle();
-
-        if (cadastroExiste == null) {
-          throw ServerException(
-            'Número de cadastro ${data['numero_cadastro']} não encontrado. '
-            'Deixe em branco para usuários administrativos ou use um cadastro existente.',
-          );
-        }
-      } else {
-        // Remove numero_cadastro se estiver vazio (usuários administrativos)
-        data.remove('numero_cadastro');
-      }
-
-      // Remove senha_hash se estiver vazio
-      if (data['senha_hash'] == null || data['senha_hash'] == '') {
-        data.remove('senha_hash');
-      }
-
-      // Remove qualquer campo com nome em camelCase que não deveria existir
-      data.removeWhere(
-        (key, value) =>
-            key.contains(
-              RegExp(r'[A-Z]'),
-            ) || // Remove qualquer campo com letra maiúscula
-            value == null,
+      final response = await _supabaseService.client.functions.invoke(
+        'admin-create-user',
+        body: {
+          'nome': usuario.nome,
+          'email': usuario.email.trim().toLowerCase(),
+          'username': usuario.username,
+          'password': password,
+          'numero_cadastro': usuario.numeroCadastro,
+          'nivel_permissao': usuario.nivelPermissao,
+          'ativo': usuario.ativo,
+          'observacoes': usuario.observacoes,
+        },
       );
 
-      log('🔍 [USUARIO_SISTEMA] Dados finais a serem inseridos: $data');
-      log('🔍 [USUARIO_SISTEMA] Chaves: ${data.keys.toList()}');
-
-      await _supabaseService.client.from('usuarios_sistema').insert(data);
-
-      log('✅ [USUARIO_SISTEMA] Usuário adicionado com sucesso');
-    } on PostgrestException catch (error) {
-      log(
-        '❌ [USUARIO_SISTEMA] Erro PostgrestException: ${error.code} - ${error.message}',
-      );
-      log('❌ [USUARIO_SISTEMA] Details: ${error.details}');
-      if (error.code == '23505') {
-        throw ServerException('Email já cadastrado');
+      if (response.status < 200 || response.status >= 300) {
+        throw ServerException(_mensagemFuncao(response.data));
       }
-      if (error.code == '23503') {
-        throw ServerException(
-          'Número de cadastro inválido. Verifique se o cadastro existe.',
-        );
-      }
-      throw ServerException('Erro ao adicionar usuário: ${error.message}');
-    } on ServerException {
-      rethrow;
+    } on FunctionException catch (error) {
+      throw ServerException(_mensagemFuncao(error.details));
     } catch (error) {
-      log('❌ [USUARIO_SISTEMA] Erro inesperado: $error');
-      throw ServerException('Erro inesperado: $error');
+      log('Erro ao criar usuário autenticado: $error');
+      if (error is ServerException) rethrow;
+      throw ServerException(
+        'Não foi possível criar o usuário. Tente novamente.',
+      );
     }
   }
 
@@ -90,6 +53,10 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
       final data = usuario.toJson();
       data.remove('id'); // O ID já é usado no filtro da atualização
       data.remove('created_at'); // Não atualizar data de criação
+      data.remove(
+        'email',
+      ); // O email de Auth não é alterado pelo formulário de perfil
+      data.remove('senha_hash');
 
       await _supabaseService.client
           .from('usuarios_sistema')
@@ -152,20 +119,9 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
   Future<UsuarioSistemaModel?> getPorEmailOuUsername(
     String emailOuUsername,
   ) async {
-    try {
-      final response = await _supabaseService.client
-          .from('usuarios_sistema')
-          .select()
-          .or('email.eq.$emailOuUsername,username.eq.$emailOuUsername')
-          .maybeSingle();
-
-      if (response == null) return null;
-      return UsuarioSistemaModel.fromJson(response);
-    } on PostgrestException catch (error) {
-      throw ServerException('Erro ao buscar usuário: ${error.message}');
-    } catch (error) {
-      throw ServerException('Erro inesperado: $error');
-    }
+    final byEmail = await getPorEmail(emailOuUsername);
+    if (byEmail != null) return byEmail;
+    return getPorUsername(emailOuUsername.toLowerCase());
   }
 
   @override
@@ -234,5 +190,12 @@ class UsuarioSistemaSupabaseDatasource implements UsuarioSistemaDatasource {
     } catch (error) {
       throw ServerException('Erro inesperado: $error');
     }
+  }
+
+  String _mensagemFuncao(Object? details) {
+    if (details is Map && details['error'] is String) {
+      return details['error'] as String;
+    }
+    return 'Não foi possível criar o usuário.';
   }
 }

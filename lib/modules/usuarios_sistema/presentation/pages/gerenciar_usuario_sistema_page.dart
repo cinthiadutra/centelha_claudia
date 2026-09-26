@@ -86,14 +86,19 @@ class _GerenciarUsuarioSistemaPageState
                             child: TextFormField(
                               controller: _numeroCadastroController,
                               decoration: const InputDecoration(
-                                labelText: 'Número do Cadastro *',
+                                labelText: 'Número do Cadastro',
+                                helperText:
+                                    'Obrigatório para níveis 1, 2 e 3; opcional para administrador',
                                 border: OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.number,
-                              validator: (v) => v?.isEmpty == true
-                                  ? 'Campo obrigatório'
-                                  : null,
-                              onChanged: (_) => _buscarMembro(),
+                              validator: (value) {
+                                if (nivelPermissaoSelecionado != 4 &&
+                                    (value == null || value.trim().isEmpty)) {
+                                  return 'Obrigatório para este nível de acesso';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -127,8 +132,9 @@ class _GerenciarUsuarioSistemaPageState
                               'Deixe em branco para usar apenas email no login',
                         ),
                         validator: (v) {
-                          if (v?.isNotEmpty == true && v!.length < 3) {
-                            return 'Mínimo 3 caracteres';
+                          if (v?.isNotEmpty == true &&
+                              !RegExp(r'^[a-zA-Z0-9._-]{3,50}$').hasMatch(v!)) {
+                            return 'Use 3–50 letras, números, ponto, hífen ou sublinhado';
                           }
                           return null;
                         },
@@ -137,10 +143,14 @@ class _GerenciarUsuarioSistemaPageState
 
                       TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Email *',
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
+                          helperText: usuarioEditando == null
+                              ? null
+                              : 'O email de autenticação não pode ser alterado por este formulário',
                         ),
+                        readOnly: usuarioEditando != null,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) {
                           if (v?.isEmpty == true) return 'Campo obrigatório';
@@ -150,29 +160,40 @@ class _GerenciarUsuarioSistemaPageState
                       ),
                       const SizedBox(height: 16),
 
-                      TextFormField(
-                        controller: _senhaController,
-                        decoration: InputDecoration(
-                          labelText: 'Senha *',
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureSenha
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                      if (usuarioEditando == null) ...[
+                        TextFormField(
+                          controller: _senhaController,
+                          decoration: InputDecoration(
+                            labelText: 'Senha *',
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureSenha
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () => setState(
+                                () => _obscureSenha = !_obscureSenha,
+                              ),
                             ),
-                            onPressed: () =>
-                                setState(() => _obscureSenha = !_obscureSenha),
+                          ),
+                          obscureText: _obscureSenha,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório';
+                            }
+                            if (value.length < 6) return 'Mínimo 6 caracteres';
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                      ] else
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            'Senha gerenciada pelo Supabase Auth; não é armazenada no perfil.',
                           ),
                         ),
-                        obscureText: _obscureSenha,
-                        validator: (v) {
-                          if (v?.isEmpty == true) return 'Campo obrigatório';
-                          if (v!.length < 6) return 'Mínimo 6 caracteres';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
 
                       DropdownButtonFormField<int>(
                         initialValue: nivelPermissaoSelecionado,
@@ -414,7 +435,7 @@ class _GerenciarUsuarioSistemaPageState
       _nomeController.text = usuario.nome;
       _usernameController.text = usuario.username ?? '';
       _emailController.text = usuario.email;
-      _senhaController.text = usuario.senha;
+      _senhaController.clear();
       _observacoesController.text = usuario.observacoes ?? '';
       nivelPermissaoSelecionado = usuario.nivelPermissao;
       ativoSelecionado = usuario.ativo;
@@ -497,9 +518,8 @@ class _GerenciarUsuarioSistemaPageState
       nome: _nomeController.text.trim(),
       username: _usernameController.text.trim().isEmpty
           ? null
-          : _usernameController.text.trim(),
-      email: _emailController.text.trim(),
-      senha: _senhaController.text.trim(),
+          : _usernameController.text.trim().toLowerCase(),
+      email: _emailController.text.trim().toLowerCase(),
       nivelPermissao: nivelPermissaoSelecionado!,
       ativo: ativoSelecionado,
       dataCriacao: usuarioEditando?.dataCriacao ?? DateTime.now(),
@@ -509,7 +529,10 @@ class _GerenciarUsuarioSistemaPageState
           : _observacoesController.text.trim(),
     );
 
-    final salvo = await usuarioSistemaController.salvar(usuario);
+    final salvo = await usuarioSistemaController.salvar(
+      usuario,
+      password: usuarioEditando == null ? _senhaController.text : null,
+    );
     if (salvo && mounted) {
       _novoUsuario();
     }

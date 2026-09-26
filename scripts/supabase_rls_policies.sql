@@ -36,6 +36,7 @@ RETURNS INTEGER AS $$
   SELECT COALESCE(nivel_permissao, 0)
   FROM usuarios_sistema
   WHERE email = auth.jwt()->>'email'
+    AND COALESCE(ativo, false)
   LIMIT 1;
 $$ LANGUAGE SQL SECURITY DEFINER;
 
@@ -45,6 +46,7 @@ RETURNS VARCHAR AS $$
   SELECT numero_cadastro
   FROM usuarios_sistema
   WHERE email = auth.jwt()->>'email'
+    AND COALESCE(ativo, false)
   LIMIT 1;
 $$ LANGUAGE SQL SECURITY DEFINER;
 
